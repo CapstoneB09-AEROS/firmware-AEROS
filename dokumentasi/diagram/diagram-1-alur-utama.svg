@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1290" viewBox="0 0 1180 1290"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><text x="590.0" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#111">Diagram 1. Alur utama (setiap 1 detik)</text><ellipse cx="450" cy="70" rx="70.0" ry="22.0" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="450.0" y="75.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">MULAI</text>
+<polygon points="280.0,122.0 640.0,122.0 620.0,178.0 260.0,178.0" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="450.0" y="146.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Baca CO2 (MH-Z19C) dan</text>
+<text x="450.0" y="164.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tegangan MiCS (ADS1115)</text>
+<polygon points="450,210.0 610.0,265 450,320.0 290.0,265" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="450.0" y="261.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Kedua sensor</text>
+<text x="450.0" y="279.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">gagal atau tidak valid?</text>
+<rect x="250.0" y="348.0" width="400" height="84" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="450.0" y="377.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Rs  &gt;  filter SMA 6  &gt;  rasio Rs/R0  &gt;  ppm CO</text>
+<text x="450.0" y="395.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">CO2 = angka sensor (tanpa filter)</text>
+<text x="450.0" y="413.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">[B1] [B12]  baca ulang bila saturasi</text>
+<polygon points="450,455.0 610.0,510 450,565.0 290.0,510" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="450.0" y="506.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Masih masa</text>
+<text x="450.0" y="524.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">pemanasan?  [B11]</text>
+<rect x="250.0" y="600.0" width="400" height="60" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="450.0" y="626.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ATURAN CO</text>
+<text x="450.0" y="644.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(diagram 2 dan 3)</text>
+<line x1="262.0" y1="600.0" x2="262.0" y2="660.0" stroke="#333333" stroke-width="1.6"/>
+<line x1="638.0" y1="600.0" x2="638.0" y2="660.0" stroke="#333333" stroke-width="1.6"/>
+<polygon points="450,695.0 610.0,745 450,795.0 290.0,745" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="450.0" y="750.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Aturan CO aktif?</text>
+<rect x="250.0" y="830.0" width="400" height="60" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="450.0" y="856.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ATURAN CO2</text>
+<text x="450.0" y="874.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(diagram 4)</text>
+<line x1="262.0" y1="830.0" x2="262.0" y2="890.0" stroke="#333333" stroke-width="1.6"/>
+<line x1="638.0" y1="830.0" x2="638.0" y2="890.0" stroke="#333333" stroke-width="1.6"/>
+<rect x="250.0" y="927.0" width="400" height="66" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="450.0" y="956.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Aktuator mengikuti aturan CO2</text>
+<text x="450.0" y="974.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(2500: bunyi singkat, 4000: bunyi + buka jendela)</text>
+<rect x="140.0" y="1035.0" width="620" height="70" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="450.0" y="1066.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">KELUARAN</text>
+<text x="450.0" y="1084.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">LCD, serial CSV, kirim data (5 detik atau saat status berubah)  [B14] [B18]</text>
+<line x1="152.0" y1="1035.0" x2="152.0" y2="1105.0" stroke="#333333" stroke-width="1.6"/>
+<line x1="748.0" y1="1035.0" x2="748.0" y2="1105.0" stroke="#333333" stroke-width="1.6"/>
+<rect x="280.0" y="1143.0" width="340" height="44" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="450.0" y="1170.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Tunggu sampai tepat 1 detik</text>
+<rect x="725.0" y="223.0" width="250" height="84" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="850.0" y="252.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">status GANGGUAN</text>
+<text x="850.0" y="270.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tidak ada aksi otomatis</text>
+<text x="850.0" y="288.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(kedua sensor gagal)  [B10]</text>
+<rect x="725.0" y="480.0" width="250" height="60" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="850.0" y="506.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tidak ada alarm</text>
+<text x="850.0" y="524.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(sensor masih memanas)</text>
+<rect x="725.0" y="703.0" width="250" height="84" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
+<text x="850.0" y="732.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Aktuator mengikuti</text>
+<text x="850.0" y="750.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">aturan CO</text>
+<text x="850.0" y="768.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(aturan CO2 diabaikan)</text>
+<path d="M 450.0,92.0 L 450.0,122.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 450.0,178.0 L 450.0,210.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 450.0,320.0 L 450.0,348.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="460.0" y="340.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 610.0,265.0 L 725.0,265.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="622.0" y="257.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 450.0,432.0 L 450.0,455.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 610.0,510.0 L 725.0,510.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="622.0" y="502.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 450.0,565.0 L 450.0,600.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="460.0" y="585.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 450.0,660.0 L 450.0,695.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 610.0,745.0 L 725.0,745.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="622.0" y="737.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 450.0,795.0 L 450.0,830.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="460.0" y="815.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 450.0,890.0 L 450.0,927.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 450.0,993.0 L 450.0,1035.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 975.0,265.0 L 1100.0,265.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<path d="M 975.0,510.0 L 1100.0,510.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<path d="M 975.0,745.0 L 1100.0,745.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<path d="M 1100.0,265.0 L 1100.0,1070.0 L 760.0,1070.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 450.0,1105.0 L 450.0,1143.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 280.0,1165.0 L 60.0,1165.0 L 60.0,70.0 L 380.0,70.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="268.0" y="1157.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">ulangi</text>
+<text x="690" y="860" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Bila hanya SATU sensor gagal: tampilkan</text>
+<text x="690" y="876" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">peringatan sensor itu, aturan sensor yang</text>
+<text x="690" y="892" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">sehat tetap berjalan sesuai aturannya  [B10]</text>
+<text x="560" y="1230" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Tombol "Saya Tahu" mematikan bunyi; bunyi juga mati sendiri setelah 5 menit  [B15]</text>
+<rect x="780" y="34" width="380" height="56" fill="#fafafa" stroke="#bbb"/>
+<rect x="790" y="44" width="16" height="12" fill="#fad7ac" stroke="#b46504"/>
+<text x="812" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">waspada / tindakan</text>
+<rect x="930" y="44" width="16" height="12" fill="#fff2cc" stroke="#b8922a"/>
+<text x="952" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">peringatan</text>
+<rect x="1030" y="44" width="16" height="12" fill="#b0e3e6" stroke="#0e8088"/>
+<text x="1052" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">normal / selesai</text>
+<text x="790" y="78" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">[Bn] = bagian belum fix (lihat pseudocode-baru.md bagian 5)</text></svg>

@@ -1,0 +1,26 @@
+Baris dipakai: 13000  t_s 2137 -> 15140  (baris file 2138-15137)
+Jam: 12:29:12.763 -> 16:05:55.648
+Status CO: {'OK(<10ppm)': 12529, 'OK': 471}
+Celah waktu: [(4807, 4809), (8290, 8292), (11836, 11838), (14985, 14987)]
+Rs mentah valid: 13000 dari 13000  rentang 822-2998 kOhm  rata-rata 1492 kOhm
+Amplitudo goyangan detik-ke-detik rata-rata: sekitar +-9.9% dari Rs
+
+Filter                            noise (%)   turun   lag-1  t90 (dtk)   lonjakan +30% tersisa (%)
+Mentah (tanpa filter)                13.920      0%   -0.89          0                        30.0
+SMA 2                                 3.338     76%    0.99          1                        14.7
+SMA 3                                 5.603     60%   -0.28          2                        10.1
+SMA 4                                 3.336     76%    0.99          3                         7.4
+SMA 5                                 4.288     69%    0.23          4                         6.0
+SMA 6                                 3.331     76%    0.99          5                         4.9
+SMA 8                                 3.324     76%    0.99          7                         3.7
+SMA 10                                3.315     76%    0.99          8                         2.9
+SMA 30                                3.100     78%    1.00         26                         1.0
+EMA 0.05                              2.613     81%    0.99         44                         1.5
+EMA 0.1                               3.151     77%    0.93         21                         3.0
+EMA 0.2 (firmware sekarang)           3.594     74%    0.68         10                         5.9
+Median 5                             13.586      2%   -0.89          2                        11.4
+Median 5 lalu EMA 0.1                 3.060     78%    0.93         23                         2.4
+
+noise (%) = simpangan baku Rs di sekitar tren lambat, relatif terhadap tren
+lag-1 negatif besar = goyangan bolak-balik tiap detik
+t90 = detik sampai keluaran filter menempuh 90% dari perubahan mendadak

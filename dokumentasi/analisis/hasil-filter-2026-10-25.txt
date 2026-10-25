@@ -1,0 +1,25 @@
+Baris dipakai: 1000  t_s 3314 -> 4313  (baris file 2-1001)
+Status CO: {'OK(<10ppm)': 1000}
+Celah waktu: tidak ada
+Rs mentah valid: 1000 dari 1000  rentang 1767-3114 kOhm  rata-rata 2045 kOhm
+Amplitudo goyangan detik-ke-detik rata-rata: sekitar +-10.2% dari Rs
+
+Filter                            noise (%)   turun   lag-1  t90 (dtk)   lonjakan +30% tersisa (%)
+Mentah (tanpa filter)                13.283      0%   -0.92          0                        30.0
+SMA 2                                 2.588     81%    0.99          1                        15.6
+SMA 3                                 5.052     62%   -0.47          2                        10.8
+SMA 4                                 2.585     81%    0.99          3                         7.8
+SMA 5                                 3.666     72%    0.02          4                         6.4
+SMA 6                                 2.581     81%    0.99          5                         5.2
+SMA 8                                 2.577     81%    0.99          7                         3.9
+SMA 10                                2.572     81%    0.99          8                         3.1
+SMA 30                                2.439     82%    0.99         26                         1.1
+EMA 0.05                              2.099     84%    0.98         44                         1.6
+EMA 0.1                               2.506     81%    0.90         21                         3.1
+EMA 0.2 (firmware sekarang)           2.922     78%    0.55         10                         6.2
+Median 5                             12.971      2%   -0.93          2                         6.2
+Median 5 lalu EMA 0.1                 2.434     82%    0.90         23                         1.2
+
+noise (%) = simpangan baku Rs di sekitar tren lambat, relatif terhadap tren
+lag-1 negatif besar = goyangan bolak-balik tiap detik
+t90 = detik sampai keluaran filter menempuh 90% dari perubahan mendadak

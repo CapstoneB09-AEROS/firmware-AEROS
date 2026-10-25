@@ -1,0 +1,62 @@
+Segmen terpanjang tanpa celah: 3586 detik, t_s 1222 -> 4807
+Jam: 12:13:57.524 -> 13:13:43.541
+Jumlah segmen: 6 (celah di antaranya diabaikan)
+
+(1) Noise per blok 15 menit (semua segmen tanpa celah yang cukup panjang)
+jam       V rata2  noise V   noise Rs  goyang   bagian
+          (mV)     (mV)      (%)       +-(mV)   bergantian (%)
+11:58       23.34     2.63     12.68     2.02           95
+12:13       23.65     2.84     13.34     2.20           96
+12:28       23.94     2.97     13.80     2.29           94
+12:43       24.90     2.94     13.11     2.25           95
+12:58       25.65     3.06     13.33     2.33           95
+13:13       26.72     3.10     13.04     2.32           94
+13:28       30.49     3.53     13.13     2.70           94
+13:43       31.52     3.77     13.53     2.95           95
+13:58       31.25     4.06     14.52     3.27           95
+14:11       32.19     3.69     13.05     2.82           94
+14:26       32.21     3.79     13.32     2.92           94
+14:41       31.69     4.16     14.65     3.33           95
+14:56       31.80     4.11     14.52     3.19           94
+15:10       37.55     4.72     13.96     3.56           93
+15:25       43.80     5.44     14.07     3.97           95
+15:40       47.55     5.90     14.18     4.22           95
+15:55       50.41     6.36     14.39     4.52           95
+
+(2) Aditif atau multiplikatif?
+jumlah blok: 17; rentang V rata2 23.3-50.4 mV
+korelasi antar blok: V rata2 vs noise V = +0.99; V rata2 vs goyangan = +0.97; V rata2 vs noise Rs (%) = +0.57
+Catatan: V rata2 tinggi berarti Rs rendah. Noise V yang naik bersama V menunjukkan goyangan yang proporsional terhadap sinyal.
+Bila noise Rs (%) hampir tetap walau V berubah, goyangan bersifat relatif terhadap Rs.
+rasio noise V terhadap V rata2 (persen): min 11.3, maks 13.1
+
+(3) Goyangan bergantian tiap detik (0,5 Hz)
+amplitudo bertanda: maks 5.45 mV, rata-rata mutlak 2.23 mV
+jumlah titik amplitudo menyentuh nol (gelombang pembeda): 8
+selang antar titik nol: median 430 detik (min 406, maks 441)
+periode gelombang pembeda sekitar 860 detik, selisih frekuensi sekitar 1.16 mHz
+periode sumber gangguan sekitar 1.9954 atau 2.0047 detik (dua kemungkinan)
+Catatan: perkiraan kasar. Tidak membuktikan sumbernya.
+
+(4) Bentuk sebaran noise Rs (persen terhadap tren 31 detik)
+simpangan baku 13.40%, kemiringan +0.07, kurtosis lebih -0.53 (0 untuk sebaran normal)
+persentil 50/90/99 dari |noise|: 5.09% / 22.41% / 27.69%
+
+(5) Noise CO2
+simpangan baku di sekitar tren 31 detik: 3.36 ppm; perubahan terbesar per detik: 10 ppm
+detik tanpa perubahan nilai: 26%
+
+(6) Filter genap vs ganjil (noise Rs terhadap tren 121 detik, keterlambatan filter dikoreksi)
+Filter     noise Rs (%)   turun
+Mentah            13.90      0%
+SMA 2              3.33     76%
+SMA 3              5.59     60%
+SMA 4              3.33     76%
+SMA 5              4.28     69%
+SMA 6              3.32     76%
+SMA 8              3.31     76%
+SMA 10             3.30     76%
+EMA 0.2            3.58     74%
+EMA 0.1            3.14     77%
+detik dianalisis: 14032
+Catatan: bila SMA 2 sudah sama baiknya dengan SMA 10, sisa noise adalah gerakan lambat (puluhan detik ke atas) yang tidak bisa dibuang filter pendek tanpa keterlambatan.

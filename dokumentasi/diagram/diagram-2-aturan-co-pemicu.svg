@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1250" height="1010" viewBox="0 0 1250 1010"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><text x="625.0" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#111">Diagram 2. Aturan CO: pemicu</text><ellipse cx="420" cy="70" rx="100.0" ry="22.0" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="420.0" y="75.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ATURAN CO</text>
+<polygon points="420,125.0 580.0,175 420,225.0 260.0,175" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="420.0" y="171.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO =</text>
+<text x="420.0" y="189.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">TIDAK_AKTIF?</text>
+<polygon points="420,260.0 590.0,310 420,360.0 250.0,310" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="420.0" y="315.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ppmCO  &gt;=  87 ppm (bahaya)?</text>
+<polygon points="420,400.0 590.0,450 420,500.0 250.0,450" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="420.0" y="455.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ppmCO  &gt;=  35 ppm (estimasi)?</text>
+<rect x="270.0" y="545.0" width="300" height="50" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="420.0" y="575.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">konfirmasiCO = konfirmasiCO + 1 detik</text>
+<polygon points="420,640.0 590.0,690 420,740.0 250.0,690" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="420.0" y="686.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">konfirmasiCO  &gt;=  30 detik?</text>
+<text x="420.0" y="704.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">[B3]</text>
+<rect x="220.0" y="775.0" width="400" height="130" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
+<text x="420.0" y="809.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">AKTIFKAN</text>
+<text x="420.0" y="827.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO = UJI_ARAH</text>
+<text x="420.0" y="845.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">bunyi CO ON,  jendela BUKA</text>
+<text x="420.0" y="863.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">rsAwalUji = Rs sekarang,  waktuUji = 0</text>
+<text x="420.0" y="881.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(bahaya 87 ppm: bunyi LEBIH KERAS)</text>
+<ellipse cx="420" cy="950" rx="150.0" ry="20.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="420.0" y="955.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai (kembali ke alur utama)</text>
+<rect x="710.0" y="140.0" width="340" height="70" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="880.0" y="171.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Uji arah dan pemulihan</text>
+<text x="880.0" y="189.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(diagram 3)</text>
+<line x1="722.0" y1="140.0" x2="722.0" y2="210.0" stroke="#333333" stroke-width="1.6"/>
+<line x1="1038.0" y1="140.0" x2="1038.0" y2="210.0" stroke="#333333" stroke-width="1.6"/>
+<ellipse cx="880" cy="270" rx="110.0" ry="20.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="880.0" y="275.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai</text>
+<rect x="755.0" y="425.0" width="250" height="50" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="880.0" y="455.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">konfirmasiCO = 0</text>
+<ellipse cx="880" cy="540" rx="80.0" ry="20.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="880.0" y="545.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai</text>
+<rect x="755.0" y="665.0" width="250" height="50" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="880.0" y="695.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(masih menunggu konfirmasi)</text>
+<ellipse cx="880" cy="780" rx="80.0" ry="20.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="880.0" y="785.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai</text>
+<path d="M 420.0,92.0 L 420.0,125.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 580.0,175.0 L 710.0,175.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="592.0" y="167.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 880.0,210.0 L 880.0,250.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 420.0,225.0 L 420.0,260.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="430.0" y="245.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 420.0,360.0 L 420.0,400.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="430.0" y="380.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 250.0,310.0 L 130.0,310.0 L 130.0,840.0 L 220.0,840.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="238.0" y="302.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 590.0,450.0 L 755.0,450.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="602.0" y="442.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 880.0,475.0 L 880.0,520.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 420.0,500.0 L 420.0,545.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="430.0" y="520.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 420.0,595.0 L 420.0,640.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 420.0,740.0 L 420.0,775.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="430.0" y="760.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 590.0,690.0 L 755.0,690.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="602.0" y="682.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 880.0,715.0 L 880.0,760.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 420.0,905.0 L 420.0,930.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="700" y="880" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Batas yang belum fix:</text>
+<text x="700" y="896" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">B3 waktu konfirmasi (30 detik)</text>
+<rect x="850" y="34" width="380" height="56" fill="#fafafa" stroke="#bbb"/>
+<rect x="860" y="44" width="16" height="12" fill="#fad7ac" stroke="#b46504"/>
+<text x="882" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">waspada / tindakan</text>
+<rect x="1000" y="44" width="16" height="12" fill="#fff2cc" stroke="#b8922a"/>
+<text x="1022" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">peringatan</text>
+<rect x="1100" y="44" width="16" height="12" fill="#b0e3e6" stroke="#0e8088"/>
+<text x="1122" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">normal / selesai</text>
+<text x="860" y="78" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">[Bn] = bagian belum fix (lihat pseudocode-baru.md bagian 5)</text></svg>
