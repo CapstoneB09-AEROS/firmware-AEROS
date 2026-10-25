@@ -131,7 +131,7 @@ Yang harus diputuskan dengan alasan:
 
 ### B3. Aturan pendukung
 
-- **Tidak ada alarm saat warm-up.** Kode saat ini 5 menit. Lamanya belum terbukti (datasheet tidak memuat). Setelah sensor mati sebentar (misalnya sambungan USB putus), warm-up harus dihitung ulang.
+- **Tidak ada alarm saat warm-up.** Kode saat ini 5 menit; rencana baru 3 menit (lihat pseudocode-baru.md 2.7; datasheet MiCS tidak memuat angka). Setelah sensor mati sebentar (misalnya sambungan USB putus), warm-up harus dihitung ulang.
 - **Kerusakan sensor tidak boleh tampil sebagai "OK".** `ADC_ERR` dan `ADC_SATURASI` ditampilkan sebagai gangguan.
 - **Sensor tidak bisa membedakan gas.** Pesan sebaiknya "kemungkinan CO atau gas lain", bukan "CO terdeteksi" (lihat batasan di batasan-sistem.md).
 

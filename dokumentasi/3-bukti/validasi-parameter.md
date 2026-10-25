@@ -50,7 +50,7 @@ Catatan verifikasi:
 
 | # | Parameter | Nilai di kode | Sumber | Alternatif | Alasan memilih | Kekurangan | Status |
 |---|---|---|---|---|---|---|---|
-| B1 | Waktu preheat | 180 detik | Manual Winsen v1.2: 1 menit | | | Log: nilai 500 menempel sampai t=175, jadi 1 menit mungkin kurang. | Sebagian |
+| B1 | Waktu preheat | 180 detik | Manual Winsen v1.2: 1 menit | | | Log: nilai 500/410 menempel sampai t=64 detik pada 4 dari 5 kali menyala (25 Okt), dan sampai t=128 pada satu kali menyala dingin pertama malam itu. Sebelumnya terlihat sampai t=175. Jadi 1 menit kadang kurang; 180 detik di kode masih menutup semua kasus. | Sebagian |
 | B2 | Response time | tidak ada | Manual Winsen: T90 < 120 detik | | | Perubahan CO2 terbaca lambat. | Terbukti |
 | B3 | Kalibrasi otomatis (ABC) | aktif (`DISABLE_ABC = false`) | Manual Winsen: tiap 24 jam, titik nol 400 ppm | | | Tidak cocok untuk ruang yang tidak pernah kena udara luar. | Terbukti |
 | B4 | Akurasi | tidak dicek | Manual Winsen: ±(50 ppm + 5% pembacaan) | | | Bandingkan dengan CO2 meter lain. | Terbukti |
@@ -89,7 +89,7 @@ Angka standar di bawah ini disebut dari ingatan dan **belum diverifikasi**. Cek 
 | D4 | Konfirmasi mati | 30 detik | | | Buzzer tetap bunyi walau ppm sudah 0. | Belum |
 | D5 | Batas bawah estimasi | < ±10 ppm dianggap 0 | Rentang sensor 1–1000 ppm dan akurasi hasil ukur | | | Belum |
 | D6 | Ambang CO2 | 1000 / 2000 / 5000 ppm | ASHRAE, aturan Kemenkes tentang kualitas udara dalam ruang | Rencana baru (1000 informasi, 2500 peringatan, 4000 tindakan): lihat [desain-peringatan.md](desain-peringatan.md) | Belum diuji. Laju naik dan laju turun CO2 di mobil belum terukur | Sebagian |
-| D7 | Warm-up sebelum alarm aktif | 300 detik | Hasil percobaan stabilisasi (E1) | | | Belum |
+| D7 | Warm-up sebelum alarm aktif | 300 detik di kode; **usulan baru 180 detik** | Log 25 Okt: Rs kamar stabil dalam 1–2 menit; MiCS tidak punya angka di datasheet | | | Sementara sampai uji nyala dingin. Alasan: [pseudocode-baru.md](../1-utama/pseudocode-baru.md) bagian 2.7 | Sebagian |
 
 ---
 

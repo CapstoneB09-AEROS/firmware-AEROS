@@ -51,3 +51,30 @@ Goyangan Rs MiCS terbaca sekitar 13% per detik, dan sekitar **95% dari goyangan 
 1. Uji cabut MH-Z19C **tidak dilakukan** (pengguna khawatir merusak rangkaian). Alternatif yang tidak menyentuh perangkat keras: ubah firmware sementara agar CO2 dibaca lebih jarang (misalnya tiap 10 detik) atau berhenti, rekam 15 menit, lalu jalankan `noise_profile.py`. Jika goyangan berubah, MH-Z19C terlibat. Jika tidak, dugaan itu lemah. Uji ini menunjukkan keterlibatan, belum membuktikan penyebab pasti.
 2. Ulangi analisis pada rangkaian akhir (PCB dan housing) dan di mobil.
 3. Putuskan filter (T9) dengan memakai temuan 6 dan 7.
+
+---
+
+## 7. Tambahan: uji mobil malam 25 Oktober (firmware lama v0)
+
+Data: `logs/device-monitor-261025-214144.log` (21:41 sampai 21:57) dan `...220026.log` (22:00 sampai 22:15). Log `...213732.log` hanya 4 menit (mulai ulang), tidak dipakai. Skrip: `analisis_mobil.py`. Hasil mentah: `hasil-uji-mobil-2026-10-25.txt`. Catatan lapangan: `2-lapangan/skenario-uji-mobil.md` bagian 5.
+
+Status: **dua sesi pendek, tanpa gas CO acuan.** Sebab perubahan Rs tidak dibuktikan.
+
+| # | Temuan | Bukti |
+|---|--------|-------|
+| 1 | Goyangan 0,5 Hz **sama di mobil** (9,4–9,9% mentah, 94–95% bergantian; kamar 13%, 93–95%) | `analisis_mobil.py` |
+| 2 | SMA genap tetap lebih halus dari EMA 0,2 di mobil: sisa noise 0,9% (SMA 4 dan 6) lawan 1,3% (EMA 0,2). Lompatan 0 ↔ 10 ppm: 1–2 kali (SMA 6) lawan 14–19 kali (EMA 0,2) | `analisis_mobil.py` bagian 2 dan 3 |
+| 3 | Rs/R0 di mobil **0,30–0,67**, bukan sekitar 1,0 seperti di kamar. Akibatnya ppm estimasi terbaca 0–19 terus-menerus, tanpa alarm (tidak ada detik ≥ 35 ppm) | R0 1730 kOhm dari kamar |
+| 4 | Rs bergeser jauh lebih besar dari noise: sampai +15% dan −17% **per menit**, rentang 570–1078 kOhm dalam 15 menit | bagian 4 |
+| 5 | **Di kamar yang diam pun** Rs naik-turun dengan periode **sekitar 7,0 menit, ±14–15%**, stabil selama 4 jam (seperempat 1–4: 14,3 / 15,3 / 14,1 / 15,0%). Di kamar **tidak ada AC**, hanya kipas yang mengarah ke tempat duduk, jadi AC bukan penjelasannya. Belum diketahui sumbernya | bagian 6, log 11:53–16:05 |
+| 6 | Setelah dihidupkan di mobil, Rs terus bergeser sekitar 9–10 menit (480 → 1078 kOhm di sesi 22:00, 620 → 997 di sesi 21:41). **Di kamar Rs sudah stabil dalam 1–2 menit setelah dihidupkan** (menit ke-0 sampai 4: 1492, 1878, 1968, 1973, 1994 kOhm). Jadi pemanasan sensor sendiri cukup singkat, dan pergeseran di mobil lebih mungkin berasal dari kondisi kabin. Warm-up 5 menit di firmware **tidak perlu diperpanjang** | log 11:40 dan 11:53 (kamar) lawan bagian 4 |
+| 7 | AC dinyalakan 21:51: Rs turun 1034 → 808 dalam 90 detik. AC dinyalakan sekitar 22:08: tidak ada penurunan setajam itu. **Belum konsisten** | per-30-detik di sekitar jam kejadian |
+| 8 | 21:56–21:57 (menuju SPBU, AC mati): Rs turun 17% dalam semenit (686 → 567). Cocok dengan uap bensin atau gas buang, tetapi tidak dibuktikan | bagian 4 |
+| 9 | MH-Z19C mengeluarkan nilai 410/500 palsu sekitar 60 detik pertama setelah menyala, lalu nilai nyata (1788 dan 2449 ppm) | log setelah boot |
+| 10 | CO2 (Civic EG6 1994, 2 orang di kursi depan, jendela tidak pernah dibuka, selalu mode sirkulasi dalam): naik 47–107 ppm/menit saat jalan pelan, **turun 90 ppm/menit** saat ngebut (22:04–22:07) dan turun 51 ppm/menit saat 20–30 km/jam (22:10–22:14). Saat AC menyala naik hanya 19–24 ppm/menit | kemiringan per fase |
+| 11 | Warm-up CO2: sensor mengeluarkan 410/500 palsu sampai t=64 detik (4 dari 5 kali nyala) atau t=128 detik (1 kali, nyala dingin pertama malam itu). Di kamar nilainya datar 996–999 ppm mulai t=64 sampai t=300. Akurasinya tanpa gas acuan tidak bisa dipastikan | log 11:40, 11:53, 21:37, 21:41, 22:00 |
+| 12 | Drift alami Rs (SMA 6) tanpa gas: perubahan lebih dari −8% dalam 30 detik terjadi pada 12% waktu (mobil sesi 1), 8% (sesi 2), 13% (kamar 4 jam). Persentil ke-5 perubahan 30 detik: −11,7 / −9,0 / −13,4%. Kriteria uji arah 8% (B6) tidak aman | hitung dari log yang sama |
+
+Kondisi uji: mobil Honda Civic EG6 1994, 2 orang di kursi depan, alat di jok sebelah paha penumpang, jendela tidak pernah dibuka, udara selalu sirkulasi dalam. Jalan ngebut = jalan bagus dan ring road sepi. Jalan pelan = jalan agak rusak atau mengikuti arus.
+
+Batasan tambahan: tidak ada jendela dibuka, jadi N dari pembukaan jendela belum bisa dihitung. Dari luruhan 22:05–22:13 hanya didapat N tampak sekitar 1,3 per jam (batas bawah: penumpang masih bernapas, CO2 luar diasumsikan 420 ppm). Alat di dekat paha penumpang, jadi pembacaan bisa terpengaruh napas dan panas tubuh. Posisi alat di PCB/housing perlu dipikirkan.

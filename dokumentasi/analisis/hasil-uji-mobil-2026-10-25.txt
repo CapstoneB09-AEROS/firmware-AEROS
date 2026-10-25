@@ -1,0 +1,94 @@
+################
+Berkas: device-monitor-261025-214144.log  | 848 detik data | 21:43:44 -> 21:57:52
+
+(1) Noise Rs mentah (setelah 16 sampel dirata-rata di firmware)
+    simpangan baku terhadap tren 61 dtk : 9.4%  (di meja, kamar diam: sekitar 13%)
+    bagian goyangan bergantian 0,5 Hz   : 95%  (di meja sekitar 95%)
+
+(2) Filter pada data mobil (sisa goyangan relatif terhadap tren, makin kecil makin halus)
+    Mentah                         sisa noise  9.43%
+    SMA 6                          sisa noise  0.93%
+    SMA 4                          sisa noise  0.89%
+    SMA 8                          sisa noise  1.00%
+    EMA 0.2 (firmware sekarang)    sisa noise  1.34%
+    EMA 0.1                        sisa noise  1.48%
+
+(3) Seberapa mulus ppm CO estimasi (R0 = 1730 kOhm bawaan kode)
+    EMA 0.2 (log)  ppm min   0.0 maks  18.9 | detik berstatus 0 ppm: 223 | lompatan 0<->~10: 14 | detik >= 35 ppm: 0
+    SMA 6          ppm min   0.0 maks  18.8 | detik berstatus 0 ppm: 224 | lompatan 0<->~10: 2 | detik >= 35 ppm: 0
+    Rs/R0 (SMA 6): min 0.301  maks 0.601  (di kamar bersih rasio sekitar 1,0; batas hitung ppm = 0,5)
+
+(4) Pergeseran Rs per menit (SMA 6, kOhm) dan CO2
+    21:43 Rs     763           CO2 1746-1772
+    21:44 Rs     771     +1%   CO2 1758-1849
+    21:45 Rs     784     +2%   CO2 1833-1896
+    21:46 Rs     779     -1%   CO2 1884-1970
+    21:47 Rs     815     +5%   CO2 1955-2039
+    21:48 Rs     892    +10%   CO2 2035-2160
+    21:49 Rs     934     +5%   CO2 2167-2258
+    21:50 Rs     997     +7%   CO2 2246-2299
+    21:51 Rs     935     -6%   CO2 2263-2292
+    21:52 Rs     808    -14%   CO2 2241-2322
+    21:53 Rs     776     -4%   CO2 2246-2289
+    21:54 Rs     755     -3%   CO2 2250-2312
+    21:55 Rs     708     -6%   CO2 2317-2435
+    21:56 Rs     686     -3%   CO2 2401-2537
+    21:57 Rs     567    -17%   CO2 2518-2619
+
+(5) CO2 MH-Z19C: selisih antar detik rata-rata mutlak 4.1 ppm, simpangan 5.5 ppm
+################
+Berkas: device-monitor-261025-220026.log  | 761 detik data | 22:02:20 -> 22:15:00
+
+(1) Noise Rs mentah (setelah 16 sampel dirata-rata di firmware)
+    simpangan baku terhadap tren 61 dtk : 9.9%  (di meja, kamar diam: sekitar 13%)
+    bagian goyangan bergantian 0,5 Hz   : 94%  (di meja sekitar 95%)
+
+(2) Filter pada data mobil (sisa goyangan relatif terhadap tren, makin kecil makin halus)
+    Mentah                         sisa noise  9.86%
+    SMA 6                          sisa noise  0.88%
+    SMA 4                          sisa noise  0.84%
+    SMA 8                          sisa noise  0.93%
+    EMA 0.2 (firmware sekarang)    sisa noise  1.33%
+    EMA 0.1                        sisa noise  1.42%
+
+(3) Seberapa mulus ppm CO estimasi (R0 = 1730 kOhm bawaan kode)
+    EMA 0.2 (log)  ppm min   0.0 maks  16.3 | detik berstatus 0 ppm: 370 | lompatan 0<->~10: 19 | detik >= 35 ppm: 0
+    SMA 6          ppm min   0.0 maks  16.4 | detik berstatus 0 ppm: 371 | lompatan 0<->~10: 1 | detik >= 35 ppm: 0
+    Rs/R0 (SMA 6): min 0.337  maks 0.665  (di kamar bersih rasio sekitar 1,0; batas hitung ppm = 0,5)
+
+(4) Pergeseran Rs per menit (SMA 6, kOhm) dan CO2
+    22:02 Rs     604           CO2 2523-2707
+    22:03 Rs     630     +4%   CO2 2703-2831
+    22:04 Rs     652     +3%   CO2 2754-2882
+    22:05 Rs     667     +2%   CO2 2599-2779
+    22:06 Rs     711     +7%   CO2 2536-2667
+    22:07 Rs     781    +10%   CO2 2488-2551
+    22:08 Rs     848     +9%   CO2 2520-2613
+    22:09 Rs     940    +11%   CO2 2516-2634
+    22:10 Rs    1078    +15%   CO2 2362-2516
+    22:11 Rs    1052     -2%   CO2 2337-2410
+    22:12 Rs     903    -14%   CO2 2269-2387
+    22:13 Rs     886     -2%   CO2 2261-2322
+    22:14 Rs     874     -1%   CO2 2262-2398
+    22:15 Rs     869     -1%   CO2 2376-2376
+
+(5) CO2 MH-Z19C: selisih antar detik rata-rata mutlak 7.3 ppm, simpangan 9.8 ppm
+################ pembanding: kamar 4 jam (11:53-16:05)
+Berkas: device-monitor-261025-115335.log  | 14536 detik data | 12:03:36 -> 16:05:55
+
+(1) Noise Rs mentah (setelah 16 sampel dirata-rata di firmware)
+    simpangan baku terhadap tren 61 dtk : 13.1%  (di meja, kamar diam: sekitar 13%)
+    bagian goyangan bergantian 0,5 Hz   : 93%  (di meja sekitar 95%)
+
+(2) Filter pada data mobil (sisa goyangan relatif terhadap tren, makin kecil makin halus)
+    Mentah                         sisa noise 13.15%
+    SMA 6                          sisa noise  1.37%
+    SMA 4                          sisa noise  1.33%
+    SMA 8                          sisa noise  1.44%
+    EMA 0.2 (firmware sekarang)    sisa noise  1.90%
+    EMA 0.1                        sisa noise  2.01%
+(6) Siklus lambat Rs: periode terkuat 7.0 menit, amplitudo +-11.7% dari Rs
+    seperempat ke-1: +-14.3%
+    seperempat ke-2: +-15.3%
+    seperempat ke-3: +-14.1%
+    seperempat ke-4: +-15.0%

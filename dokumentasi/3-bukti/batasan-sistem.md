@@ -41,7 +41,7 @@ Sumber: manual Winsen MH-Z19C v1.2 (sudah dibaca).
 | Kalibrasi berkala | Disarankan paling lama tiap 6 bulan | Tidak dilakukan dalam penelitian ini (lihat B) |
 | Kalibrasi titik nol manual | Sensor harus berada di gas stabil 400 ppm lebih dari 30 menit | Tidak tersedia pada penelitian ini |
 | Rentang | 400–5000 ppm (varian lain 400–2000 dan 400–10000) | Pembacaan "mentok" di batas rentang tidak berarti angka sebenarnya |
-| Preheat | 1 menit (manual) | Kode memakai 3 menit |
+| Preheat | 1 menit (manual) | Kode memakai 3 menit. Rencana baru tetap 3 menit (nilai palsu 410/500 teramati sampai detik 128). Alasan di pseudocode-baru.md 2.7 |
 
 ---
 

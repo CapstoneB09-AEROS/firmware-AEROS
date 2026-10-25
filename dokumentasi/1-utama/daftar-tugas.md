@@ -25,12 +25,12 @@ Tenggat expo dan demo: **30 Oktober**. PCB belum datang, jadi demo dirancang **b
 
 | Hari | Fokus | Hasil yang diharapkan |
 |---|---|---|
-| Sab 25 (malam) | Uji mobil dengan **firmware lama** (baseline) | Log dan lembar catatan jam |
-| Min 26 | Firmware baru (SMA 6, aturan CO dan CO2, mode simulasi) ditulis di folder terpisah. Putuskan ESP final dan kontrak data dengan tim. Draf naskah video dan isi banner | Firmware baru siap diunggah. ESP final ditetapkan |
-| Sen 27 | Unggah ke ESP final. Uji di meja (napas ke kotak, simulasi CO). Ukur waktu gerak jendela. Mulai integrasi MQTT | Demo inti jalan di meja |
-| Sel 28 | Uji gabungan sampai ke aplikasi. Uji mobil kedua dengan firmware baru (bila sempat). Susun diorama | Alur lengkap sensor ke aplikasi |
-| Rab 29 | Rekam video 3 menit, latihan demo. **Bekukan firmware pada siang hari**, tidak diubah lagi | Video, diorama, dan skenario demo siap, plus cadangan |
-| Kam 30 | Expo | |
+| Min 25 (malam) | Uji mobil dengan **firmware lama** (baseline) | Log dan lembar catatan jam |
+| Sen 26 | **Pagi:** uji kamar firmware lama (nyala dingin, kipas/AC). **Malam:** uji mobil 2, firmware lama, dengan uji jendela ([skenario-uji-mobil.md](../2-lapangan/skenario-uji-mobil.md)). Siang: firmware baru (SMA 6, aturan CO dan CO2, mode simulasi) ditulis di folder terpisah. Putuskan ESP final dan kontrak data dengan tim. Draf naskah video dan isi banner | Firmware baru siap diunggah. ESP final ditetapkan |
+| Sel 27 | Unggah ke ESP final. Uji di meja (napas ke kotak, simulasi CO). Ukur waktu gerak jendela. Mulai integrasi MQTT | Demo inti jalan di meja |
+| Rab 28 | Uji gabungan sampai ke aplikasi. Uji mobil ketiga dengan firmware baru (bila sempat). Susun diorama | Alur lengkap sensor ke aplikasi |
+| Kam 29 | Rekam video 3 menit, latihan demo. **Bekukan firmware pada siang hari**, tidak diubah lagi | Video, diorama, dan skenario demo siap, plus cadangan |
+| Jum 30 | Expo | |
 
 **Batas minimum demo (kalau waktu habis):** CO2 naik karena napas lalu bunyi dan jendela bergerak; kasus CO ditunjukkan lewat **mode simulasi berlabel**; data tampil di LCD, dan di aplikasi bila MQTT sempat jadi (bila tidak, tampilkan data rekaman).
 
@@ -116,8 +116,8 @@ Semua yang di bawah ini **belum terbukti**. Hapus dari daftar hanya setelah ada 
 | S1 | Udara kamar bersih (CO mendekati nol) | Perkiraan pengguna | Tidak bisa dibuktikan tanpa alat. Nyatakan sebagai asumsi | T1 |
 | S2 | `A_COEF = 3.7` dan `BETA = 0.856` benar | Dibaca dari grafik datasheet dengan mata (±10%) | Kalibrasi multi-konsentrasi (tidak ada akses). Nyatakan sebagai batasan | T12 |
 | S3 | R0 default 1730 kΩ | Nilai sementara di kode | Hasil T1 | T1 |
-| S4 | Warm-up MiCS 5 menit cukup | Pilihan di kode | Hasil T1 | T1 |
-| S5 | Warm-up CO2 3 menit cukup | Pilihan di kode. Manual: 1 menit | Log baseline CO2 | T1 |
+| S4 | Warm-up MiCS 3 menit cukup (kode sekarang 5 menit) | Rs kamar stabil dalam 1–2 menit (log 25 Okt). Belum diuji nyala dingin | Uji nyala dingin: mati > 1 jam, rekam 10 menit, bandingkan Rs menit ke-3 dan ke-10 | T1 |
+| S5 | Warm-up CO2 3 menit cukup | Manual: 1 menit. Log: nilai palsu sampai detik 64 (4 dari 5) dan 128 (1 dari 5) | Final bila tidak ada kasus > 128 detik | T1 |
 | S6 | Goyangan Rs berasal dari siklus MH-Z19C | Dugaan | Uji cabut MH-Z19C | T7 |
 | S7 | USB putus karena konektor longgar | Dugaan | Ganti kabel atau perbaiki sambungan | T6 |
 | S8 | Laju naik CO2 di mobil 150–400 ppm per menit | Ingatan uji mobil | T11 | T11 |

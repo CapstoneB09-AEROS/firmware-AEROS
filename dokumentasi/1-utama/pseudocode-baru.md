@@ -67,7 +67,7 @@ CO_AMBANG_WASPADA      = 35 ppm (estimasi)                        [B2 diputuskan
 CO_KONFIRMASI          = 30 detik                                 [B3]
 CO_AMBANG_BAHAYA       = 87 ppm (estimasi, WHO 15 menit)          [B4 diputuskan]
 CO_LAMA_UJI_ARAH       = 30 detik (sementara)                     [B5]
-CO_KRITERIA_NAIK       = sekitar 8% penurunan Rs                  [B6]
+CO_KRITERIA_NAIK       = sekitar 15% penurunan Rs (usulan; 8% terlalu kecil, lihat B6)   [B6]
 CO_BATAS_SELESAI       = 30 ppm (estimasi)                        [B7]
 CO_WAKTU_PEMULIHAN     = 60 detik                                 [B7]
 
@@ -77,8 +77,8 @@ CO2_BATAS_SELESAI      = 2400 ppm                                 [B8]
 CO2_WAKTU_PEMULIHAN    = 60 detik                                 [B8]
 CO2_BACAAN_KONFIRMASI  = 3 bacaan valid berturut-turut            [B8]
 
-PEMANASAN_CO           = 300 detik                                [B11]
-PEMANASAN_CO2          = 180 detik                                [B11]
+PEMANASAN_CO           = 180 detik   (diputuskan 25 Okt malam; alasan di 2.7)
+PEMANASAN_CO2          = 180 detik   (diputuskan 25 Okt malam; alasan di 2.7)
 
 BUKAAN_JENDELA         = sesuai mobil (waktu jalan motor)         [B9]
 JEDA_MINIMUM_JENDELA   = belum ada angka                          [B9]
@@ -115,7 +115,8 @@ SETIAP INTERVAL_SIKLUS (tepat 1 detik):
 
     2. VALIDASI
         CO2_VALID = (bacaan lengkap, checksum cocok)
-                    dan bukan nilai 410 atau 500 yang menempel setelah sensor mulai ulang   [B11]
+                    dan bukan nilai 410 atau 500 selama PEMANASAN_CO2 (itu nilai palsu bawaan sensor
+                    sampai detik ke-64 sampai 128 setelah menyala)
         CO_VALID  = tegangan masuk akal (tidak mentok, tidak di luar rentang)
 
     3. HITUNG
@@ -148,6 +149,8 @@ SETIAP INTERVAL_SIKLUS (tepat 1 detik):
 
     8. KELUARAN
         LCD: nilai dan status (teks pesan)                          [B18]
+        selama PEMANASAN_CO: tampilkan "PEMANASAN", bukan angka ppm CO
+            (data 25 Okt: 20 detik pertama terbaca 3000-4120 ppm palsu karena Rs masih 59 kOhm)
         serial: baris CSV
         kirim data tiap 5 detik (rata-rata dan maksimum), dan segera saat status berubah   [B14]
         data simulasi diberi label                                  [B17]
@@ -233,6 +236,8 @@ ATURAN CO2   (dijalankan hanya bila faseCO = TIDAK_AKTIF):
             pemulihanCO2 = 0
 ```
 
+Catatan untuk aturan CO2: di mobil yang tidak kedap, CO2 bisa **turun sendiri tanpa jendela dibuka** saat mobil melaju (turun 51 sampai 90 ppm/menit di Civic EG6, jendela tertutup, sirkulasi dalam). Karena itu pemulihan CO2 hanya dinilai dari bacaan, tidak dari anggapan "jendela terbuka".
+
 ### 2.6 Mode simulasi (isi belum fix) [B17]
 
 ```
@@ -242,6 +247,20 @@ KALAU MODE_SIMULASI aktif:
         skenario B (sumber luar) : CO naik, lalu tetap NAIK setelah jendela dibuka
     beri label "SIMULASI" di layar, serial, dan pesan data
 ```
+
+### 2.7 Pemanasan: kenapa 3 menit untuk masing-masing sensor
+
+| | CO2 (MH-Z19C) | CO (MiCS-5524) |
+|---|---|---|
+| Angka | 180 detik | 180 detik (**sementara**) |
+| Datasheet | Manual Winsen v1.2: preheat 1 menit | **Tidak ada** angka pemanasan, respons, maupun pemulihan |
+| Data kita | Nilai palsu 410/500 berhenti pada detik ke-64 (4 dari 5 kali menyala) dan detik ke-128 (1 kali, nyala dingin pertama malam itu). Di kamar nilainya datar 996–999 ppm dari detik ke-64 sampai 300 | Di kamar Rs stabil dalam 1–2 menit (menit ke-0 sampai 4: 1492, 1878, 1968, 1973, 1994 kOhm). Di mobil Rs terus bergeser, tetapi mengikuti kondisi kabin, bukan pemanasan |
+| Alasan angka | Kasus terburuk teramati 128 detik. 180 detik masih memberi jarak aman 52 detik. Dipersingkat tidak sebanding: hemat 1 menit, risiko kasus dingin tidak tertutup | Data mendukung 2 menit stabil. 3 menit memberi jarak 1 menit. Sebelumnya 5 menit (pilihan di kode, tidak ada dasar) |
+| Dasar angka | Datasheet + log (5 kali menyala) | Log (2 kali menyala di kamar + 2 di mobil). **Tanpa datasheet** |
+| Sampai kapan sementara | Final | Sampai ada uji nyala dingin: mati lebih dari 1 jam, rekam 10 menit di kamar, bandingkan Rs menit ke-3 dan ke-10. Bila Rs menit ke-3 masih jauh dari menit ke-10, naikkan |
+| Yang tidak diklaim | Akurasi CO2 di menit awal tidak terbukti (tanpa gas acuan) | Stabil bukan berarti benar. Baseline di mobil masih bergeser dan R0 dari kamar tidak cocok (lihat B1) |
+
+Perlu diingat: pemanasan dihitung dari saat ESP32 menyala. Pada uji mobil malam itu alat menyala tiga kali (21:37, 21:41, 22:00) dan setiap kali pemanasan mulai dari nol, sehingga alarm CO mati selama 3 menit pertama tiap kali menyala.
 
 ---
 
@@ -277,17 +296,17 @@ Berkas SVG (bisa dibuka di draw.io atau Inkscape untuk diedit) dan skrip pembuat
 
 | Kode | Yang belum fix | Cara menentukan | Terkait |
 |---|---|---|---|
-| B1 | Strategi R0 dan pergeseran baseline (kalibrasi ulang tiap menyala, atau baseline adaptif) | Diskusi, lalu uji pada data | validasi-parameter.md A3, A4 |
+| B1 | Strategi R0 dan pergeseran baseline (kalibrasi ulang tiap menyala, atau baseline adaptif). **Data mobil 25 Okt:** dengan R0 kamar (1730 kOhm) rasio Rs/R0 di mobil 0,30–0,67, jadi ppm terbaca 0–19 terus-menerus tanpa CO nyata. Ambang 35 ppm setara rasio 0,176, tinggal 41% di bawah titik terendah teramati (0,301) | Diskusi, lalu uji pada data | validasi-parameter.md A3, A4 |
 | B2 | ~~Ambang CO pakai angka ppm mutlak atau perubahan relatif~~ **Diputuskan: angka ppm estimasi** (tanpa konsep tambahan). Konsekuensi: angka ppm bergantung pada R0, jadi wajib ditulis sebagai estimasi dan R0 diulang (B1) | Keputusan pengguna 25 Okt malam | rencana-desain.md 3.3 |
 | B3 | Waktu konfirmasi CO (30 detik) | Tabel sensitivitas pada log | desain-peringatan.md F |
 | B4 | Ambang bahaya CO: 87 atau 200 ppm | Keputusan tim, dasar WHO atau NIOSH | rencana-desain.md FR-08 |
 | B5 | Lama uji arah (30 sampai 60 detik) | Batas bawah respons filter, batas atas tambahan paparan | desain-peringatan.md F2 |
-| B6 | Kriteria "CO naik lagi" (sekitar 8%) dan perlakuan hasil tidak jelas | Dari noise terukur dan simulasi | desain-peringatan.md E4 |
+| B6 | Kriteria "CO naik lagi" dan perlakuan hasil tidak jelas. **8% tidak aman:** tanpa gas, Rs berubah lebih dari −8% dalam 30 detik pada 8–13% waktu (mobil dan kamar). Persentil ke-5 perubahan 30 detik: −11,7 (mobil sesi 1), −9,0 (mobil sesi 2), −13,4 (kamar). Usulan sementara 15%. Lonjakan CO nyata jauh lebih besar (35 → 87 ppm = Rs turun sekitar 54%) | Tabel sensitivitas; ulangi dengan log uji korek | desain-peringatan.md E4 |
 | B7 | Batas selesai CO (30 ppm) dan waktu pemulihan (60 detik) | Tabel sensitivitas | desain-peringatan.md F5 |
 | B8 | Konfirmasi CO2 (3 bacaan), batas selesai 2400 dan 60 detik | Tabel sensitivitas, uji mobil | desain-peringatan.md H |
 | B9 | Besar bukaan jendela per mobil, jeda minimum, anti-jepit | Ukur laju pertukaran udara (N) dan waktu motor tiap mobil | skenario-uji-mobil.md |
 | B10 | Perlakuan bila satu sensor gagal (apakah menahan aksi sensor lain), dan perilaku bila ADS1115 tidak ada | Keputusan tim | rencana-desain.md FR-09 |
-| B11 | Cara mendeteksi sensor mulai ulang dan panjang pemanasan | Analisis log baseline dan uji | rencana-desain.md FR-10 |
+| B11 | ~~Panjang pemanasan~~ **Diputuskan 3 menit untuk keduanya** (2.7). Sisa: cara mendeteksi sensor mati sebentar tanpa ESP32 mulai ulang | Analisis log baseline dan uji nyala dingin | rencana-desain.md FR-10 |
 | B12 | Panjang filter final (4, 6, atau 8) | Tabel sensitivitas dan uji ulang di PCB dan mobil | bagian 1 |
 | B13 | Penanganan sampel tidak valid di dalam buffer filter | Keputusan teknis (usulan: kosongkan buffer bila lebih dari 3 sampel berturut-turut tidak valid) | |
 | B14 | Format pesan MQTT, laju kirim, retensi. **Draf perkiraan sudah ada** di [rancangan-data.md](rancangan-data.md) | Rapat dengan tim backend dan software | desain-data-dfd.md |
@@ -304,11 +323,37 @@ Dari 18 bagian, sebagian besar tidak perlu diputuskan sekarang. Pengelompokannya
 
 | Kelompok | Bagian | Keterangan |
 |---|---|---|
-| **Diputuskan** | B2, B4, B10 | B2: ambang CO memakai angka ppm estimasi. B4: ambang bahaya CO = 87 ppm (WHO 15 menit), aturan jendela tetap sama dengan CO ≥ 35 ppm (uji arah), bunyi tingkat bahaya lebih keras. B10: sensor yang sehat tetap menjalankan aturannya sendiri bila sensor lain gagal |
-| **Pakai usulan sementara**, diuji nanti dengan tabel sensitivitas atau uji | B3, B6, B7, B8, B13 | Tidak perlu keputusan sekarang. Nilainya sudah ada di pseudocode |
-| **Menunggu hasil uji atau data** | B1, B5 (30 detik sementara; uji korek bisa membantu), B11, B12 | Ditentukan setelah ada data |
+| **Diputuskan** | B2, B4, B10, B11 (panjang pemanasan) | B11: pemanasan 3 menit untuk CO dan CO2 (bagian 2.7; CO sementara sampai uji nyala dingin). B2: ambang CO memakai angka ppm estimasi. B4: ambang bahaya CO = 87 ppm (WHO 15 menit), aturan jendela tetap sama dengan CO ≥ 35 ppm (uji arah), bunyi tingkat bahaya lebih keras. B10: sensor yang sehat tetap menjalankan aturannya sendiri bila sensor lain gagal |
+| **Pakai usulan sementara**, diuji nanti dengan tabel sensitivitas atau uji | B3, B6, B7, B8, B13 | Tidak perlu keputusan sekarang. Nilainya sudah ada di pseudocode. **B6 diubah dari 8% menjadi 15%** karena drift alami Rs sering melewati 8% |
+| **Menunggu hasil uji atau data** | B1 (data mobil menunjukkan R0 kamar tidak cocok), B5 (30 detik sementara; uji korek bisa membantu), B12 | Ditentukan setelah ada data |
 | **Menunggu pengukuran sensor dan mobil** | B9 | Setelah sensor selesai |
 | **Menunggu tim** | B14, B15, B16, B17, B18 | Dibahas di pertemuan (agenda-pertemuan-tim.md) |
+
+### Rekap: yang sudah pasti, yang ditetapkan, yang belum bisa dipastikan
+
+**Pasti (ada datasheet atau data ukur):**
+- Goyangan Rs 0,5 Hz ada di kamar dan di mobil (13% dan 9–10% mentah, 93–95% berupa pola bergantian).
+- Rata-rata jumlah genap menghapusnya. Sisa noise di mobil: SMA 4 dan SMA 6 sekitar 0,9%, EMA 0,2 (kode sekarang) 1,3%. Lompatan 0 ↔ 10 ppm: 1–2 kali (SMA 6) lawan 14–19 kali (EMA 0,2).
+- Sampling harus tepat 1 detik (syarat filter genap).
+- MH-Z19C: nilai palsu 410/500 sampai detik 64 (4 dari 5 kali) dan 128 (1 kali). Datasheet: preheat 1 menit.
+- MiCS: datasheet tidak memuat pemanasan, respons, dan pemulihan. Di kamar Rs stabil dalam 1–2 menit.
+- Rs/R0 di mobil 0,30–0,67 dengan R0 kamar. Tidak ada detik ≥ 35 ppm di dua sesi mobil (sekitar 30 menit), jadi tidak ada alarm palsu.
+- Tanpa gas, Rs berubah lebih dari −8% dalam 30 detik pada 8–13% waktu.
+- CO2 di Civic EG6 bisa turun sendiri saat melaju tanpa jendela dibuka.
+
+**Ditetapkan (keputusan, bukan fakta):**
+- Pemanasan 3 menit untuk CO dan CO2 (CO sementara).
+- SMA 6 (cadangan SMA 4 atau 8), CO2 tidak difilter.
+- Ambang CO berupa ppm estimasi 35 (waspada) dan 87 (bahaya); CO2 2500 (peringatan) dan 4000 (tindakan).
+- Sensor yang sehat tetap bekerja bila sensor lain gagal.
+
+**Belum bisa dipastikan (kurang bukti):**
+- Nilai ppm CO yang sebenarnya (tidak ada gas acuan; hanya estimasi dari grafik datasheet, ±10%).
+- Penyebab Rs naik-turun sekitar 7 menit di kamar (bukan AC) dan penyebab pergeseran Rs di mobil.
+- Sumber pola bergantian 2 detik (dugaan catu pemanas, belum terbukti) dan apakah ia hilang di PCB.
+- Strategi R0 untuk mobil (B1), lama uji arah (B5), kriteria 15% (B6, usulan), waktu konfirmasi dan pemulihan (B3, B7, B8).
+- Laju pertukaran udara (N) tiap mobil: belum ada uji dengan jendela dibuka.
+- Apakah pemanasan CO 3 menit cukup pada nyala dingin.
 
 Aturan sementara untuk yang belum jelas:
 - **B6**: bila hasil uji arah tidak jelas, anggap sumber luar dan tutup jendela (lebih aman).
