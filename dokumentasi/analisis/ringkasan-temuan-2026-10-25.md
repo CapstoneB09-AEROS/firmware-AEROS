@@ -56,7 +56,7 @@ Goyangan Rs MiCS terbaca sekitar 13% per detik, dan sekitar **95% dari goyangan 
 
 ## 7. Tambahan: uji mobil malam 25 Oktober (firmware lama v0)
 
-Data: `logs/device-monitor-261025-214144.log` (21:41 sampai 21:57) dan `...220026.log` (22:00 sampai 22:15). Log `...213732.log` hanya 4 menit (mulai ulang), tidak dipakai. Skrip: `analisis_mobil.py`. Hasil mentah: `hasil-uji-mobil-2026-10-25.txt`. Catatan lapangan: `2-lapangan/skenario-uji-mobil.md` bagian 5.
+Data: `logs/device-monitor-261025-214144.log` (21:41 sampai 21:57) dan `...220026.log` (22:00 sampai 22:15). Log `...213732.log` hanya 4 menit (mulai ulang), tidak dipakai. Skrip: `analisis_mobil.py`. Hasil mentah: `hasil-uji-mobil-2026-10-25.txt`. Catatan lapangan: `2-lapangan/skenario-uji-mobil.md` bagian 1.
 
 Status: **dua sesi pendek, tanpa gas CO acuan.** Sebab perubahan Rs tidak dibuktikan.
 
@@ -78,3 +78,24 @@ Status: **dua sesi pendek, tanpa gas CO acuan.** Sebab perubahan Rs tidak dibukt
 Kondisi uji: mobil Honda Civic EG6 1994, 2 orang di kursi depan, alat di jok sebelah paha penumpang, jendela tidak pernah dibuka, udara selalu sirkulasi dalam. Jalan ngebut = jalan bagus dan ring road sepi. Jalan pelan = jalan agak rusak atau mengikuti arus.
 
 Batasan tambahan: tidak ada jendela dibuka, jadi N dari pembukaan jendela belum bisa dihitung. Dari luruhan 22:05–22:13 hanya didapat N tampak sekitar 1,3 per jam (batas bawah: penumpang masih bernapas, CO2 luar diasumsikan 420 ppm). Alat di dekat paha penumpang, jadi pembacaan bisa terpengaruh napas dan panas tubuh. Posisi alat di PCB/housing perlu dipikirkan.
+
+---
+
+## 8. Tambahan: uji kamar pagi 26 Oktober (firmware lama)
+
+Data: `logs/device-monitor-261026-090343.log` (09:03–10:47, 6226 detik, tanpa mulai ulang). Kipas menyala sampai sekitar 09:45 (pintu terbuka, pemilik di luar), kipas mati sampai sekitar 10:15 (pintu terbuka), lalu AC menyala dan pintu ditutup (pemilik dekat alat). Skrip: `analisis_fase.py`. Hasil mentah: `hasil-uji-kamar-pagi-2026-10-26.txt`. Laporan: `2-lapangan/skenario-uji-mobil.md` bagian 2.
+
+| # | Temuan | Bukti |
+|---|--------|-------|
+| 1 | SMA 6 lebih halus dari EMA 0,2 di ketiga fase: sisa noise 1,25 / 1,82 / 0,97% lawan 1,81 / 2,34 / 1,83% | `analisis_fase.py` |
+| 2 | Goyangan mentah 13,0 / 15,2 / 15,6%; bagian bergantian 93 / 83 / 96% | sama |
+| 3 | **Siklus Rs 7,01 menit muncul lagi**, sama dengan log 4 jam kemarin (7,01 menit). Amplitudo ±13,6% (kipas), ±15,4% (kipas mati), ±6,5% (AC + pintu tutup) | sama |
+| 4 | Kipas bukan penyebab siklus; pintu terbuka dan orang di kamar (jauh dari alat) juga bukan | P2 |
+| 5 | Setelah AC menyala (dan pintu ditutup, orang dekat alat), siklus mengecil dari ±17% menjadi ±4–7% dalam sekitar 10 menit, sementara goyangan 0,5 Hz tidak mengecil | jendela 14 menit |
+| 6 | Siklus berkaitan dengan goyangan 0,5 Hz: periode sama (420 detik = jarak balik tanda goyangan bergantian), korelasi 0,90 dan 0,92. Tetapi amplitudo siklus turun saat AC menyala sedangkan goyangan tidak. **Sumbernya belum diketahui** | `analisis_fase.py` |
+| 7 | Nyala dingin: Rs 60 detik −30%, 120 detik −12%, 180 detik −6% dari rata-rata menit 7–30. Pemanasan 3 menit cukup untuk satu kali nyala dingin | per 30 detik umur alat |
+| 8 | CO2 nyata muncul detik ke-64 (1021 ppm), lalu 953 → 804 dalam 10 menit (pintu terbuka) | log |
+| 9 | Pergeseran Rs 30 detik tanpa gas: turun > 25% tidak pernah dalam sekitar 28.000 detik (maks −21,4%); > 15% terjadi 1,6–2,6% waktu | semua log kamar dan mobil |
+
+Batasan: satu kali nyala dingin; AC, pintu, dan orang dekat berubah bersamaan di P3.
+

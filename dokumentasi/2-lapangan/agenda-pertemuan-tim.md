@@ -8,7 +8,7 @@ Cara memakai: bawa laptop dengan folder `dokumentasi/` dan `logs/`. Setiap butir
 
 ## 0. Keputusan bersama (semua orang)
 
-- [ ] **[P1]** Satu ESP32 final untuk demo. ESP yang dipakai firmware punya modul Wi-Fi rusak, ESP tim software punya Wi-Fi. Pilih satu, lalu pindahkan kode sensor dan MQTT ke sana.
+- [ ] **[P1]** Satu ESP32 final untuk demo. ESP yang dipakai firmware punya modul Wi-Fi rusak, ESP tim software punya Wi-Fi. Pilih satu, lalu pindahkan kode sensor dan MQTT ke sana. Setelah ganti, ulangi uji kamar dengan Wi-Fi menyala (T22): ukur 5V di pin MiCS, perbarui `VCC` di kode, bandingkan noise dan siklus Rs dengan ESP lama.
 - [ ] **[P1]** Cara menguji deteksi CO tanpa sumber CO (T16). C-251 menjanjikan "deteksi CO 4 dari 5 uji dengan sumber uji terkonsentrasi". Pilihan: ubah spesifikasi, uji dengan gas pereduksi pengganti (butana dari korek, **bukan CO**), mode simulasi berlabel, atau cari akses lab. Jangan membuat CO sendiri.
 - [ ] Pertentangan isi C-251 (jumlah status, ambang CO2 di Bab 11, bukaan servo, bunyi buzzer, dan lain-lain; **cek di PDF**) dicatat sebagai bahan **C-501**. **C-251 tidak direvisi.** Rinciannya ada di [perbandingan-c251.md](../3-bukti/perbandingan-c251.md).
 - [ ] Aturan alarm yang sudah disepakati (desain-peringatan.md E1): CO2 ≥ 2500 bunyi singkat dan peringatan di aplikasi, CO2 ≥ 4000 bunyi dan buka jendela, CO ≥ 35 bunyi dan buka jendela sebagai uji arah (CO naik lagi berarti sumber luar, jendela ditutup sampai CO turun), CO menang atas CO2, saran AC ditunda. **Konfirmasi ulang dengan tim dan dosen.**
@@ -34,6 +34,7 @@ Cara memakai: bawa laptop dengan folder `dokumentasi/` dan `logs/`. Setiap butir
 
 ### 1.3 Konteks temuan untuk dijelaskan
 - [ ] Hampir 95% goyangan Rs MiCS adalah pola bergantian tiap detik, proporsional terhadap sinyal, periode sumber sekitar 1,9954 atau 2,0047 detik, stabil 4 jam. Dugaan: catu pemanas ikut naik-turun karena beban berdenyut. **Belum terbukti.** Ringkasan: [analisis/ringkasan-temuan-2026-10-25.md](../analisis/ringkasan-temuan-2026-10-25.md).
+- [ ] Rs naik-turun teratur dengan periode **7,01 menit (±13–17%)** pada udara bersih, muncul di dua hari berbeda, tidak hilang saat kipas dimatikan, mengecil saat AC menyala. Tidak dijelaskan di datasheet. Tanyakan apakah catu 5V atau ground ikut berayun dengan periode itu (ukur 15 menit). Rincian: [skenario-uji-mobil.md](skenario-uji-mobil.md) bagian 2.
 - [ ] Rs bergeser lebih dari 50% dalam 4 jam di kamar (2045 ke sekitar 900–1000 kΩ). Penyebab belum diketahui. Tanyakan apakah ada sumber panas atau perubahan suhu pada modul.
 
 ### 1.4 Aktuator dan jendela

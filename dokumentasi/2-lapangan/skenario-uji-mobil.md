@@ -1,17 +1,16 @@
-# Uji Lapangan: Laporan Uji 1 dan Skenario Uji 2
+# Uji Lapangan: Laporan dan Skenario
 
-Terkait: [desain-peringatan.md](../3-bukti/desain-peringatan.md) (A6, B4, E, F), [daftar-tugas.md](../1-utama/daftar-tugas.md) (T11), analisis data: [ringkasan-temuan-2026-10-25.md](../analisis/ringkasan-temuan-2026-10-25.md) bagian 7.
+Terkait: [desain-peringatan.md](../3-bukti/desain-peringatan.md) (A6, B4, E, F), [daftar-tugas.md](../1-utama/daftar-tugas.md) (T11), analisis data: [ringkasan-temuan-2026-10-25.md](../analisis/ringkasan-temuan-2026-10-25.md) bagian 7 dan 8.
 
 | Bagian | Isi |
 |---|---|
 | 1 | **Laporan uji 1**: mobil, 25 Oktober 2026 malam, firmware lama |
-| 2 | **Skenario uji 2**: 26 Oktober, pagi di kamar dan malam di mobil |
-| 3 | Firmware besok: lama atau baru? |
-| 4 | Keselamatan, persiapan, setelah uji, batasan |
-| 5 | Lembar catatan kosong untuk uji 2 |
-| 6 | Perbandingan firmware lama dan baru (rencana) |
-
----
+| 2 | **Laporan uji 2**: kamar, 26 Oktober 2026 pagi, firmware lama |
+| 3 | **Skenario uji 3**: mobil, 26 Oktober 2026 malam |
+| 4 | Firmware: lama atau baru? |
+| 5 | Keselamatan, persiapan, setelah uji, batasan |
+| 6 | Lembar catatan kosong untuk uji 3 |
+| 7 | Perbandingan firmware lama dan baru (rencana) |
 
 ## 1. Laporan uji 1: mobil, 25 Oktober 2026 malam
 
@@ -45,8 +44,6 @@ Terkait: [desain-peringatan.md](../3-bukti/desain-peringatan.md) (A6, B4, E, F),
 | 22:08 (beda beberapa detik) | AC menyala | | |
 | 22:14 | Mobil pelan | 20–30 km/jam | |
 | 22:15 | Rekaman berakhir | | |
-
-Penyebab mulai ulang jam 21:41 tidak tercatat. Isi bila ingat: ____________
 
 ### 1.3 Berkas log
 
@@ -86,45 +83,97 @@ Arti singkat: filter baru terbukti lebih baik di mobil; CO di mobil belum bisa d
 
 ---
 
-## 2. Skenario uji 2: 26 Oktober 2026
+---
 
-Tujuan satu kalimat: menjawab dua hal yang belum diketahui, yaitu **dari mana pergeseran Rs berasal** dan **berapa laju pertukaran udara (N) Civic**.
+## 2. Laporan uji 2: kamar, 26 Oktober 2026 pagi
 
-### 2.1 Pagi: uji kamar (firmware lama), sekitar 75 menit
+Tujuan: menjawab empat hal sebelum uji mobil malam. (1) Apakah Rs menit ke-3 sudah dekat nilai stabil? (2) Apakah siklus Rs sekitar 7 menit muncul lagi? (3) Apakah siklus itu hilang bila kipas dimatikan? (4) Apakah siklus atau Rs berubah bila AC menyala?
 
-**Pertanyaan yang dijawab**
+### 2.1 Kondisi dan garis waktu (dari catatan, jam 24 jam)
 
-| # | Pertanyaan | Dari mana jawabannya |
+| Fase | Jam | Kipas | AC | Pintu | Orang |
+|---|---|---|---|---|---|
+| P0 | 09:03:46 | Nyala | Mati | Terbuka | Alat dinyalakan (colok USB). Lima menit pertama dibuang |
+| P1 | 09:08–09:45 | Nyala, mengarah ke alat | Mati | Terbuka | Pemilik tidak di kamar |
+| P2 | 09:46–10:15 | **Mati** | Mati | Terbuka | Pemilik di kamar selama 15 menit terakhir, di sisi seberang alat |
+| P3 | 10:16–10:47 | Mati | **Nyala** | **Tertutup** | Pemilik di kamar, di atas depan meja dan alat (dekat) |
+
+Firmware: lama (v0, EMA 0,2), alat tidak berpindah dan tidak dicabut.
+
+### 2.2 Berkas log
+
+| Berkas di `logs/` | Waktu | Catatan |
 |---|---|---|
-| 1 | Setelah alat dinyalakan dingin, Rs menit ke-3 sudah dekat menit ke-10? (menentukan pemanasan CO 3 menit, S4) | Rs per menit pada P1 |
-| 2 | Siklus Rs sekitar 7 menit muncul lagi pada kondisi sama seperti log 4 jam? | P1, minimal 4 siklus (30 menit) |
-| 3 | Siklus itu hilang bila kipas dimatikan? | P2 |
-| 4 | Siklus atau Rs bergeser bila AC kamar menyala? | P3 |
+| `device-monitor-261026-090343.log` | 09:03:46–10:47:33 (6226 detik) | Tanpa mulai ulang, tanpa celah |
 
-**Persiapan**
-- Alat **mati lebih dari 1 jam** sebelum dinyalakan (misalnya sejak semalam).
-- Letakkan alat di tempat yang sama seperti rekaman 4 jam (11:53–16:05), dengan kipas mengarah seperti waktu itu.
-- Pintu dan jendela kamar tertutup. Jangan bernapas dekat alat. Orang boleh di kamar, tetapi duduk diam dan **catat**.
-- Jangan cabut MH-Z19C.
-- Perekam: `~/.platformio/penv/bin/pio device monitor -f time -f log2file` (nama berkas akan dicatat dalam lembar).
+Analisis: `dokumentasi/analisis/analisis_fase.py`. Hasil mentah: [hasil-uji-kamar-pagi-2026-10-26.txt](../analisis/hasil-uji-kamar-pagi-2026-10-26.txt).
 
-**Urutan** (jam dicatat tepat, satu variabel berubah tiap fase)
+### 2.3 Hasil ringkas
 
-| Fase | Kegiatan | Durasi | Catat |
-|---|---|---|---|
-| P0 | Nyalakan alat (colok USB). Mulai rekam. Kipas menyala seperti log 4 jam | 5 menit pertama dibuang | Jam colok |
-| P1 | Tidak diapa-apakan. Kipas menyala, AC mati | 30 menit | Jam mulai, apakah kipas berayun |
-| P2 | **Kipas dimatikan**. AC tetap mati | 20 menit | Jam kipas mati |
-| P3 | **AC menyala** (kipas tetap mati). Catat suhu setelan dan arah angin | 20 menit | Jam AC nyala, suhu setelan, arah angin |
+| Ukuran | P1 (kipas) | P2 (kipas mati) | P3 (AC, pintu tutup) | Status |
+|---|---|---|---|---|
+| Rs rata-rata (kOhm) | 1806 | 1561 | 1545 | Terukur |
+| Goyangan Rs mentah | 13,0% | 15,2% | 15,6% | Terukur (uji mobil: 9–10%) |
+| Bagian goyangan bergantian 0,5 Hz | 93% | 83% | 96% | Terukur |
+| Sisa noise, **SMA 6** | **1,25%** | **1,82%** | **0,97%** | Terukur |
+| Sisa noise, EMA 0,2 (kode lama) | 1,81% | 2,34% | 1,83% | Terukur |
+| Siklus 7 menit (amplitudo pada periode tetap) | ±13,6% | ±15,4% | ±6,5% | Terukur |
+| CO2 (ppm, setelah 64 detik) | 763–846 | 754–938 | 756–931 | Terukur |
 
-Total sekitar 75 menit. Bila tidak ada waktu: P1 (30 menit) dan P2 (20 menit) sudah menjawab pertanyaan 1–3.
+Pembacaan utama:
+- **Filter:** SMA 6 lebih halus dari EMA 0,2 di ketiga fase (31%, 22%, dan 47% lebih kecil). Pola bergantian 0,5 Hz sama seperti di kamar 4 jam dan di mobil.
+- **Siklus Rs sekitar 7 menit muncul lagi.** Periodenya **7,01 menit**, sama dengan log 4 jam kemarin (7,01 menit), dua hari berbeda.
+- **Siklus tidak hilang bila kipas dimatikan** (P2: ±15,4%), dan tidak hilang oleh pintu terbuka atau orang di kamar (jauh dari alat).
+- **Siklus mengecil bila AC menyala dan pintu ditutup.** Dilihat per jendela 14 menit, amplitudonya ±12,6% sampai ±17,0% dari 09:08 sampai sekitar 10:25, lalu turun menjadi ±4–7% setelah sekitar 10:18. Pada saat yang sama goyangan 0,5 Hz tidak mengecil (goyangan mentah 13,0% di P1 menjadi 15,6% di P3).
+- **Tiga hal berubah serentak pada 10:15** (AC menyala, pintu ditutup, pemilik duduk dekat alat), jadi belum diketahui yang mana penyebab mengecilnya siklus.
 
-**Cara membaca hasil**
-- Pertanyaan 1: bandingkan Rs rata-rata menit ke-3 dengan menit ke-10 pada P1 (selisih dalam persen).
-- Pertanyaan 2–4: jalankan `analisis_mobil.py` pada tiap fase; lihat bagian siklus lambat (6) per fase.
-- Bila siklus hilang saat kipas mati: penyebabnya kipas (aliran udara). Bila tetap ada: sensor atau rangkaian, bahas dengan teman hardware.
+Pemanasan nyala dingin (alat mati sejak semalam):
 
-### 2.2 Malam: uji mobil (firmware lama)
+| Umur alat | 30 dtk | 60 dtk | 120 dtk | 180 dtk | 300 dtk | 600 dtk |
+|---|---|---|---|---|---|---|
+| Rs (kOhm) | 892 | 1300 | 1626 | 1730 | 1852 | 1759 |
+
+Rata-rata Rs menit ke-7 sampai 30 adalah 1849 kOhm. Pada 180 detik Rs berada 6% di bawah rata-rata itu, masih di dalam rentang siklus 7 menit (±15%). Pada 60 detik −30%, pada 120 detik −12%.
+
+CO2: nilai nyata pertama muncul pada detik ke-64 (1021 ppm), lalu turun pelan 953 → 804 ppm dalam 10 menit. Di kamar dengan pintu terbuka itu bisa penurunan nyata. Selisih antara 180 detik (857) dan 600 detik (804) adalah 53 ppm, di dalam akurasi sensor (±50 ppm + 5%).
+
+Pergeseran Rs dalam 30 detik (tanpa gas): turun lebih dari 8% terjadi pada 13% waktu; lebih dari 15% pada 2,6% waktu (7,1% pada P2); lebih dari 25% tidak pernah terjadi dalam sekitar 28.000 detik data kamar dan mobil (maksimum −21,4%).
+
+### 2.4 Jawaban dari empat pertanyaan
+
+| # | Pertanyaan | Jawaban |
+|---|---|---|
+| 1 | Pemanasan 3 menit cukup? | **Ya untuk satu kali nyala dingin.** Rs menit ke-3 sudah di dalam rentang siklus. Pemanasan CO 3 menit tetap, dengan catatan satu pengukuran |
+| 2 | Siklus 7 menit muncul lagi? | **Ya**, periode 7,01 menit, ±13–17% |
+| 3 | Hilang bila kipas dimatikan? | **Tidak.** Kipas bukan penyebabnya |
+| 4 | Berubah bila AC menyala? | **Ya, mengecil menjadi ±4–7%.** Penyebab (AC, pintu, atau orang dekat) belum terpisah |
+
+### 2.5 Tentang sumber siklus: dugaan, belum bukti
+
+Petunjuk bahwa siklus dan goyangan 0,5 Hz berasal dari sumber yang sama:
+- Periode 7,01 menit, sama pada dua hari.
+- Jarak antara dua pembalikan tanda goyangan bergantian: median 420 detik, sama dengan periode siklus (7,00 menit).
+- Korelasi 0,90 (pagi) dan 0,92 (4 jam) antara siklus dan kuadrat amplitudo goyangan bergantian.
+
+Petunjuk yang melawan: setelah AC menyala siklus mengecil menjadi sepertiga, sementara goyangan bergantian tidak. Jadi sumbernya mungkin sama, tetapi besarnya ikut dipengaruhi kondisi udara.
+
+Uji yang membedakan (belum dilakukan): mengganti interval siklus firmware dari 1,0 detik menjadi misalnya 1,25 detik pada firmware baru. Bila siklus 7 menit itu muncul akibat sampling terhadap sumber 2 detik, periodenya akan **berubah**; bila berasal dari lingkungan, periodenya tetap 7 menit.
+
+### 2.6 Yang berlaku untuk firmware baru
+- SMA 6 tetap dipilih. Ia tidak menghilangkan siklus 7 menit (itu gerakan lambat), hanya goyangan per detik.
+- Kriteria uji arah (B6) dinaikkan ke **25%**: 8% dan 15% terlampaui oleh gerakan alami Rs tanpa gas.
+- Pemanasan 3 menit untuk keduanya tidak berubah.
+
+### 2.7 Yang kurang dari uji 2
+- Hanya satu kali nyala dingin.
+- Tiga hal berubah bersamaan di P3 (AC, pintu, orang dekat), jadi pengaruh masing-masing belum terpisah.
+- Tidak ada pembanding suhu dan kelembapan (tidak ada sensornya).
+
+---
+
+## 3. Skenario uji 3: mobil, 26 Oktober 2026 malam (firmware lama)
+
+Uji kamar pagi (bagian 2) sudah selesai. Tujuan uji malam: **laju pertukaran udara (N) Civic** dan perilaku Rs di mobil tanpa alat mulai ulang.
 
 **Pertanyaan yang dijawab**
 
@@ -134,6 +183,8 @@ Total sekitar 75 menit. Bila tidak ada waktu: P1 (30 menit) dan P2 (20 menit) su
 | 2 | Berapa laju naik CO2 saat mobil **diam** dengan 2 orang (tanpa pengaruh kecepatan)? |
 | 3 | Berapa CO2 udara luar? |
 | 4 | Apakah Rs di mobil stabil bila alat tidak mulai ulang? |
+
+**Bila memakai mobil lain:** boleh dan aman, dengan aturan keselamatan yang sama. Tulis jenis dan tahun mobil di lembar. Angka N hanya berlaku untuk mobil itu (tiap mobil punya kebocoran dan ruang berbeda), jadi tidak dibandingkan dengan Civic. Ia justru berguna sebagai data mobil kedua untuk perhitungan bukaan jendela. Rs dan CO tidak dibandingkan antar mobil karena kabin dan bahannya berbeda.
 
 **Aturan penting:** alat **tidak boleh mulai ulang**. Jangan melewati SPBU (alat harus mati di area pompa dan itu memulai ulang pemanasan). Gunakan rute lain: ring road dan jalan biasa.
 
@@ -167,25 +218,25 @@ Jendela hanya dibuka saat mobil **diam atau sangat pelan**, supaya N tidak berca
 
 ---
 
-## 3. Firmware besok: lama atau baru?
+---
 
-**Rekomendasi: firmware lama, untuk uji pagi dan uji malam.** Firmware baru dipakai mulai uji berikutnya.
+## 4. Firmware: lama atau baru?
+
+**Rekomendasi: firmware lama, untuk uji pagi (sudah dijalankan) dan uji malam.** Firmware baru dipakai mulai uji berikutnya.
 
 | Alasan | Penjelasan |
 |---|---|
-| Satu variabel berubah | Yang diuji besok adalah sensor dan mobilnya (nyala dingin, siklus Rs, N Civic). Dengan firmware yang sama seperti uji 1, selisih hasil berasal dari kondisi, bukan dari kode. Dibandingkan dengan log 4 jam dan uji 1 |
+| Satu variabel berubah | Yang diuji malam ini adalah sensor dan mobilnya (nyala dingin, siklus Rs, N Civic). Dengan firmware yang sama seperti uji 1, selisih hasil berasal dari kondisi, bukan dari kode. Dibandingkan dengan log 4 jam dan uji 1 |
 | Log lama sudah cukup | Log mencatat tegangan mentah per detik. Filter baru (SMA 6) dan aturan baru bisa **diputar ulang pada log yang sama** tanpa menyalakan firmware baru. Perbandingan lama lawan baru paling adil di cara ini (bagian 6) |
-| Firmware baru belum ditulis | Menurut jadwal ([daftar-tugas.md](../1-utama/daftar-tugas.md)), firmware baru ditulis 26 Okt dan diunggah ke ESP final 27 Okt. Menunggunya berarti uji besok bisa terlambat atau bercampur dengan perbaikan bug |
+| Firmware baru belum ditulis | Menurut jadwal ([daftar-tugas.md](../1-utama/daftar-tugas.md)), firmware baru ditulis 26 Okt dan diunggah ke ESP final 27 Okt. Menunggunya berarti uji malam bisa terlambat atau bercampur dengan perbaikan bug |
 | Risiko | Firmware baru yang belum dicoba di meja bisa mulai ulang atau berhenti di tengah uji mobil, dan itu mengulang kesalahan uji 1 |
-
-**Uji pagi** memang tempat yang cocok untuk firmware baru **setelah ia ada**: di kamar, udara bersih, tanpa risiko. Itu bisa dilakukan 27 Okt (uji meja), bukan besok pagi.
 
 Urutan yang disarankan:
 
 | Hari | Uji | Firmware |
 |---|---|---|
-| 26 Okt pagi | Kamar: nyala dingin, kipas, AC (2.1) | Lama |
-| 26 Okt malam | Mobil: jendela dan N (2.2) | Lama |
+| 26 Okt pagi | Kamar: nyala dingin, kipas, AC (bagian 2) **selesai** | Lama |
+| 26 Okt malam | Mobil: jendela dan N (bagian 3) | Lama |
 | 27 Okt | Meja: napas ke kotak, simulasi CO, ukur gerak jendela | **Baru** (bila sudah ada dan Anda setuju) |
 | 28 Okt | Mobil ke-3 dan integrasi (bila sempat) | **Baru** |
 | 29 Okt siang | Bekukan | |
@@ -194,11 +245,13 @@ Firmware baru ditulis di cabang `firmware-baru` (git), bukan menimpa `src/main.c
 
 ---
 
-## 4. Keselamatan, persiapan, setelah uji, batasan
+---
+
+## 5. Keselamatan, persiapan, setelah uji, batasan
 
 ### Keselamatan
 - **Pengemudi tidak boleh menyentuh laptop atau sensor.** Penumpang yang mengoperasikan laptop dan mencatat.
-- **SPBU:** uap bensin mudah terbakar, dan pemanas sensor serta rangkaian terbuka (breadboard, ESP32, USB, laptop) bukan perangkat aman di area pompa. Matikan dan simpan perangkat sebelum memasuki area SPBU. Uji 2 tidak melewati SPBU.
+- **SPBU:** uap bensin mudah terbakar, dan pemanas sensor serta rangkaian terbuka (breadboard, ESP32, USB, laptop) bukan perangkat aman di area pompa. Matikan dan simpan perangkat sebelum memasuki area SPBU. Uji 3 tidak melewati SPBU.
 - Jangan menyalakan korek di dalam mobil. Jangan merokok, menyemprot parfum, atau memakai hand sanitizer di kabin selama uji.
 - Kabel dan laptop terpasang aman (tidak menghalangi pedal, setir, atau tuas).
 - Jangan menguji bukaan jendela saat mobil bergerak kencang. Lakukan saat berhenti atau pelan.
@@ -209,15 +262,14 @@ Firmware baru ditulis di cabang `firmware-baru` (git), bukan menimpa `src/main.c
 - [ ] Kabel USB dilekatkan (selotip), konektor masuk penuh. Jangan dicabut di tengah uji.
 - [ ] Perekam jalan: `cd /Users/maritzavania/Downloads/aeros-sensor` lalu `~/.platformio/penv/bin/pio device monitor -f time -f log2file`.
 - [ ] Jam laptop dan ponsel sama.
-- [ ] Lembar catatan (bagian 5) siap, atau berkas teks di ponsel.
+- [ ] Lembar catatan (bagian 6) siap, atau berkas teks di ponsel.
 - [ ] Posisi alat ditetapkan dan dicatat.
 - [ ] Versi firmware ditulis di lembar (lama v0, EMA 0,2).
 
 ### Setelah uji
 1. Simpan folder `logs/` dan lembar catatan **sebelum** melakukan hal lain.
 2. Kirim nama berkas log dan catatan. Yang akan dihitung:
-   - Rs menit ke-3 lawan menit ke-10 (P1), dan siklus lambat per fase (P1–P3).
-   - Laju naik CO2 saat diam (B) dan per jenis jalan (C).
+      - Laju naik CO2 saat diam (B) dan per jenis jalan (C).
    - Laju turun CO2 dan N per bukaan jendela (D–F).
    - Noise dan filter (`analisis_mobil.py`).
    - Putus-putus USB dan mulai ulang.
@@ -233,21 +285,11 @@ Firmware baru ditulis di cabang `firmware-baru` (git), bukan menimpa `src/main.c
 
 ---
 
-## 5. Lembar catatan kosong, uji 2 (26 Oktober)
+---
+
+## 6. Lembar catatan kosong, uji 3 (26 Oktober malam)
 
 Cukup satu baris tiap **kejadian**, bukan tiap menit. Yang paling penting: jam buka dan tutup jendela sampai detik. Jam harus sama dengan jam laptop.
-
-**Pagi, kamar**
-
-| Jam (hh:mm:ss) | Fase | Kejadian | Kipas | AC | Keterangan |
-|---|---|---|---|---|---|
-| | P0 | Colok USB, mulai rekam | | | Nama log: |
-| | P1 | Mulai | | | |
-| | P2 | Kipas mati | | | |
-| | P3 | AC nyala | | | Suhu setelan: |
-| | | Selesai | | | |
-
-**Malam, mobil**
 
 Posisi alat: ____________  Jumlah orang: ____  Mobil: ____________  Firmware: ____________
 
@@ -278,14 +320,16 @@ Catat juga hal yang bisa memengaruhi sensor: parfum atau semprotan, makanan, nap
 
 ---
 
-## 6. Perbandingan firmware lama dan baru
+---
+
+## 7. Perbandingan firmware lama dan baru
 
 Sebelum firmware baru difinalkan, perilakunya dibandingkan dengan firmware lama.
 
 | Hal | Rencana |
 |---|---|
 | Firmware lama (v0) | `src/main.cpp` per 23 Okt 2026 (filter EMA 0,2). **Salinan cadangan:** `arsip-firmware/main-v0-2026-10-23.cpp` (checksum sama dengan `src/main.cpp`) |
-| Uji 1 dan uji 2 | Memakai firmware **lama** sebagai pembanding dasar (baseline) |
+| Uji 1, 2, dan 3 | Memakai firmware **lama** sebagai pembanding dasar (baseline) |
 | Memutar ulang di komputer | Log 1 detik berisi tegangan, Rs, dan CO2. Algoritma baru (SMA 6, aturan prioritas, uji arah) bisa **dijalankan ulang pada data yang sama**. Ini perbandingan yang paling adil karena inputnya identik |
 | Uji dengan firmware baru | Rute, jam, dan jumlah orang semirip mungkin. Kondisi tidak akan identik, jadi hasilnya dipakai sebagai konfirmasi, bukan angka mutlak |
 

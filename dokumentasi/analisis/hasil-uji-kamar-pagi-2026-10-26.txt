@@ -1,0 +1,18 @@
+Berkas: device-monitor-261026-090343.log | 6226 detik | 09:03:46 -> 10:47:33
+
+Fase        jam              n    Rs rata2  goyang  bergantian | sisa noise: SMA6  EMA0,2 | siklus 7 mnt | CO2
+P1         09:08-09:44   2220     1806   13.0%       93%   |     1.25%   1.81% |   +-13.6%   | 763-846
+P2         09:46-10:14   1740     1561   15.2%       83%   |     1.82%   2.34% |   +-15.4%   | 754-938
+P3         10:16-10:46   1859     1545   15.6%       96%   |     0.97%   1.83% |    +-6.5%   | 756-931
+
+Seluruh log (setelah 300 dtk pertama): periode siklus lambat terkuat 7.01 menit, amplitudo +-11.5%
+Jarak balik tanda goyangan bergantian: median 420 detik (12 kali balik)
+Korelasi siklus lambat dengan kuadrat amplitudo goyangan bergantian (lag 0): 0.90
+Berkas: device-monitor-261025-115335.log | 15133 detik | 11:53:39 -> 16:05:55
+
+Fase        jam              n    Rs rata2  goyang  bergantian | sisa noise: SMA6  EMA0,2 | siklus 7 mnt | CO2
+semua      11:58-16:05  14831     1557   13.1%       93%   |     1.37%   1.90% |   +-11.6%   | 766-1116
+
+Seluruh log (setelah 300 dtk pertama): periode siklus lambat terkuat 7.01 menit, amplitudo +-11.4%
+Jarak balik tanda goyangan bergantian: median 420 detik (35 kali balik)
+Korelasi siklus lambat dengan kuadrat amplitudo goyangan bergantian (lag 0): 0.92

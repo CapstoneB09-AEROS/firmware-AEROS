@@ -26,7 +26,7 @@ Tenggat expo dan demo: **30 Oktober**. PCB belum datang, jadi demo dirancang **b
 | Hari | Fokus | Hasil yang diharapkan |
 |---|---|---|
 | Min 25 (malam) | Uji mobil dengan **firmware lama** (baseline) | Log dan lembar catatan jam |
-| Sen 26 | **Pagi:** uji kamar firmware lama (nyala dingin, kipas/AC). **Malam:** uji mobil 2, firmware lama, dengan uji jendela ([skenario-uji-mobil.md](../2-lapangan/skenario-uji-mobil.md)). Siang: firmware baru (SMA 6, aturan CO dan CO2, mode simulasi) ditulis di folder terpisah. Putuskan ESP final dan kontrak data dengan tim. Draf naskah video dan isi banner | Firmware baru siap diunggah. ESP final ditetapkan |
+| Sen 26 | **Pagi:** uji kamar firmware lama (nyala dingin, kipas/AC), **selesai**. **Malam:** uji mobil 2, firmware lama, dengan uji jendela ([skenario-uji-mobil.md](../2-lapangan/skenario-uji-mobil.md)). Siang: firmware baru (SMA 6, aturan CO dan CO2, mode simulasi) ditulis di folder terpisah. Putuskan ESP final dan kontrak data dengan tim. Draf naskah video dan isi banner | Firmware baru siap diunggah. ESP final ditetapkan |
 | Sel 27 | Unggah ke ESP final. Uji di meja (napas ke kotak, simulasi CO). Ukur waktu gerak jendela. Mulai integrasi MQTT | Demo inti jalan di meja |
 | Rab 28 | Uji gabungan sampai ke aplikasi. Uji mobil ketiga dengan firmware baru (bila sempat). Susun diorama | Alur lengkap sensor ke aplikasi |
 | Kam 29 | Rekam video 3 menit, latihan demo. **Bekukan firmware pada siang hari**, tidak diubah lagi | Video, diorama, dan skenario demo siap, plus cadangan |
@@ -75,6 +75,7 @@ Status: `Berjalan`, `Belum`, `Menunggu` (butuh tugas lain atau data), `Selesai`.
 | T19 | Bandingkan model Bab 10 dengan data uji mobil berlog | Menunggu | T11 | Perbandingan angka | perbandingan-c251.md bagian 5 |
 | T20 | Perbarui daftar komponen dan anggaran (MiCS-5524, ADS1115, LCD I2C) **untuk C-501** | Dialihkan ke C-501 | Tidak ada | Anggaran baru di bawah Rp2.000.000 dan komponen tunggal ≤ Rp500.000 | perbandingan-c251.md |
 | T21 | Pertemuan dengan tim hardware, backend komunikasi, dan software memakai [agenda-pertemuan-tim.md](../2-lapangan/agenda-pertemuan-tim.md) | Belum | Tidak ada | Keputusan dan hasil pengukuran dicatat | agenda-pertemuan-tim.md |
+| T22 | **Setelah ganti ke ESP final:** ukur ulang tegangan 5V di pin modul MiCS (saat Wi-Fi aktif), perbarui `VCC` di kode bila berbeda dari 4,64 V, lalu ulangi uji kamar 30 menit (noise, siklus Rs, nyala dingin) dengan Wi-Fi menyala. Bandingkan dengan log ESP lama | Menunggu | Keputusan ESP final (T21) | Periode siklus Rs di ESP baru (lama: 7,01 menit), noise, VCC terukur | [skenario-uji-mobil.md](../2-lapangan/skenario-uji-mobil.md) bagian 2 |
 
 ## A2. Urutan pengerjaan (berat dulu, ringan belakangan)
 
@@ -116,7 +117,7 @@ Semua yang di bawah ini **belum terbukti**. Hapus dari daftar hanya setelah ada 
 | S1 | Udara kamar bersih (CO mendekati nol) | Perkiraan pengguna | Tidak bisa dibuktikan tanpa alat. Nyatakan sebagai asumsi | T1 |
 | S2 | `A_COEF = 3.7` dan `BETA = 0.856` benar | Dibaca dari grafik datasheet dengan mata (±10%) | Kalibrasi multi-konsentrasi (tidak ada akses). Nyatakan sebagai batasan | T12 |
 | S3 | R0 default 1730 kΩ | Nilai sementara di kode | Hasil T1 | T1 |
-| S4 | Warm-up MiCS 3 menit cukup (kode sekarang 5 menit) | Rs kamar stabil dalam 1–2 menit (log 25 Okt). Belum diuji nyala dingin | Uji nyala dingin: mati > 1 jam, rekam 10 menit, bandingkan Rs menit ke-3 dan ke-10 | T1 |
+| S4 | Warm-up MiCS 3 menit cukup (kode sekarang 5 menit) | Nyala dingin 26 Okt: Rs 180 detik −6% dari rata-rata, di dalam siklus ±15% (satu kali uji) | Uji nyala dingin: mati > 1 jam, rekam 10 menit, bandingkan Rs menit ke-3 dan ke-10 | T1 |
 | S5 | Warm-up CO2 3 menit cukup | Manual: 1 menit. Log: nilai palsu sampai detik 64 (4 dari 5) dan 128 (1 dari 5) | Final bila tidak ada kasus > 128 detik | T1 |
 | S6 | Goyangan Rs berasal dari siklus MH-Z19C | Dugaan | Uji cabut MH-Z19C | T7 |
 | S7 | USB putus karena konektor longgar | Dugaan | Ganti kabel atau perbaiki sambungan | T6 |

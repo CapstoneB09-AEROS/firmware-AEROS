@@ -67,7 +67,7 @@ CO_AMBANG_WASPADA      = 35 ppm (estimasi)                        [B2 diputuskan
 CO_KONFIRMASI          = 30 detik                                 [B3]
 CO_AMBANG_BAHAYA       = 87 ppm (estimasi, WHO 15 menit)          [B4 diputuskan]
 CO_LAMA_UJI_ARAH       = 30 detik (sementara)                     [B5]
-CO_KRITERIA_NAIK       = sekitar 15% penurunan Rs (usulan; 8% terlalu kecil, lihat B6)   [B6]
+CO_KRITERIA_NAIK       = sekitar 25% penurunan Rs (usulan; 8% dan 15% terlalu kecil, lihat B6)   [B6]
 CO_BATAS_SELESAI       = 30 ppm (estimasi)                        [B7]
 CO_WAKTU_PEMULIHAN     = 60 detik                                 [B7]
 
@@ -301,7 +301,7 @@ Berkas SVG (bisa dibuka di draw.io atau Inkscape untuk diedit) dan skrip pembuat
 | B3 | Waktu konfirmasi CO (30 detik) | Tabel sensitivitas pada log | desain-peringatan.md F |
 | B4 | Ambang bahaya CO: 87 atau 200 ppm | Keputusan tim, dasar WHO atau NIOSH | rencana-desain.md FR-08 |
 | B5 | Lama uji arah (30 sampai 60 detik) | Batas bawah respons filter, batas atas tambahan paparan | desain-peringatan.md F2 |
-| B6 | Kriteria "CO naik lagi" dan perlakuan hasil tidak jelas. **8% tidak aman:** tanpa gas, Rs berubah lebih dari −8% dalam 30 detik pada 8–13% waktu (mobil dan kamar). Persentil ke-5 perubahan 30 detik: −11,7 (mobil sesi 1), −9,0 (mobil sesi 2), −13,4 (kamar). Usulan sementara 15%. Lonjakan CO nyata jauh lebih besar (35 → 87 ppm = Rs turun sekitar 54%) | Tabel sensitivitas; ulangi dengan log uji korek | desain-peringatan.md E4 |
+| B6 | Kriteria "CO naik lagi" dan perlakuan hasil tidak jelas. **8% tidak aman:** tanpa gas, Rs berubah lebih dari −8% dalam 30 detik pada 8–13% waktu (mobil dan kamar). Persentil ke-5 perubahan 30 detik: −11,7 (mobil sesi 1), −9,0 (mobil sesi 2), −13,4 (kamar). Tambahan kamar pagi 26 Okt: lebih dari −15% terjadi 2,6% waktu (7,1% pada P2), dan lebih dari −25% **tidak pernah** dalam sekitar 28.000 detik data tanpa gas (maksimum −21,4%). Usulan sementara 25%. Lonjakan CO nyata jauh lebih besar (35 → 87 ppm = Rs turun sekitar 54%) | Tabel sensitivitas; ulangi dengan log uji korek | desain-peringatan.md E4 |
 | B7 | Batas selesai CO (30 ppm) dan waktu pemulihan (60 detik) | Tabel sensitivitas | desain-peringatan.md F5 |
 | B8 | Konfirmasi CO2 (3 bacaan), batas selesai 2400 dan 60 detik | Tabel sensitivitas, uji mobil | desain-peringatan.md H |
 | B9 | Besar bukaan jendela per mobil, jeda minimum, anti-jepit | Ukur laju pertukaran udara (N) dan waktu motor tiap mobil | skenario-uji-mobil.md |
@@ -324,7 +324,7 @@ Dari 18 bagian, sebagian besar tidak perlu diputuskan sekarang. Pengelompokannya
 | Kelompok | Bagian | Keterangan |
 |---|---|---|
 | **Diputuskan** | B2, B4, B10, B11 (panjang pemanasan) | B11: pemanasan 3 menit untuk CO dan CO2 (bagian 2.7; CO sementara sampai uji nyala dingin). B2: ambang CO memakai angka ppm estimasi. B4: ambang bahaya CO = 87 ppm (WHO 15 menit), aturan jendela tetap sama dengan CO ≥ 35 ppm (uji arah), bunyi tingkat bahaya lebih keras. B10: sensor yang sehat tetap menjalankan aturannya sendiri bila sensor lain gagal |
-| **Pakai usulan sementara**, diuji nanti dengan tabel sensitivitas atau uji | B3, B6, B7, B8, B13 | Tidak perlu keputusan sekarang. Nilainya sudah ada di pseudocode. **B6 diubah dari 8% menjadi 15%** karena drift alami Rs sering melewati 8% |
+| **Pakai usulan sementara**, diuji nanti dengan tabel sensitivitas atau uji | B3, B6, B7, B8, B13 | Tidak perlu keputusan sekarang. Nilainya sudah ada di pseudocode. **B6 diubah dari 8% menjadi 25%** karena gerakan alami Rs melewati 8% pada 8–13% waktu dan 15% pada 1,6–2,6% waktu |
 | **Menunggu hasil uji atau data** | B1 (data mobil menunjukkan R0 kamar tidak cocok), B5 (30 detik sementara; uji korek bisa membantu), B12 | Ditentukan setelah ada data |
 | **Menunggu pengukuran sensor dan mobil** | B9 | Setelah sensor selesai |
 | **Menunggu tim** | B14, B15, B16, B17, B18 | Dibahas di pertemuan (agenda-pertemuan-tim.md) |
