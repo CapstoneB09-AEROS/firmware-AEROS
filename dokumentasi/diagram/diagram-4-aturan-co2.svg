@@ -14,11 +14,11 @@
 <text x="900.0" y="184.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(aturan CO2 diabaikan)</text>
 <rect x="735.0" y="250.0" width="330" height="100" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
 <text x="900.0" y="287.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">TINDAKAN</text>
-<text x="900.0" y="305.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2 = TINDAKAN, bunyi ON</text>
+<text x="900.0" y="305.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2 = TINDAKAN, 1 bip panjang</text>
 <text x="900.0" y="323.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">jendela BUKA sebesar bukaan mobil [B9]</text>
 <rect x="735.0" y="380.0" width="330" height="100" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
 <text x="900.0" y="417.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">PERINGATAN (sekali per kejadian)</text>
-<text x="900.0" y="435.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">bunyi singkat SATU KALI</text>
+<text x="900.0" y="435.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">3 bip pendek SATU KALI</text>
 <text x="900.0" y="453.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">peringatan ke aplikasi</text>
 <polygon points="420,690.0 590.0,740 420,790.0 250.0,740" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
 <text x="420.0" y="736.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2  tidak sama</text>

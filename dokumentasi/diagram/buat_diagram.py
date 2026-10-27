@@ -167,7 +167,7 @@ def diagram1():
     sub_co = k.subalur(mx, 630, 400, 60, ['ATURAN CO', '(diagram 2 dan 3)'])
     aktif = k.belah(mx, 745, 320, 100, ['Aturan CO aktif?'])
     sub_co2 = k.subalur(mx, 860, 400, 60, ['ATURAN CO2', '(diagram 4)'])
-    act2 = k.persegi(mx, 960, 400, 66, ['Aktuator mengikuti aturan CO2', '(2500: bunyi singkat, 4000: bunyi + buka jendela)'], 'kuning')
+    act2 = k.persegi(mx, 960, 400, 66, ['Aktuator mengikuti aturan CO2', '(2500: 3 bip pendek, 4000: 1 bip panjang + buka jendela)'], 'kuning')
     keluar = k.subalur(mx, 1070, 620, 70, ['KELUARAN', 'LCD, serial CSV, kirim data (5 detik atau saat status berubah)  [B14] [B18]'])
     tunggu = k.persegi(mx, 1165, 340, 44, ['Tunggu sampai tepat 1 detik'])
 
@@ -196,7 +196,7 @@ def diagram1():
     k.garis([keluar.bawah, tunggu.atas])
     k.garis([tunggu.kiri, (60, 1165), (60, 70), (start.kiri[0], 70)], 'ulangi')
     k.catatan(690, 860, ['Bila hanya SATU sensor gagal: tampilkan', 'peringatan sensor itu, aturan sensor yang', 'sehat tetap berjalan sesuai aturannya  [B10]'])
-    k.catatan(560, 1230, ['Tombol "Saya Tahu" mematikan bunyi; bunyi juga mati sendiri setelah 5 menit  [B15]'])
+    k.catatan(560, 1230, ['Tombol "Saya Tahu" mematikan bunyi saja; pengulangan bunyi CO berhenti sendiri setelah 5 menit  [B15]'])
     k.simpan('diagram-1-alur-utama.svg')
 
 
@@ -209,7 +209,7 @@ def diagram2():
     c = k.belah(mx, 450, 340, 100, ['ppmCO  >=  35 ppm (estimasi)?'])
     c1 = k.persegi(mx, 570, 300, 50, ['konfirmasiCO = konfirmasiCO + 1 detik'])
     d = k.belah(mx, 690, 340, 100, ['konfirmasiCO  >=  30 detik?', '[B3]'])
-    akt = k.persegi(mx, 840, 400, 130, ['AKTIFKAN', 'faseCO = UJI_ARAH', 'bunyi CO ON,  jendela BUKA', 'rsAwalUji = Rs sekarang,  waktuUji = 0', '(bahaya 87 ppm: bunyi LEBIH KERAS)'], 'oranye')
+    akt = k.persegi(mx, 840, 400, 130, ['AKTIFKAN', 'faseCO = UJI_ARAH', 'status WASPADA/BAHAYA,  jendela BUKA', 'rsAwalUji = Rs sekarang,  waktuUji = 0', '(bahaya 87 ppm: bunyi LEBIH KERAS)'], 'oranye')
     sel = k.oval(mx, 950, 300, 40, ['Selesai (kembali ke alur utama)'], 'teal')
 
     sub = k.subalur(880, 175, 340, 70, ['Uji arah dan pemulihan', '(diagram 3)'])
@@ -286,8 +286,8 @@ def diagram4():
     d2 = k.belah(mx, 300, 360, 110, ['CO2  >=  4000 ppm selama', '3 bacaan valid?  [B8]'])
     d3 = k.belah(mx, 430, 360, 110, ['CO2  >=  2500 ppm selama', '3 bacaan valid?  [B8]'])
     sel0 = k.oval(900, 170, 250, 50, ['Selesai', '(aturan CO2 diabaikan)'], 'teal')
-    tind = k.persegi(900, 300, 330, 100, ['TINDAKAN', 'faseCO2 = TINDAKAN, bunyi ON', 'jendela BUKA sebesar bukaan mobil [B9]'], 'oranye')
-    per = k.persegi(900, 430, 330, 100, ['PERINGATAN (sekali per kejadian)', 'bunyi singkat SATU KALI', 'peringatan ke aplikasi'], 'kuning')
+    tind = k.persegi(900, 300, 330, 100, ['TINDAKAN', 'faseCO2 = TINDAKAN, 1 bip panjang', 'jendela BUKA sebesar bukaan mobil [B9]'], 'oranye')
+    per = k.persegi(900, 430, 330, 100, ['PERINGATAN (sekali per kejadian)', '3 bip pendek SATU KALI', 'peringatan ke aplikasi'], 'kuning')
     d4 = k.belah(mx, 740, 340, 100, ['faseCO2  tidak sama', 'dengan NORMAL?'])
     d5 = k.belah(mx, 880, 360, 110, ['CO2  <  2500 ppm selama', '10 detik (3 bacaan)?  [B8]'])
     norm = k.persegi(mx, 1020, 420, 90, ['faseCO2 = NORMAL,  bunyi OFF', 'jendela TUTUP,  reset penghitung CO2'], 'teal')

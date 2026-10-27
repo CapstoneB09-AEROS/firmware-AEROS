@@ -27,7 +27,7 @@
 <line x1="638.0" y1="830.0" x2="638.0" y2="890.0" stroke="#333333" stroke-width="1.6"/>
 <rect x="250.0" y="927.0" width="400" height="66" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
 <text x="450.0" y="956.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Aktuator mengikuti aturan CO2</text>
-<text x="450.0" y="974.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(2500: bunyi singkat, 4000: bunyi + buka jendela)</text>
+<text x="450.0" y="974.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(2500: 3 bip pendek, 4000: 1 bip panjang + buka jendela)</text>
 <rect x="140.0" y="1035.0" width="620" height="70" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
 <text x="450.0" y="1066.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">KELUARAN</text>
 <text x="450.0" y="1084.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">LCD, serial CSV, kirim data (5 detik atau saat status berubah)  [B14] [B18]</text>
@@ -74,7 +74,7 @@
 <text x="690" y="860" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Bila hanya SATU sensor gagal: tampilkan</text>
 <text x="690" y="876" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">peringatan sensor itu, aturan sensor yang</text>
 <text x="690" y="892" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">sehat tetap berjalan sesuai aturannya  [B10]</text>
-<text x="560" y="1230" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Tombol "Saya Tahu" mematikan bunyi; bunyi juga mati sendiri setelah 5 menit  [B15]</text>
+<text x="560" y="1230" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Tombol "Saya Tahu" mematikan bunyi saja; pengulangan bunyi CO berhenti sendiri setelah 5 menit  [B15]</text>
 <rect x="780" y="34" width="380" height="56" fill="#fafafa" stroke="#bbb"/>
 <rect x="790" y="44" width="16" height="12" fill="#fad7ac" stroke="#b46504"/>
 <text x="812" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">waspada / tindakan</text>

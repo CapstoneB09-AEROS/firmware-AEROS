@@ -84,7 +84,14 @@ BUKAAN_JENDELA         = setengah, diatur LEWAT WAKTU jalan motor (WAKTU_SETENGA
 JENDELA_BUKA_MAKS      = 180 detik  (batas aman: tutup walau CO2 belum turun)   [B9]
 JENDELA_BUKA_MIN       = 20 detik   (jangan menutup sebelum ini)                 [B9]
 JEDA_MINIMUM_JENDELA   = 5 menit tertutup sebelum buka lagi (usulan; data: siklus alami 15 menit)   [B9]
-BUZZER_BERHENTI_SENDIRI = 5 menit
+BUNYI_WASPADA          = 3 bip pendek (sekitar 2 detik), SEKALI saat status masuk WASPADA        [B15, diputuskan 27 Okt]
+BUNYI_BAHAYA           = 1 bip panjang (sekitar 3 detik), SEKALI saat status masuk BAHAYA       [B15]
+BUNYI_ULANG_CO         = ulangi tiap 60 detik selama CO masih WASPADA atau BAHAYA, berhenti sendiri setelah 5 menit   [B15]
+BUNYI_ULANG_CO2        = tidak diulang                                                           [B15]
+
+A_COEF, BETA           = 3,7 dan 0,856 (kurva datasheet; digitalisasi piksel memberi 3,46 dan 0,840, selisih < 1,5% di 35-100 ppm; nilai kode dipertahankan)
+R0                     = 1730 kOhm, satu nilai tetap, label "estimasi"; ukur ulang SEKALI setelah buck terpasang   [B1 diputuskan 27 Okt]
+VCC                    = 4,64 V sampai buck terpasang (lalu ubah sekali dan ukur R0 ulang)
 ```
 
 ### 2.2 Keadaan yang disimpan
@@ -104,9 +111,11 @@ statusSensor : CO_VALID?, CO2_VALID?, pemanasanCO?, pemanasanCO2?
 SAAT DINYALAKAN:
     siapkan serial, LCD, I2C, sensor CO2 (UART 9600), ADS1115
     kalau ADS1115 tidak ada: tampilkan error                       (tidak berhenti selamanya) [B10]
-    ambil R0 dari memori                                           [B1]
+    ambil R0 dari memori (nilai tetap 1730 kOhm; diubah hanya lewat perintah 'r')   [B1 diputuskan]
     kalibrasi otomatis CO2: matikan                                [B16]
     mulai hitung pemanasan CO dan CO2
+    [usulan T1] uji mandiri: periksa ADS1115, MH-Z19C, LCD; satu bip pendek; gagal = tag ERR tetapi sensor lain tetap jalan
+    [usulan T2] aktifkan watchdog (siklus macet > 10 detik = mulai ulang); catat alasan reset
 
 SETIAP INTERVAL_SIKLUS (tepat 1 detik):
 
@@ -147,17 +156,21 @@ SETIAP INTERVAL_SIKLUS (tepat 1 detik):
     7. AKTUATOR
         perintah jendela dan bunyi dihasilkan oleh aturan yang aktif
         batasi gerakan: jangan bergerak lebih sering dari JEDA_MINIMUM_JENDELA   [B9]
-        pola bunyi dibedakan antara CO dan CO2                      [B15]
+        bunyi mengikuti 2.10 (WASPADA 3 bip pendek, BAHAYA 1 bip panjang; CO diulang, CO2 tidak)   [B15]
 
     8. KELUARAN
-        LCD: nilai dan status (teks pesan)                          [B18]
-        selama PEMANASAN_CO: tampilkan "PEMANASAN", bukan angka ppm CO
-            (data 25 Okt: 20 detik pertama terbaca 3000-4120 ppm palsu karena Rs masih 59 kOhm)
+        LCD: angka seperti v0, tag status 4 karakter, indikator Wi-Fi 1 karakter (lihat 2.10)   [B18]
+        selama sebuah sensor MEMANASKAN (PEMANASAN_CO atau PEMANASAN_CO2):
+            LCD: angka sensor itu TIDAK tampil (tampil "----", tag "WARM")
+                 (data 25 Okt: 20 detik pertama CO terbaca 3000-4120 ppm palsu karena Rs masih 59 kOhm; CO2 410/500 palsu)
+            serial: angka mentah TETAP dicetak, dengan status WARMUP   (bukti uji tidak hilang)
+            pesan data: TETAP dikirim, dengan penanda kond = pemanasan; aplikasi tidak menampilkannya sebagai nilai nyata
         serial: baris CSV
         kirim data tiap 5 detik (rata-rata dan maksimum), dan segera saat status berubah   [B14] (lewat antrean, lihat 2.8)
         data simulasi diberi label                                  [B17]
 
-    9. TOMBOL "SAYA TAHU": matikan bunyi. Bunyi juga mati sendiri setelah BUZZER_BERHENTI_SENDIRI.   [B15]
+    9. TOMBOL "SAYA TAHU": matikan bunyi SAJA (alarm dan jendela tetap berjalan sesuai aturan).
+       Bunyi muncul lagi bila status naik ke BAHAYA. Pengulangan bunyi CO berhenti sendiri setelah 5 menit.   [B15]
 
     10. TUNGGU sampai tepat INTERVAL_SIKLUS sejak awal siklus, lalu ulangi
 ```
@@ -169,7 +182,7 @@ ATURAN CO:
 
     kalau faseCO = TIDAK_AKTIF:
         kalau ppmCO >= CO_AMBANG_BAHAYA:                           [B4]
-            AKTIFKAN (tanpa konfirmasi), bunyi LEBIH KERAS      ; aturan jendela sama dengan >= 35 ppm (uji arah)
+            AKTIFKAN (tanpa konfirmasi), status BAHAYA        ; aturan jendela sama dengan >= 35 ppm (uji arah)
         sebaliknya kalau ppmCO >= CO_AMBANG_WASPADA:               [B2]
             konfirmasiCO = konfirmasiCO + 1 detik
             kalau konfirmasiCO >= CO_KONFIRMASI:                   [B3]
@@ -179,7 +192,7 @@ ATURAN CO:
 
     AKTIFKAN:
         faseCO     = UJI_ARAH
-        bunyi CO   dinyalakan
+        status    = WASPADA (BAHAYA bila ppmCO >= CO_AMBANG_BAHAYA); bunyi sesuai 2.10
         jendela    = BUKA
         rsAwalUji  = RsHalus sekarang
         waktuUji   = 0
@@ -188,10 +201,10 @@ ATURAN CO:
         waktuUji = waktuUji + 1 detik
         kalau waktuUji >= CO_LAMA_UJI_ARAH:                        [B5]
             kalau RsHalus turun lebih dari CO_KRITERIA_NAIK dari rsAwalUji:   [B6]
-                faseCO = SUMBER_LUAR        ; CO naik lagi, sumber dari luar
+                faseCO = SUMBER_LUAR        ; CO naik lagi, sumber dari luar: status BAHAYA (tag LUAR)
                 jendela = TUTUP dan KUNCI   ; tidak menguji ulang
             sebaliknya kalau tidak jelas (perubahan kecil):         [B6]
-                perlakuan belum diputuskan  (usulan: anggap sumber luar, tutup)
+                anggap sumber luar dan tutup (diputuskan 27 Okt: lebih aman)
             sebaliknya:
                 faseCO = SUMBER_DALAM       ; CO turun, jendela tetap terbuka
 
@@ -218,13 +231,13 @@ ATURAN CO2   (dijalankan hanya bila faseCO = TIDAK_AKTIF):
 
     kalau CO2 >= CO2_AMBANG_TINDAKAN selama CO2_BACAAN_KONFIRMASI bacaan:
         faseCO2 = TINDAKAN
-        bunyi dinyalakan
+        status BAHAYA; 1 bip panjang SEKALI (tidak diulang)
         jendela = BUKA sebesar BUKAAN_JENDELA                       [B9]
         lamaBuka = 0
     sebaliknya kalau CO2 >= CO2_AMBANG_PERINGATAN selama CO2_BACAAN_KONFIRMASI bacaan:
         kalau faseCO2 masih NORMAL:
             faseCO2 = PERINGATAN
-            bunyi singkat SATU KALI
+            status WASPADA; 3 bip pendek SEKALI (tidak diulang)
             kirim peringatan ke aplikasi
 
     kalau faseCO2 = TINDAKAN dan jendela TERBUKA:
@@ -280,15 +293,90 @@ Yang belum diketahui: waktu motor jendela tiap mobil dan perilaku di mobil lain 
 
 | | CO2 (MH-Z19C) | CO (MiCS-5524) |
 |---|---|---|
-| Angka | 180 detik | 180 detik (**sementara**) |
+| Angka | 180 detik | 180 detik (**diputuskan 27 Okt**) |
 | Datasheet | Manual Winsen v1.2: preheat 1 menit | **Tidak ada** angka pemanasan, respons, maupun pemulihan |
 | Data kita | Nilai palsu 410/500 berhenti pada detik ke-64 (4 dari 5 kali menyala) dan detik ke-128 (1 kali, nyala dingin pertama malam itu). Di kamar nilainya datar 996–999 ppm dari detik ke-64 sampai 300 | Di kamar Rs stabil dalam 1–2 menit (menit ke-0 sampai 4: 1492, 1878, 1968, 1973, 1994 kOhm). Di mobil Rs terus bergeser, tetapi mengikuti kondisi kabin, bukan pemanasan |
 | Alasan angka | Kasus terburuk teramati 128 detik. 180 detik masih memberi jarak aman 52 detik. Dipersingkat tidak sebanding: hemat 1 menit, risiko kasus dingin tidak tertutup | Data mendukung 2 menit stabil. 3 menit memberi jarak 1 menit. Sebelumnya 5 menit (pilihan di kode, tidak ada dasar) |
 | Dasar angka | Datasheet + log (5 kali menyala) | Log (2 kali menyala di kamar + 2 di mobil). **Tanpa datasheet** |
-| Sampai kapan sementara | Final | Sampai ada uji nyala dingin: mati lebih dari 1 jam, rekam 10 menit di kamar, bandingkan Rs menit ke-3 dan ke-10. Bila Rs menit ke-3 masih jauh dari menit ke-10, naikkan |
+| Sampai kapan sementara | Final | **Diputuskan 27 Okt, tidak perlu uji baru.** Uji nyala dingin yang bersih (kamar, mati semalam, 26 Okt pagi): Rs 156 kOhm saat menyala, 1649 kOhm pada menit ke-2 sampai 3, lalu bergerak di sekitar nilai stabil (siklus sekitar 7 menit). Log mobil terpotong dan berulang, jadi tidak dipakai |
 | Yang tidak diklaim | Akurasi CO2 di menit awal tidak terbukti (tanpa gas acuan) | Stabil bukan berarti benar. Baseline di mobil masih bergeser dan R0 dari kamar tidak cocok (lihat B1) |
 
 Perlu diingat: pemanasan dihitung dari saat ESP32 menyala. Pada uji mobil malam itu alat menyala tiga kali (21:37, 21:41, 22:00) dan setiap kali pemanasan mulai dari nol, sehingga alarm CO mati selama 3 menit pertama tiap kali menyala.
+
+### 2.10 Status, bunyi, dan tampilan (diputuskan 27 Okt)
+
+Disederhanakan menjadi **5 status**. Jenis gas (CO atau CO2) terlihat dari baris LCD, bukan dari status tambahan.
+
+| Status | Tag LCD | Nilai `status` di database | Pemicu | Bunyi |
+|---|---|---|---|---|
+| PEMANASAN | `WARM` (angka sensor itu tampil `----`; serial dan data tetap tercatat) | `normal` + penanda pemanasan | sensor masih 180 detik pertama | tidak ada |
+| NORMAL | `OK` | `normal` | di bawah semua ambang | tidak ada |
+| WASPADA | `WARN` | `waspada` | CO >= 35 ppm (terkonfirmasi 30 detik) atau CO2 >= 2500 | 3 bip pendek, sekali |
+| BAHAYA | `DANG` | `bahaya` | CO >= 87 ppm atau CO2 >= 4000 | 1 bip panjang, sekali |
+| BAHAYA (CO dari luar) | `LUAR` | `bahaya` | hasil uji arah: Rs turun > 25% atau tidak jelas | 1 bip panjang, sekali |
+| GANGGUAN | `ERR` | `normal` + penanda gangguan | sensor tidak valid | tidak ada |
+
+```
+BUNYI:
+    saat status BERUBAH ke WASPADA atau BAHAYA: bunyikan pola level itu (sekali)
+    naik ke level lebih tinggi: selalu bunyikan lagi
+    kalau status ASAL = CO dan masih WASPADA atau BAHAYA:
+        ulangi pola tiap 60 detik, sampai kondisi turun, "Saya Tahu", atau 5 menit
+    kalau status ASAL = CO2: tidak diulang       ; siklus CO2 sekitar 15 menit, jangan mengganggu
+    "SAYA TAHU": hentikan pengulangan (alarm dan jendela tetap berjalan)
+```
+
+**Tampilan LCD 16x2.** Angka tetap seperti v0. Tanda titik dua dibuang untuk membebaskan 1 karakter di ujung kanan baris atas:
+
+```
+CO   12ppm WARN W
+CO2  850ppm OK
+```
+
+**Indikator Wi-Fi (1 karakter, ujung kanan baris atas)**, diisi dari kode status yang dikirim tugas jaringan (2.8.2):
+
+| Tampil | Arti |
+|---|---|
+| `W` | tersambung sampai MQTT |
+| `w` | Wi-Fi ada, MQTT belum |
+| `-` | tidak tersambung (data aman di flash) |
+| `P` | mode portal Wi-Fi |
+
+Alarm selalu menang atas pesan jaringan di LCD. Aplikasi memakai pesan `ONLINE`/`OFFLINE` (last will) untuk tahu perangkat tersambung atau tidak.
+
+### 2.11 Dipakai dari rancangan tim, dan tambahan ringan (usulan 27 Okt)
+
+#### A. Yang baik dari kode tim dan dimasukkan ke rencana kita
+Semuanya sudah ada di kode tim, jadi tidak menambah beban. Yang perlu kita lakukan hanya menjaganya saat inti sensor diganti.
+
+| # | Yang dipakai | Manfaat |
+|---|---|---|
+| 1 | **Nilai tidak diketahui dikirim `null`, tidak pernah angka palsu** (contoh `window_status = null` selama motor belum ada) | Aman dari tuduhan data karangan |
+| 2 | **Waktu tiap sampel dikoreksi** bila pengiriman sempat tertahan jaringan | Grafik waktunya benar walau Wi-Fi putus sebentar |
+| 3 | **Nilai puncak per 5 detik** (`co_peak`, `co2_peak`) selain nilai terakhir | Lonjakan singkat tidak hilang dari data |
+| 4 | **`event_id` baru untuk tiap episode CO**, dan perintah lama tidak bisa mematikan alarm baru | "Saya Tahu" tidak bisa salah sasaran |
+| 5 | Perintah ulang untuk alarm yang sudah dimatikan tetap aman (tidak menimbulkan efek ganda) | Tahan terhadap pesan terkirim dua kali |
+| 6 | **Balasan jujur: `received` (diterima) berbeda dari `executed` (dijalankan)** untuk perintah jendela | Tidak mengklaim motor bergerak bila tidak terbukti |
+| 7 | Data offline lama **disimpan tapi tidak membuka ulang alarm** di aplikasi (batas 90 detik) | Aplikasi tidak menampilkan peringatan basi |
+| 8 | **Antrean sampel 128 di RAM**: bacaan tidak hilang saat TLS memblokir | Bukti uji utuh |
+| 9 | Worker dalam **Docker** dan **tes otomatis** (HMAC, ACK, status) | Mudah dijalankan ulang oleh penguji |
+
+#### B. Tambahan sederhana (usulan, perlu persetujuan)
+Dipilih karena murah dibuat dan langsung menjawab pertanyaan yang biasa diajukan penguji ("bagaimana tahu sistem hidup?", "bagaimana kalau macet?").
+
+| # | Tambahan | Isi singkat | Beban |
+|---|---|---|---|
+| T1 | **Uji mandiri saat menyala** | LCD menampilkan `CEK`; periksa ADS1115, MH-Z19C (menjawab), LCD; **satu bip pendek** membuktikan buzzer. Bila ada yang gagal: tag `ERR` dan sensor lain tetap jalan | beberapa baris kode |
+| T2 | **Pengawas (watchdog) dan alasan reset** | Bila siklus sensor macet lebih dari 10 detik, ESP mulai ulang sendiri. Alasan reset (daya, watchdog, dan seterusnya) dicatat di serial dan di pesan `ONLINE` | 1 pengaturan + 1 baris |
+| T3 | **"Data terakhir X detik lalu" di aplikasi** | Bila tidak ada data lebih dari 30 detik, aplikasi menulis "tidak terhubung", tanpa menunggu pesan last will yang bisa lambat. Menjawab "offline bukan berarti aman" | di sisi aplikasi, 1 hitungan waktu |
+| T4 | **Pesan `ONLINE` membawa `fw`, `r0_kohm`, dan `rst`** | ppm bergantung pada R0, jadi R0 yang dipakai ikut tercatat di data. Versi firmware dan alasan reset juga | 3 field di pesan status |
+| T5 | **Daftar periksa demo dan rekaman cadangan** | Satu halaman: hotspot 2,4 GHz, pemanasan 3 menit sebelum penonton datang, uji bip, cek R0, dan rekaman cadangan (video dan log CSV) bila jaringan atau jendela bermasalah | dokumen, tanpa kode |
+
+#### C. Kalimat yang aman untuk laporan (tidak menjanjikan lebih dari bukti)
+- "Tanda tangan HMAC mencegah pesan palsu atau diubah; tidak menjamin sensor mengukur dengan benar."
+- "Alarm dan jendela berjalan di ESP32 dan tidak bergantung pada internet."
+- "ppm CO adalah estimasi dari kurva datasheet (±10% pembacaan grafik), belum dikalibrasi gas referensi."
+- "Perangkat tidak terhubung bukan berarti udara aman."
 
 ### 2.8 Pengiriman data lewat Wi-Fi dan MQTT [B14]
 
@@ -410,6 +498,8 @@ Saat internet mati, tugas ini hanya menyimpan ke flash. Telemetri dan kejadian t
 
 #### 2.8.5 Pesan (usulan versi 3, dengan jalan mundur ke versi 2)
 
+**Keputusan 27 Okt:** isi pesan dan kerja worker **mengikuti kebutuhan firmware dan data yang harus dikirim**, bukan sebaliknya. Pesan versi 3 di bawah menjadi acuan, dan worker diubah menyesuaikan. Jalan mundur v2 hanya dipakai bila worker belum siap sebelum 29 Okt.
+
 Satu jalur untuk telemetri dan kejadian: topik `aeros/data` dan ACK `aeros/{id}/data/ack` tetap seperti kode tim, ditambah field `jenis` (`telemetri` atau `kejadian`). Dengan begitu kejadian ikut offline first dan ACK-nya sama.
 
 | Field | Keterangan | Ada di v2 tim? |
@@ -431,7 +521,7 @@ Satu jalur untuk telemetri dan kejadian: topik `aeros/data` dan ACK `aeros/{id}/
 
 Aturan agar tanda tangan tidak pecah antara C++ dan JavaScript: **semua angka di dalam string yang ditandatangani berupa bilangan bulat**, tidak ada pecahan.
 
-**Jalan mundur (v2 sementara):** bila keputusan v3 belum selesai sebelum 29 Okt, firmware mengirim v2 tim apa adanya: `jenis`, field baru, dan kejadian ditunda. `status` dan `event_id` tetap mengalir, `sim` dipetakan ke `demo`, nilai pemanasan dikirim sebagai pesan yang ditahan (tidak dikirim) sampai sensor siap. Isi lengkap versi 3 mengikuti rancangan data bagian 2 dan 3.
+**Jalan mundur (v2 sementara):** bila keputusan v3 belum selesai sebelum 29 Okt, firmware mengirim v2 tim apa adanya: `jenis`, field baru, dan kejadian ditunda; `sim` dipetakan ke `demo`. v2 **tidak punya tempat untuk penanda pemanasan**, jadi pesan selama masa pemanasan **ditahan (tidak dikirim)** supaya angka palsu tidak masuk database; angkanya tetap tercatat di serial. Isi lengkap versi 3 mengikuti rancangan data bagian 2 dan 3.
 
 #### 2.8.6 Yang berbeda dari kode tim (perlu persetujuan teman)
 
@@ -457,7 +547,7 @@ Semuanya mempertahankan fitur di 2.8.1. Hanya batas penuh antrean (nomor 3) yang
 
 #### 2.8.8 Tugas worker untuk `alert_logs` (keputusan 27 Okt: worker yang menulis, id = `event_id`)
 
-Status: **disetujui dari sisi firmware, menunggu persetujuan pemilik worker** (kodenya milik tim). Tidak ada perubahan di ESP selain pesan `kejadian` di 2.8.5.
+Status 27 Okt sore: **sudah ada versi sederhana di worker terbaru** (`telemetryStateService.js`): `alert_logs` dibuat dari telemetri dengan `id = event_id` dan ditutup saat normal. Belum ada: gas, nilai, ambang, sumber, dan pesan `kejadian` terpisah (jendela, uji arah). Lihat [analisis-kode-mqtt-tim.md](../2-lapangan/analisis-kode-mqtt-tim.md) bagian 7.
 
 ```
 SAAT PESAN MASUK (setelah HMAC benar dan perangkat aktif, seperti sekarang):
@@ -522,7 +612,7 @@ Berkas SVG (bisa dibuka di draw.io atau Inkscape untuk diedit) dan skrip pembuat
 
 | Kode | Yang belum fix | Cara menentukan | Terkait |
 |---|---|---|---|
-| B1 | Strategi R0 dan pergeseran baseline (kalibrasi ulang tiap menyala, atau baseline adaptif). **Data mobil 25 Okt:** dengan R0 kamar (1730 kOhm) rasio Rs/R0 di mobil 0,30–0,67, jadi ppm terbaca 0–19 terus-menerus tanpa CO nyata. Ambang 35 ppm setara rasio 0,176, tinggal 41% di bawah titik terendah teramati (0,301) | Diskusi, lalu uji pada data | validasi-parameter.md A3, A4 |
+| B1 | ~~Strategi R0~~ **Diputuskan 27 Okt:** satu nilai tetap 1730 kOhm dengan label estimasi, ukur ulang sekali setelah buck terpasang (perintah `r`, udara bersih). Catatan: R0 ini di atas batas datasheet 100-1500 kOhm; dugaan penyebab VCC 4,64 V | Ukur ulang setelah buck | validasi-parameter.md A3, A4 |
 | B2 | ~~Ambang CO pakai angka ppm mutlak atau perubahan relatif~~ **Diputuskan: angka ppm estimasi** (tanpa konsep tambahan). Konsekuensi: angka ppm bergantung pada R0, jadi wajib ditulis sebagai estimasi dan R0 diulang (B1) | Keputusan pengguna 25 Okt malam | rencana-desain.md 3.3 |
 | B3 | Waktu konfirmasi CO (30 detik) | Tabel sensitivitas pada log | desain-peringatan.md F |
 | B4 | Ambang bahaya CO: 87 atau 200 ppm | Keputusan tim, dasar WHO atau NIOSH | rencana-desain.md FR-08 |
@@ -532,28 +622,28 @@ Berkas SVG (bisa dibuka di draw.io atau Inkscape untuk diedit) dan skrip pembuat
 | B8 | Konfirmasi CO2 (3 bacaan). **Batas selesai diusulkan 2500 dan pemulihan 10 detik** (data Avanza, 2.9) | Tabel sensitivitas, uji mobil | desain-peringatan.md H |
 | B9 | Besar bukaan jendela (setengah, lewat waktu motor), lama buka maksimum 180 detik dan minimum 20 detik (usulan, 2.9), jeda minimum, anti-jepit | Ukur laju pertukaran udara (N) dan waktu motor tiap mobil | skenario-uji-mobil.md |
 | B10 | Perlakuan bila satu sensor gagal (apakah menahan aksi sensor lain), dan perilaku bila ADS1115 tidak ada | Keputusan tim | rencana-desain.md FR-09 |
-| B11 | ~~Panjang pemanasan~~ **Diputuskan 3 menit untuk keduanya** (2.7). Sisa: cara mendeteksi sensor mati sebentar tanpa ESP32 mulai ulang | Analisis log baseline dan uji nyala dingin | rencana-desain.md FR-10 |
+| B11 | ~~Panjang pemanasan~~ **Diputuskan 3 menit untuk keduanya** (2.7), didukung uji nyala dingin bersih 26 Okt pagi. Sisa kecil: cara mendeteksi sensor mati sebentar tanpa ESP32 mulai ulang | | rencana-desain.md FR-10 |
 | B12 | Panjang filter final (4, 6, atau 8) | Tabel sensitivitas dan uji ulang di PCB dan mobil | bagian 1 |
 | B13 | Penanganan sampel tidak valid di dalam buffer filter | Keputusan teknis (usulan: kosongkan buffer bila lebih dari 3 sampel berturut-turut tidak valid) | |
 | B14 | Format pesan MQTT, laju kirim, retensi. **Draf perkiraan sudah ada** di [rancangan-data.md](rancangan-data.md) | Rapat dengan tim backend dan software | desain-data-dfd.md |
-| B15 | Pola bunyi CO dan CO2, perilaku tombol "Saya Tahu" | Keputusan UX | rencana-desain.md FR-11, FR-12 |
+| B15 | **Diputuskan 27 Okt:** WASPADA 3 bip pendek, BAHAYA 1 bip panjang, sekali saat masuk level; CO diulang tiap 60 detik maks. 5 menit, CO2 tidak diulang; "Saya Tahu" hanya mematikan bunyi (2.10). **Belum:** tombol fisik "Saya Tahu" dan jenis buzzer (aktif atau pasif) | Tanya teman hardware | rencana-desain.md FR-11, FR-12 |
 | B16 | Kalibrasi otomatis CO2 dimatikan | Konfirmasi tim | batasan-sistem.md |
 | B17 | Isi mode simulasi | Disusun saat menulis firmware | rencana-desain.md FR-16 |
-| B18 | Teks pesan di LCD dan aplikasi | Dengan tim software | agenda-pertemuan-tim.md |
+| B18 | **Diputuskan 27 Okt:** angka LCD seperti v0, tag status `OK/WARM/WARN/DANG/LUAR/ERR`, indikator Wi-Fi `W/w/-/P` (2.10). **Belum:** teks aplikasi (usulan: tulis "estimasi, kemungkinan CO atau gas lain" dan "offline bukan berarti aman") | Dengan tim software | agenda-pertemuan-tim.md |
 
 ---
 
-## 6. Status keputusan (25 Oktober 2026, malam)
+## 6. Status keputusan (25 Oktober 2026, diperbarui 27 Oktober 2026)
 
 Dari 18 bagian, sebagian besar tidak perlu diputuskan sekarang. Pengelompokannya:
 
 | Kelompok | Bagian | Keterangan |
 |---|---|---|
-| **Diputuskan** | B2, B4, B10, B11 (panjang pemanasan) | B11: pemanasan 3 menit untuk CO dan CO2 (bagian 2.7; CO sementara sampai uji nyala dingin). B2: ambang CO memakai angka ppm estimasi. B4: ambang bahaya CO = 87 ppm (WHO 15 menit), aturan jendela tetap sama dengan CO ≥ 35 ppm (uji arah), bunyi tingkat bahaya lebih keras. B10: sensor yang sehat tetap menjalankan aturannya sendiri bila sensor lain gagal |
+| **Diputuskan** | B1, B2, B4, B10, B11, B15 (bunyi), B18 (LCD) | B11: pemanasan 3 menit untuk CO dan CO2 (bagian 2.7; CO sementara sampai uji nyala dingin). B2: ambang CO memakai angka ppm estimasi. B4: ambang bahaya CO = 87 ppm (WHO 15 menit), aturan jendela tetap sama dengan CO ≥ 35 ppm (uji arah), bunyi tingkat bahaya lebih keras. B10: sensor yang sehat tetap menjalankan aturannya sendiri bila sensor lain gagal |
 | **Pakai usulan sementara**, diuji nanti dengan tabel sensitivitas atau uji | B3, B6, B7, B8, B13 | Tidak perlu keputusan sekarang. Nilainya sudah ada di pseudocode. **B6 diubah dari 8% menjadi 25%** karena gerakan alami Rs melewati 8% pada 8–13% waktu dan 15% pada 1,6–2,6% waktu |
-| **Menunggu hasil uji atau data** | B1 (data mobil menunjukkan R0 kamar tidak cocok), B5 (30 detik sementara; uji korek bisa membantu), B12 | Ditentukan setelah ada data |
+| **Menunggu hasil uji atau data** | B5 (30 detik sementara; uji korek bisa membantu), B12 | Ditentukan setelah ada data |
 | **Menunggu pengukuran sensor dan mobil** | B9 | Setelah sensor selesai |
-| **Menunggu tim** | B14, B15, B16, B17, B18 | Dibahas di pertemuan (agenda-pertemuan-tim.md) |
+| **Menunggu tim** | B14, B15 (tombol fisik, buzzer), B16, B17, B18 (teks aplikasi) | Dibahas di pertemuan (agenda-pertemuan-tim.md) |
 
 ### Rekap: yang sudah pasti, yang ditetapkan, yang belum bisa dipastikan
 

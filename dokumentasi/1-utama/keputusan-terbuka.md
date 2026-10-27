@@ -10,7 +10,7 @@ Tenggat: firmware dibekukan **Kamis 29 Okt siang**, expo Jumat 30 Okt.
 |---|---|---|---|
 | 1 | Waktu gerak motor jendela setengah (`WAKTU_SETENGAH`) di mobil demo | hardware (ukur), kamu (catat) | Tanpa ini logika jendela tidak bisa diuji |
 | 2 | Pin buzzer dan pin jendela di PCB | hardware | Firmware butuh pin pasti. GPIO14 sudah dipakai tombol Wi-Fi |
-| 3 | Pesan data: v3 atau tetap v2 temanmu untuk expo | kamu, teman backend | Menentukan apa yang boleh dikirim firmware |
+| 3 | Pesan data: v3 (diputuskan, sisa: teman backend mengerjakan worker) | teman backend | Menentukan apa yang boleh dikirim firmware |
 | 4 | Pola bunyi dan tombol "Saya Tahu" (B15) | kamu dan tim | Mudah, tapi harus ada sebelum kode ditulis |
 | 5 | Teks LCD (B18) | kamu | Sama |
 | 6 | Strategi R0 di mobil (B1) | kamu | Menentukan apakah ppm di demo masuk akal |
@@ -22,11 +22,11 @@ Tenggat: firmware dibekukan **Kamis 29 Okt siang**, expo Jumat 30 Okt.
 |---|---|---|---|
 | B15a | Bunyi **WASPADA** (CO ≥ 35 ppm atau CO2 ≥ 2500) | **3 bip pendek (sekitar 2 detik), sekali saat status masuk level ini** | Diubah 27 Okt: 10 detik dinilai mengganggu |
 | B15b | Bunyi **BAHAYA** (CO ≥ 87 ppm, CO2 ≥ 4000, atau CO dari luar) | **1 bip panjang (sekitar 3 detik), sekali saat status masuk level ini** | Diubah 27 Okt |
-| B15c | Pengulangan bunyi | **CO2: tidak diulang** (siklus sekitar 15 menit, jadi cukup dua bunyi per siklus: saat 2500 dan saat 4000). **CO: diulang tiap 60 detik sampai "Saya Tahu" atau kondisi turun, maksimum 5 menit**, karena CO menyangkut keselamatan. Naik ke level lebih tinggi selalu berbunyi | Usulan (perlu persetujuan) |
+| B15c | Pengulangan bunyi | **CO2: tidak diulang** (siklus sekitar 15 menit, jadi cukup dua bunyi per siklus: saat 2500 dan saat 4000). **CO: diulang tiap 60 detik sampai "Saya Tahu" atau kondisi turun, maksimum 5 menit**, karena CO menyangkut keselamatan. Naik ke level lebih tinggi selalu berbunyi | Usulan (perlu persetujuan) (**disetujui 27 Okt**) |
 | B15d | Arti "Saya Tahu" | mematikan **bunyi saja**. Alarm dan jendela tetap jalan sesuai aturan. Bunyi muncul lagi bila naik ke tingkat bahaya. Bunyi mati sendiri setelah 5 menit | Usulan |
 | B15e | Apakah ada tombol fisik "Saya Tahu" di perangkat, atau hanya lewat aplikasi | **belum ada info**: tanya teman hardware. GPIO14 dipakai tombol portal Wi-Fi, jadi tombol ini butuh pin lain | Belum |
 | B15f | Volume "lebih keras" untuk bahaya | tergantung jenis buzzer (aktif atau pasif). Kalau aktif, volume tetap, pembeda hanya pola | Belum |
-| B18a | Teks LCD 16x2 baris 1 | `CO 12 CO2 1450` (nilai sekarang) | Usulan |
+| B18a | Angka di LCD 16x2 | **Tetap seperti v0** (`CO: 12ppm`, `CO2: 850ppm`). Disetujui 27 Okt | Diputuskan |
 | B18b | Status (disederhanakan jadi 5) | `PEMANASAN`, `NORMAL`, `WASPADA`, `BAHAYA`, `GANGGUAN`. Jenis gas ditulis di baris LCD (`WASPADA CO`, `BAHAYA CO2`, `BAHAYA CO LUAR`). Di database tetap 3 nilai (`normal`, `waspada`, `bahaya`) plus penanda pemanasan atau gangguan | Usulan pengguna 27 Okt |
 | B18c | Teks di aplikasi | wajib memuat: ppm CO "**estimasi, kemungkinan CO atau gas lain**"; "perangkat offline **bukan** berarti aman"; waktu data terakhir | Usulan |
 | B18d | Apa yang ditampilkan saat CO masih pemanasan | `PEMANASAN`, bukan angka ppm (sudah di pseudocode, alasan: 20 detik pertama terbaca 3000-4120 ppm palsu) | Diputuskan |
@@ -54,7 +54,7 @@ Tenggat: firmware dibekukan **Kamis 29 Okt siang**, expo Jumat 30 Okt.
 
 | Yang belum diputuskan | Catatan | Siapa |
 |---|---|---|
-| **R0 di mobil (B1)** | R0 kamar 1730 kΩ membuat Rs/R0 di mobil 0,30-0,69. Usulan: ukur R0 dengan perintah `r` di udara bersih sebelum berangkat, atau pakai satu R0 tetap dan beri label estimasi | kamu |
+| **R0 di mobil (B1)** | **Diputuskan 27 Okt:** satu nilai tetap 1730 kΩ dengan label estimasi, tanpa ukur ulang tiap berangkat. Ukur ulang sekali (perintah `r`, udara bersih) setelah buck terpasang | kamu |
 | **R0 melewati batas datasheet** | Datasheet rev 8: R0 100-1500 kΩ. Kita 1730 kΩ. Dugaan: catu 4,64 V. Ukur ulang setelah buck | hardware |
 | VCC di kode (4,64 V) | Ubah sekali setelah buck terpasang, lalu ukur R0 ulang. Catat VCC di tiap log | kamu dan hardware |
 | Pengukuran 5 V dengan Min/Max 15 menit (ESP, pin MiCS, pin MH-Z19C) | Belum dilakukan dengan Min/Max | hardware |
@@ -69,7 +69,7 @@ Tenggat: firmware dibekukan **Kamis 29 Okt siang**, expo Jumat 30 Okt.
 
 | Yang belum diputuskan | Usulan | Siapa |
 |---|---|---|
-| Isi pesan versi 3 atau tetap v2 | v3 bila sempat; jalan mundur ke v2 sudah ada di 2.8.5 | kamu, teman backend |
+| Isi pesan versi 3 atau tetap v2 | **Diputuskan 27 Okt:** worker dan komunikasi mengikuti kebutuhan firmware dan data (v3 jadi acuan). v2 hanya jalan mundur bila worker belum siap sebelum 29 Okt. Tinggal teman backend menyetujui dan mengerjakan | teman backend |
 | Worker menulis `alert_logs` dengan `id = event_id` | **disetujui dari sisi kita** (2.8.8), menunggu pemilik worker | teman backend |
 | Format kolom `alert_logs` (gas, nilai, ambang, sumber) | cocokkan dengan [rancangan-data.md](rancangan-data.md) 4.3 | teman backend |
 | Kebijakan antrean penuh | buang telemetri tertua, lindungi kejadian | teman backend |
@@ -92,4 +92,8 @@ Tenggat: firmware dibekukan **Kamis 29 Okt siang**, expo Jumat 30 Okt.
 
 ## 6. Yang sudah diputuskan (supaya tidak dibahas ulang)
 
-Ambang CO 35 ppm dan 87 ppm (estimasi); CO2 2500 dan 4000 (bukan 4500, lihat desain-peringatan.md A2 dan A3); pemanasan 180 detik untuk keduanya; SMA 6 dan CO2 tanpa filter; sensor sehat tetap bekerja saat sensor lain gagal; A=3,7 dan β=0,856 dipertahankan (digitalisasi piksel selisih <1,5% di 35-100 ppm); VCC tetap 4,64 V sampai buck terpasang; jendela setengah lewat waktu motor; worker menulis `alert_logs`.
+Ambang CO 35 ppm dan 87 ppm (estimasi); CO2 2500 dan 4000 (bukan 4500, lihat desain-peringatan.md A2 dan A3); pemanasan 180 detik untuk keduanya; SMA 6 dan CO2 tanpa filter; sensor sehat tetap bekerja saat sensor lain gagal; A=3,7 dan β=0,856 dipertahankan (digitalisasi piksel selisih <1,5% di 35-100 ppm); VCC tetap 4,64 V sampai buck terpasang; jendela setengah lewat waktu motor; worker menulis `alert_logs`; uji arah 30 detik untuk membedakan CO dalam dan luar (27 Okt); status disederhanakan jadi 5 (`PEMANASAN`, `NORMAL`, `WASPADA`, `BAHAYA`, `GANGGUAN`); bunyi waspada 3 bip pendek dan bahaya 1 bip panjang, CO2 tidak diulang (B15a-b). Uji parfum ruangan selesai ([laporan](../2-lapangan/laporan-uji-parfum-2026-10-27.md)); uji di mobil masih diperlukan.
+
+## 7. Usulan tambahan ringan (belum disetujui)
+
+Lihat [pseudocode-baru.md](pseudocode-baru.md) bagian 2.11. Sembilan hal dari kode tim dimasukkan sebagai rancangan. Lima tambahan ringan menunggu persetujuanmu: T1 uji mandiri saat menyala, T2 watchdog dan alasan reset, T3 "data terakhir X detik lalu" di aplikasi, T4 `fw`, `r0_kohm`, `rst` di pesan `ONLINE`, T5 daftar periksa demo dan rekaman cadangan.

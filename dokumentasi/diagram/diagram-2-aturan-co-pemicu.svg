@@ -15,7 +15,7 @@
 <rect x="220.0" y="775.0" width="400" height="130" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
 <text x="420.0" y="809.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">AKTIFKAN</text>
 <text x="420.0" y="827.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO = UJI_ARAH</text>
-<text x="420.0" y="845.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">bunyi CO ON,  jendela BUKA</text>
+<text x="420.0" y="845.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">status WASPADA/BAHAYA,  jendela BUKA</text>
 <text x="420.0" y="863.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">rsAwalUji = Rs sekarang,  waktuUji = 0</text>
 <text x="420.0" y="881.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(bahaya 87 ppm: bunyi LEBIH KERAS)</text>
 <ellipse cx="420" cy="950" rx="150.0" ry="20.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>

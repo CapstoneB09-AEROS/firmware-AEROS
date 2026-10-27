@@ -4,6 +4,8 @@ Tanggal 27 Oktober 2026. Yang diperiksa: salinan folder `iot-mainproject 2` mili
 
 Pembanding: [rancangan-data.md](../1-utama/rancangan-data.md) dan draf [pseudocode-baru.md](../1-utama/pseudocode-baru.md) bagian 2.8.
 
+> **Catatan 27 Okt (sore):** bagian 1 sampai 6 menganalisis versi 2 (`iot-mainproject 2`). Versi terbaru (`iot-mainproject 3`) berubah banyak dan dianalisis di **bagian 7**. Beberapa temuan di bagian 1 sampai 6 sudah tidak berlaku.
+
 ## 1. Kesimpulan singkat
 
 1. **Jalur datanya sudah bagus dan aman**: pesan bertanda tangan HMAC, TLS dengan sertifikat diperiksa, data tidak dihapus dari ESP sebelum database membalas, dan data tidak dobel. Itu lebih kuat dari rancangan kita. Sebaiknya dipakai, bukan ditulis ulang.
@@ -85,3 +87,44 @@ Yang belum bisa dipastikan dari kode: apakah alarm saat ini muncul di aplikasi l
 4. 5 atau 10 detik per telemetri?
 5. Apakah satu topik `aeros/data` untuk semua perangkat disengaja, dan bagaimana aturan akses (ACL) di HiveMQ?
 6. Pin buzzer dan pin jendela di PCB (GPIO14 sudah dipakai tombol Wi-Fi).
+
+
+## 7. Versi terbaru (`iot-mainproject 3`), dianalisis 27 Okt 2026
+
+Salinan kode ada di `kode-tim/iot-mainproject-3/`. File `.env` asli di folder worker **tidak disalin dan tidak dibaca** (berisi rahasia). `.gitignore` di akar folder temanmu sudah memuat `.env`.
+
+### 7.1 Yang berubah
+1. **Firmware sensor kita (v0) dimasukkan tanpa diubah.** `sensorOriginal.inl` identik byte demi byte dengan `src/main.cpp` v0 (sudah kucek). Ia dijalankan di tugas terpisah lewat `sensorBridge.cpp`, yang menangkap baris CSV yang dicetak v0 lalu mengolahnya jadi data kirim. Jadi data nyata sudah dikirim, bukan acak lagi, dan siklus 1 detik tidak lagi tertahan jaringan. Ini sama dengan arsitektur dua tugas di pseudocode 2.8.2.
+2. **Pesan versi 3 sudah ada**: `r3` dengan `co_peak_ppm`, `co2_peak_ppm`, dan detik puncaknya; telemetri tiap 5 detik (dari 5 sampel 1 detik); waktu tiap sampel dikoreksi bila sempat tertahan; `window_status = null` (bukan 0 palsu); `demo = false`.
+3. **Topik mengikuti rancangan kita**: `aeros/{id}/telemetry`, `cmd`, `cmd/ack`, dan `telemetry/ack` (versi lama `aeros/data` tetap diterima worker).
+4. **Worker menulis `alert_logs` dan `device_state` dari telemetri** (`telemetryStateService.js`): baris `alert_logs` dibuat dengan `id = event_id` dan ditutup saat kembali normal atau episode baru. Data lama dari antrean offline (lebih dari 90 detik) disimpan tapi tidak membuka ulang alarm. Ini menjawab keputusan "worker menulis `alert_logs`".
+5. **Perintah jendela** (`WINDOW_OPEN`, `WINDOW_CLOSE`) diterima dan dibalas dengan tanda terima `received`. Motor belum ada, jadi worker mencatat "diterima, belum dijalankan" dan tidak pernah menandai berhasil. Itu jujur.
+6. Ada tes baru (`actuator-v3`, `telemetry-state`), `Dockerfile` untuk worker, dan sensorBridge menjaga mute buzzer tetap berlaku walau v0 menyalakan pin lagi.
+
+### 7.2 Masalah yang kutemukan
+| # | Temuan | Bukti |
+|---|---|---|
+| 1 | **Tidak bisa dikompilasi apa adanya.** `lcd` dan `prefs` didefinisikan dua kali (main.cpp baris 59 dan 64, sensorOriginal.inl baris 37 dan 69) | Kompilasi di folder sementara gagal di tahap link. Menambah `static` pada dua baris itu di salinan sementara membuatnya lolos |
+| 2 | **Tidak muat dengan partisi bawaan.** `platformio.ini` belum memakai `huge_app.csv`. Dengan `static` dan `huge_app.csv` hasilnya 1.343.786 byte (42,7% dari 3 MB), lebih besar dari batas bawaan 1.310.720 | Kompilasi |
+| 3 | **Alarm mati total bila konfigurasi atau flash bermasalah.** `setup()` berhenti dengan `while (true)` (main.cpp baris 884 dan 894) **sebelum** tugas sensor dimulai (baris 918). Jadi bila `secrets.h` kosong atau sistem berkas belum disiapkan, sensor dan buzzer tidak jalan | Pembacaan kode |
+| 4 | Folder `data/` untuk menyiapkan LittleFS dihapus, padahal `LittleFS.begin(false)` gagal pada flash kosong | Pembacaan kode |
+| 5 | Sensor yang dipakai masih **v0**: filter EMA 0,2, pemanasan CO 5 menit, alarm CO 35 ppm 10 detik. Keputusan baru (SMA 6, 3 menit, uji arah, 5 status, pola bunyi, ambang 4000) belum masuk | `sensorOriginal.inl` |
+| 6 | **Status database tidak sesuai keputusan kita:** alarm CO v0 dipetakan ke `bahaya` (padahal 35 ppm = waspada, bahaya 87 ppm), dan CO2 mengikuti label v0 (`SEDANG`/`TINGGI`), bukan 2500 dan 4000 | `main.cpp` (`sampleAndQueue`) |
+| 7 | Jembatan membaca **teks CSV** v0. Kalau format CSV berubah di firmware baru, jembatan rusak diam-diam | `sensorBridge.cpp` |
+| 8 | Data **pemanasan tidak dikirim** (sampel dibuang). Cocok dengan jalan mundur v2, tapi bukan ide "tetap terkirim dengan penanda" | `captureCsvLine` |
+| 9 | `alert_logs` hanya berisi `alert_type = status`; gas, nilai, ambang, dan sumber belum | `telemetryStateService.js` |
+| 10 | LCD dikuasai tugas sensor (benar), tapi belum ada indikator Wi-Fi | `main.cpp` |
+| 11 | `README.md` firmware masih menjelaskan versi lama (aeros/data, 10 detik, HMAC lain) | README |
+| 12 | Folder worker punya `.env` asli; pastikan tidak pernah masuk git (akar sudah mengabaikannya) | `.gitignore` |
+
+### 7.3 Artinya untuk rencana kita
+- **Arsitektur dan kontrak pesan sudah sejalan.** Yang perlu dilakukan kita adalah mengganti isi `sensorOriginal.inl` dengan inti sensor **baru** kita, dan memberi jembatan **struktur data** (bukan teks CSV): ppm, status 5 level, `kond` pemanasan atau gangguan, fase, `event_id`.
+- Pesan v3 versi temanmu menjadi dasar. Field tambahan kita (`rs_r0_milli`, `kond_*`, `fase_*`, `fw`) ditambahkan bersama di dua sisi.
+- Hal yang harus diperbaiki sebelum dipakai: butir 1 sampai 4 di atas (bisa dikompilasi, partisi, alarm tetap jalan saat konfigurasi gagal, penyiapan LittleFS).
+- Hasil kompilasi dan perubahan `static` hanya di salinan sementara. Kode asli temanmu tidak kuubah.
+
+### 7.4 Pertanyaan untuk teman
+1. Apakah versi ini sudah berhasil dikompilasi di laptopmu? Kalau ya, apa bedanya dengan file yang kukirim (butir 1)?
+2. Partisi apa yang dipakai, dan bagaimana LittleFS disiapkan?
+3. Maukah worker menyimpan `gas`, `nilai`, dan `ambang` di `alert_logs`?
+4. Setuju bila isi `sensorOriginal.inl` diganti dengan inti sensor baru, dengan antarmuka struktur (bukan CSV)?
