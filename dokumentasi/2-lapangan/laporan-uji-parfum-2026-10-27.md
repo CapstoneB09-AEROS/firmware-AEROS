@@ -1,0 +1,47 @@
+# Laporan Uji Parfum (Ruangan, 27 Oktober 2026)
+
+Tujuan: melihat apakah gas selain CO (di sini parfum) bisa memicu bacaan CO, dan apakah pengaman yang direncanakan (filter SMA 6 dan konfirmasi 30 detik) cukup.
+
+## 1. Kondisi uji
+| Hal | Isi |
+|---|---|
+| Alat | ESP baru, **firmware v0** (EMA 0,2, CO ambang 35 ppm), MiCS-5524 dan MH-Z19C, R0 1730 kΩ, VCC 4,64 V |
+| Log | `logs/device-monitor-261027-140826.log` (14:08:27 sampai 14:18:16, ada penanda waktu monitor) |
+| Pemanasan | Sudah lewat (ESP menyala sejak sekitar 13:49, di log sudah t=1171 detik) |
+| Tempat | Ruang sekitar 10×6 m, satu AC platform. Alat di meja dekat penguji |
+| Sumber | Parfum (merek dan kandungan alkohol tidak dicatat) |
+| Catatan penguji | 1 menit diam. Semprot 1: jarak 30 cm, dari atas nozzle ke arah sensor. Dibiarkan sampai menit ke-6. Semprot 2: jarak 10 cm, nozzle ke arah samping |
+| Jam semprotan | Diambil dari lonjakan di log: semprot 1 sekitar **14:09:58**, semprot 2 sekitar **14:14:48**. Jam asli penguji tidak dicatat |
+
+## 2. Hasil
+Skrip: [analisis/analisis_parfum.py](../analisis/analisis_parfum.py). Keluaran mentah: [analisis/hasil-uji-parfum-2026-10-27.txt](../analisis/hasil-uji-parfum-2026-10-27.txt).
+
+| | Semprot 1 (30 cm, ke sensor) | Semprot 2 (10 cm, ke samping) |
+|---|---|---|
+| Rs sebelum | 1883 kΩ | 1548 kΩ |
+| Rs terendah | **146 kΩ** (turun 92%), 13 detik setelah semprot | 815 kΩ (turun 47%), 3 detik setelah |
+| Estimasi CO puncak | **83 ppm** (log v0), 72 ppm (SMA 6) | 11 ppm (log v0), 0 (SMA 6) |
+| Di atas 35 ppm (SMA 6) | **14 detik** berturut-turut | 0 detik |
+| Di atas 87 ppm | 0 detik | 0 detik |
+| Status firmware lama | `ALARM(est)` **40 detik** (14:10:16-14:10:55) | tidak ada alarm |
+| Waspada di aturan baru (35 ppm selama 30 detik) | **tidak** | tidak |
+| Pulih ke 90% Rs sebelum | 331 detik (sekitar 5,5 menit) setelah titik terendah | 19 detik |
+
+CO2 selama uji 776-1227 ppm, tidak dipengaruhi parfum (perubahan dari orang dan napas).
+
+## 3. Kesimpulan
+1. **Parfum membuat sensor membaca "CO"**: dari jarak 30 cm, Rs turun 92% dan estimasi 72-83 ppm, mendekati ambang bahaya 87 ppm. Ini bukti nyata untuk batasan "sensor tidak membedakan CO dan gas lain".
+2. **Firmware lama membunyikan alarm 40 detik** untuk satu semprotan.
+3. **Aturan baru tidak akan membunyikan waspada** pada semprotan ini, karena lonjakannya hanya 14 detik di atas 35 ppm, kurang dari konfirmasi 30 detik. Ini terjadi di ruang besar.
+4. **Pemulihan lambat** setelah paparan tinggi (sekitar 5,5 menit). Semprotan kedua pulih cepat karena sumbernya jauh lebih lemah.
+5. Rs sebelum semprot 2 (1548 kΩ) masih lebih rendah dari sebelum semprot 1 (sekitar 1890 kΩ), karena belum pulih penuh. Itu wajar.
+
+## 4. Keterbatasan
+- Satu parfum, dua semprotan, satu ruangan besar. **Tidak bisa disimpulkan untuk kabin mobil**, yang ruangnya jauh lebih kecil. Di sana konsentrasi bisa lebih tinggi dan bertahan lebih dari 30 detik.
+- Estimasi ppm dari kurva datasheet (±10%), bukan konsentrasi parfum atau CO nyata.
+- Jam semprotan dari log, bukan catatan penguji.
+- Tidak ada pengulangan.
+- **Peringatan datasheet:** sensor tidak boleh terpapar konsentrasi tinggi pelarut organik, karena lapisan sensitifnya bisa rusak (lihat [batasan-sistem.md](../3-bukti/batasan-sistem.md)). Pemulihan Rs tampak baik pada uji ini, tapi jangan mengulang dengan banyak semprotan.
+
+## 5. Yang masih perlu
+Satu uji di mobil (jendela tertutup, satu semprotan 30-50 cm ke arah dashboard, rekam 5 menit, dilakukan di akhir sesi supaya tidak mengganggu uji lain). Hasilnya menentukan apakah konfirmasi 30 detik dan ambang 87 ppm cukup, atau cukup ditulis sebagai batasan.

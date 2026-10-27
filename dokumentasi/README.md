@@ -15,6 +15,7 @@ Kumpulan dokumen untuk prototipe pemantau CO dan CO2 di kabin mobil (firmware, r
 | 2 | [1-utama/pseudocode-baru.md](1-utama/pseudocode-baru.md) | Algoritma baru, pilihan filter, diagram alur, daftar bagian yang belum fix | Saat membahas atau menulis firmware |
 | 3 | [1-utama/rancangan-data.md](1-utama/rancangan-data.md) | Data, pesan MQTT, tabel database, DFD (perkiraan) | Saat rapat dengan tim backend dan software |
 | 4 | [1-utama/daftar-tugas.md](1-utama/daftar-tugas.md) | Daftar tugas, urutan pengerjaan, dan daftar asumsi | Setiap hari, untuk tahu "sekarang ngapain" |
+| 5 | [1-utama/keputusan-terbuka.md](1-utama/keputusan-terbuka.md) | Semua yang belum diputuskan (UX, angka, hardware, data) dengan usulan | Sebelum pertemuan tim |
 
 ## Peta folder
 

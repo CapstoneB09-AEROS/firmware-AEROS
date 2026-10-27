@@ -23,7 +23,7 @@ Sumber: datasheet SGX Sensortech MiCS-5524 rev 6 (sudah dibaca).
 | Pengaruh listrik statis | Direkomendasikan memakai perlindungan ESD saat menangani | Berlaku saat perakitan |
 | Suhu dan kelembapan operasi | −30 sampai 85 °C, 5 sampai 95% RH | Kabin mobil perlu dicek terhadap rentang ini |
 | Kondisi acuan kurva | 25 °C dan 50% RH (kurva Rs/R0) | Di luar kondisi ini, pembacaan bergeser dan tidak dikompensasi |
-| Gas lain | Ikut bereaksi terhadap etanol, hidrogen, amonia, metana, dan lain-lain | Tidak bisa membedakan CO dari gas lain |
+| Gas lain | Ikut bereaksi terhadap etanol, hidrogen, amonia, metana, dan lain-lain | Tidak bisa membedakan CO dari gas lain **Terbukti 27 Okt 2026 (uji parfum di ruangan, [laporan](../2-lapangan/laporan-uji-parfum-2026-10-27.md)):** satu semprotan parfum 30 cm membuat Rs turun 92% dalam 13 detik, estimasi CO 72-83 ppm, di atas 35 ppm selama 14 detik. Pemulihan sekitar 5-6 menit. Belum diuji di kabin mobil. |
 
 ### MH-Z19C (CO2)
 

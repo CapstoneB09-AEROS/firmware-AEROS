@@ -1,0 +1,22 @@
+Baris: 588, 14:08:27 sampai 14:18:16
+Lonjakan terdeteksi: 2
+
+--- Semprotan 1: mulai sekitar 14:09:58, Rs sebelum 1883 kOhm
+  Rs terendah (mentah) 146 kOhm pada 14:10:11 (13 detik setelah mulai), turun 92%
+  Puncak ppm estimasi: mentah 83, SMA 6 72, log v0 83
+  Di atas 35 ppm (SMA 6): paling lama 14 detik berturut-turut; di atas 87 ppm: 0 detik
+  Waspada di aturan baru (35 ppm selama 30 detik): TIDAK; bahaya (87 ppm): TIDAK
+  Status ALARM firmware lama (v0): 40 detik (14:10:16-14:10:55)
+  Pulih ke 90% dari Rs awal: 331 detik setelah titik terendah
+  Pulih ke 95% dari Rs awal: 343 detik setelah titik terendah
+
+--- Semprotan 2: mulai sekitar 14:14:48, Rs sebelum 1548 kOhm
+  Rs terendah (mentah) 815 kOhm pada 14:14:51 (3 detik setelah mulai), turun 47%
+  Puncak ppm estimasi: mentah 11, SMA 6 0, log v0 11
+  Di atas 35 ppm (SMA 6): paling lama 0 detik berturut-turut; di atas 87 ppm: 0 detik
+  Waspada di aturan baru (35 ppm selama 30 detik): TIDAK; bahaya (87 ppm): TIDAK
+  Status ALARM firmware lama (v0): 0 detik
+  Pulih ke 90% dari Rs awal: 19 detik setelah titik terendah
+  Pulih ke 95% dari Rs awal: 29 detik setelah titik terendah
+
+CO2 selama uji: 776-1227 ppm (tidak dipengaruhi parfum; perubahan dari orang dan napas)
