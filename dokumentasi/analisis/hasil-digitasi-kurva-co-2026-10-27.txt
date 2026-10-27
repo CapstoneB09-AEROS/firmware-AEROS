@@ -1,0 +1,20 @@
+Sumbu: 1 ppm di x=195, 1000 ppm di x=528; Rs/R0=1 di y=132, 0.01 di y=339
+Titik kurva dipakai: 326
+Hasil ukur piksel : A = 3.460, BETA = 0.840  (simpangan baku residu 0.0091 dekade, maks 0.0353)
+Nilai di kode     : A = 3.7, BETA = 0.856
+Ketidakpastian sumbu (+-1.5 piksel): A 3.35-3.58, BETA 0.840-0.840
+
+ppm  | Rs/R0 hasil ukur | Rs/R0 rumus kode | selisih Rs/R0 | ppm yg dibaca kode dari Rs/R0 hasil ukur
+   1 | 3.4604           | 3.7000           |  +6.9%        |     1.1
+   2 | 1.9327           | 2.0442           |  +5.8%        |     2.1
+   5 | 0.8949           | 0.9330           |  +4.3%        |     5.2
+  10 | 0.4998           | 0.5155           |  +3.1%        |    10.4
+  20 | 0.2792           | 0.2848           |  +2.0%        |    20.5
+  35 | 0.1744           | 0.1764           |  +1.1%        |    35.5
+  60 | 0.1109           | 0.1112           |  +0.3%        |    60.2
+  87 | 0.0812           | 0.0809           |  -0.3%        |    86.7
+ 100 | 0.0722           | 0.0718           |  -0.5%        |    99.4
+ 300 | 0.0287           | 0.0280           |  -2.2%        |   292.2
+1000 | 0.0104           | 0.0100           |  -4.1%        |   952.6
+
+Faktor sensitivitas (Rs udara / Rs pada 60 ppm) menurut kurva: 9.0 (rentang datasheet S60: 1.2-50)

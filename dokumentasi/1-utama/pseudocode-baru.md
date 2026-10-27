@@ -73,15 +73,17 @@ CO_WAKTU_PEMULIHAN     = 60 detik                                 [B7]
 
 CO2_AMBANG_PERINGATAN  = 2500 ppm
 CO2_AMBANG_TINDAKAN    = 4000 ppm
-CO2_BATAS_SELESAI      = 2400 ppm                                 [B8]
-CO2_WAKTU_PEMULIHAN    = 60 detik                                 [B8]
+CO2_BATAS_SELESAI      = 2500 ppm   (usulan: tutup saat bacaan < 2500; data Avanza, bagian 2.9)   [B8]
+CO2_WAKTU_PEMULIHAN    = 10 detik   (3 bacaan; sebelumnya 60 detik)                              [B8]
 CO2_BACAAN_KONFIRMASI  = 3 bacaan valid berturut-turut            [B8]
 
 PEMANASAN_CO           = 180 detik   (diputuskan 25 Okt malam; alasan di 2.7)
 PEMANASAN_CO2          = 180 detik   (diputuskan 25 Okt malam; alasan di 2.7)
 
-BUKAAN_JENDELA         = sesuai mobil (waktu jalan motor)         [B9]
-JEDA_MINIMUM_JENDELA   = belum ada angka                          [B9]
+BUKAAN_JENDELA         = setengah, diatur LEWAT WAKTU jalan motor (WAKTU_SETENGAH, diukur per mobil)   [B9]
+JENDELA_BUKA_MAKS      = 180 detik  (batas aman: tutup walau CO2 belum turun)   [B9]
+JENDELA_BUKA_MIN       = 20 detik   (jangan menutup sebelum ini)                 [B9]
+JEDA_MINIMUM_JENDELA   = 5 menit tertutup sebelum buka lagi (usulan; data: siklus alami 15 menit)   [B9]
 BUZZER_BERHENTI_SENDIRI = 5 menit
 ```
 
@@ -91,7 +93,7 @@ BUZZER_BERHENTI_SENDIRI = 5 menit
 faseCO       : TIDAK_AKTIF | UJI_ARAH | SUMBER_DALAM | SUMBER_LUAR
 faseCO2      : NORMAL | PERINGATAN | TINDAKAN
 rsAwalUji                     (nilai Rs yang sudah difilter saat uji arah dimulai)
-penghitung   : konfirmasiCO, pemulihanCO, konfirmasiCO2, pemulihanCO2, waktuUji
+penghitung   : konfirmasiCO, pemulihanCO, konfirmasiCO2, pemulihanCO2, waktuUji, lamaBuka
 jendela      : TERTUTUP | TERBUKA
 statusSensor : CO_VALID?, CO2_VALID?, pemanasanCO?, pemanasanCO2?
 ```
@@ -152,7 +154,7 @@ SETIAP INTERVAL_SIKLUS (tepat 1 detik):
         selama PEMANASAN_CO: tampilkan "PEMANASAN", bukan angka ppm CO
             (data 25 Okt: 20 detik pertama terbaca 3000-4120 ppm palsu karena Rs masih 59 kOhm)
         serial: baris CSV
-        kirim data tiap 5 detik (rata-rata dan maksimum), dan segera saat status berubah   [B14]
+        kirim data tiap 5 detik (rata-rata dan maksimum), dan segera saat status berubah   [B14] (lewat antrean, lihat 2.8)
         data simulasi diberi label                                  [B17]
 
     9. TOMBOL "SAYA TAHU": matikan bunyi. Bunyi juga mati sendiri setelah BUZZER_BERHENTI_SENDIRI.   [B15]
@@ -218,14 +220,20 @@ ATURAN CO2   (dijalankan hanya bila faseCO = TIDAK_AKTIF):
         faseCO2 = TINDAKAN
         bunyi dinyalakan
         jendela = BUKA sebesar BUKAAN_JENDELA                       [B9]
+        lamaBuka = 0
     sebaliknya kalau CO2 >= CO2_AMBANG_PERINGATAN selama CO2_BACAAN_KONFIRMASI bacaan:
         kalau faseCO2 masih NORMAL:
             faseCO2 = PERINGATAN
             bunyi singkat SATU KALI
             kirim peringatan ke aplikasi
 
+    kalau faseCO2 = TINDAKAN dan jendela TERBUKA:
+        lamaBuka = lamaBuka + 1 detik
+        kalau lamaBuka >= JENDELA_BUKA_MAKS:                        [B9]
+            jendela = TUTUP ; tandai "CO2 tidak turun" (tampilkan dan kirim sebagai kejadian)
+
     kalau faseCO2 bukan NORMAL:
-        kalau CO2 < CO2_BATAS_SELESAI:                              [B8]
+        kalau CO2 < CO2_BATAS_SELESAI dan lamaBuka >= JENDELA_BUKA_MIN:   [B8, B9]
             pemulihanCO2 = pemulihanCO2 + 1 detik
             kalau pemulihanCO2 >= CO2_WAKTU_PEMULIHAN:              [B8]
                 faseCO2 = NORMAL
@@ -248,6 +256,26 @@ KALAU MODE_SIMULASI aktif:
     beri label "SIMULASI" di layar, serial, dan pesan data
 ```
 
+### 2.9 Menutup jendela: batas turun dan lama buka (dasar data Avanza, 26 Okt)
+
+Pertanyaan: jendela dibuka setengah berapa lama, dan kapan ditutup?
+
+| Data (Avanza, dua jendela depan setengah, 20–40 km/jam) | Jendela 1 | Jendela 2 |
+|---|---|---|
+| CO2 saat dibuka | sekitar 4437 | sekitar 4447 |
+| Lama sampai bacaan < 2500 | sekitar 95 detik | sekitar 100 detik |
+| Bacaan saat ditutup | 2384 | 2121 |
+| Terus turun sesudah ditutup | sampai 1831 | sampai 1660 |
+
+Pengertian dari data:
+- **Menutup saat bacaan < 2500 sudah cukup.** CO2 terus turun sesudah ditutup (jeda sensor dan pencampuran udara), sehingga menunggu 60 detik tambahan hanya membuat jendela terbuka lebih lama tanpa perlu.
+- Naik kembali dari bawah 2500 ke 4000 butuh 7–10 menit, jadi jendela tidak sering bergerak.
+- **Lama buka bergantung mobil dan kecepatan**, jadi lamanya tidak ditetapkan tetap. Rancangan: buka setengah dengan waktu motor (usulan teman elektro), **tahan sampai bacaan < 2500**, dengan batas atas 180 detik (sekitar 1,8 kali waktu yang dibutuhkan Avanza) dan batas bawah 20 detik.
+- Bila sensor CO2 gagal, jendela tidak dibuka otomatis oleh aturan CO2 (tidak ada dasar untuk menutup). Batas 180 detik tetap melindungi bila bacaan tidak pernah turun.
+- Bukaan setengah ditentukan oleh `WAKTU_SETENGAH` = setengah dari waktu buka penuh motor, diukur per mobil (Classy, Civic, Avanza).
+
+Yang belum diketahui: waktu motor jendela tiap mobil dan perilaku di mobil lain (Civic belum punya uji buka jendela).
+
 ### 2.7 Pemanasan: kenapa 3 menit untuk masing-masing sensor
 
 | | CO2 (MH-Z19C) | CO (MiCS-5524) |
@@ -261,6 +289,30 @@ KALAU MODE_SIMULASI aktif:
 | Yang tidak diklaim | Akurasi CO2 di menit awal tidak terbukti (tanpa gas acuan) | Stabil bukan berarti benar. Baseline di mobil masih bergeser dan R0 dari kamar tidak cocok (lihat B1) |
 
 Perlu diingat: pemanasan dihitung dari saat ESP32 menyala. Pada uji mobil malam itu alat menyala tiga kali (21:37, 21:41, 22:00) dan setiap kali pemanasan mulai dari nol, sehingga alarm CO mati selama 3 menit pertama tiap kali menyala.
+
+### 2.8 Pengiriman data lewat Wi-Fi (draf untuk dibahas dengan tim backend) [B14]
+
+Dua syarat: (1) alarm dan jendela **tidak bergantung internet**; (2) siklus sensor tetap **tepat 1 detik**, karena filter SMA 6 bergantung pada itu. Menyambung Wi-Fi atau MQTT bisa memakan beberapa detik, jadi pengiriman dipisah dari siklus sensor. Nama topik dan isi pesan ada di [rancangan-data.md](rancangan-data.md) bagian 3.
+
+```
+SAAT DINYALAKAN (tambahan):
+    jalankan TUGAS_KIRIM sebagai tugas terpisah (di inti prosesor kedua)
+
+TUGAS_KIRIM  (berjalan sendiri, tidak pernah menahan siklus sensor):
+    ulangi terus:
+        kalau Wi-Fi belum tersambung: coba sambung, lalu tunggu sebentar (tidak memblokir)
+        kalau MQTT belum tersambung: coba sambung, pasang pesan "offline" (last will)
+        ambil satu pesan dari ANTREAN_KIRIM, kirim ke topik yang sesuai
+        kalau gagal: simpan pesan kejadian, buang telemetri yang paling lama
+
+DI SIKLUS UTAMA (langkah 8):
+    tiap 5 detik        : taruh telemetri ke ANTREAN_KIRIM (tidak menunggu terkirim)
+    saat status berubah : taruh kejadian ke ANTREAN_KIRIM
+    kalau antrean penuh : buang telemetri tertua, jangan buang kejadian
+    kalau perintah "Saya Tahu" masuk : matikan bunyi (langkah 9)
+```
+
+Belum diputuskan: panjang antrean (usulan awal 20 pesan), jam dari NTP atau dari server, dan keamanan koneksi. Semuanya bagian dari B14 dan agenda pertemuan.
 
 ---
 
@@ -303,8 +355,8 @@ Berkas SVG (bisa dibuka di draw.io atau Inkscape untuk diedit) dan skrip pembuat
 | B5 | Lama uji arah (30 sampai 60 detik) | Batas bawah respons filter, batas atas tambahan paparan | desain-peringatan.md F2 |
 | B6 | Kriteria "CO naik lagi" dan perlakuan hasil tidak jelas. **8% tidak aman:** tanpa gas, Rs berubah lebih dari −8% dalam 30 detik pada 8–13% waktu (mobil dan kamar). Persentil ke-5 perubahan 30 detik: −11,7 (mobil sesi 1), −9,0 (mobil sesi 2), −13,4 (kamar). Tambahan kamar pagi 26 Okt: lebih dari −15% terjadi 2,6% waktu (7,1% pada P2), dan lebih dari −25% **tidak pernah** dalam sekitar 28.000 detik data tanpa gas (maksimum −21,4%). Usulan sementara 25%. Lonjakan CO nyata jauh lebih besar (35 → 87 ppm = Rs turun sekitar 54%) | Tabel sensitivitas; ulangi dengan log uji korek | desain-peringatan.md E4 |
 | B7 | Batas selesai CO (30 ppm) dan waktu pemulihan (60 detik) | Tabel sensitivitas | desain-peringatan.md F5 |
-| B8 | Konfirmasi CO2 (3 bacaan), batas selesai 2400 dan 60 detik | Tabel sensitivitas, uji mobil | desain-peringatan.md H |
-| B9 | Besar bukaan jendela per mobil, jeda minimum, anti-jepit | Ukur laju pertukaran udara (N) dan waktu motor tiap mobil | skenario-uji-mobil.md |
+| B8 | Konfirmasi CO2 (3 bacaan). **Batas selesai diusulkan 2500 dan pemulihan 10 detik** (data Avanza, 2.9) | Tabel sensitivitas, uji mobil | desain-peringatan.md H |
+| B9 | Besar bukaan jendela (setengah, lewat waktu motor), lama buka maksimum 180 detik dan minimum 20 detik (usulan, 2.9), jeda minimum, anti-jepit | Ukur laju pertukaran udara (N) dan waktu motor tiap mobil | skenario-uji-mobil.md |
 | B10 | Perlakuan bila satu sensor gagal (apakah menahan aksi sensor lain), dan perilaku bila ADS1115 tidak ada | Keputusan tim | rencana-desain.md FR-09 |
 | B11 | ~~Panjang pemanasan~~ **Diputuskan 3 menit untuk keduanya** (2.7). Sisa: cara mendeteksi sensor mati sebentar tanpa ESP32 mulai ulang | Analisis log baseline dan uji nyala dingin | rencana-desain.md FR-10 |
 | B12 | Panjang filter final (4, 6, atau 8) | Tabel sensitivitas dan uji ulang di PCB dan mobil | bagian 1 |

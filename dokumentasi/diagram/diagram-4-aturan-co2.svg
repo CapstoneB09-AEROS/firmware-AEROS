@@ -24,8 +24,8 @@
 <text x="420.0" y="736.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2  tidak sama</text>
 <text x="420.0" y="754.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">dengan NORMAL?</text>
 <polygon points="420,825.0 600.0,880 420,935.0 240.0,880" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
-<text x="420.0" y="876.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">CO2  &lt;  2400 ppm selama</text>
-<text x="420.0" y="894.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">60 detik?  [B8]</text>
+<text x="420.0" y="876.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">CO2  &lt;  2500 ppm selama</text>
+<text x="420.0" y="894.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">10 detik (3 bacaan)?  [B8]</text>
 <rect x="210.0" y="975.0" width="420" height="90" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
 <text x="420.0" y="1016.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2 = NORMAL,  bunyi OFF</text>
 <text x="420.0" y="1034.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">jendela TUTUP,  reset penghitung CO2</text>
@@ -66,9 +66,10 @@
 <path d="M 420.0,1065.0 L 420.0,1100.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
 <text x="40" y="640" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Belum fix:</text>
 <text x="40" y="656" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">B8 jumlah bacaan konfirmasi (3),</text>
-<text x="40" y="672" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">batas selesai 2400 dan 60 detik</text>
-<text x="40" y="688" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">B9 besar bukaan jendela per mobil,</text>
-<text x="40" y="704" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">jeda minimum antar gerakan</text>
+<text x="40" y="672" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">batas selesai 2500 dan 10 detik</text>
+<text x="40" y="688" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">B9 bukaan setengah (waktu motor),</text>
+<text x="40" y="704" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">buka maks 180 dtk, min 20 dtk,</text>
+<text x="40" y="720" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">jeda minimum antar gerakan</text>
 <rect x="850" y="34" width="380" height="56" fill="#fafafa" stroke="#bbb"/>
 <rect x="860" y="44" width="16" height="12" fill="#fad7ac" stroke="#b46504"/>
 <text x="882" y="55" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">waspada / tindakan</text>

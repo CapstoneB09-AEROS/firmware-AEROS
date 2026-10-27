@@ -99,3 +99,42 @@ Data: `logs/device-monitor-261026-090343.log` (09:03–10:47, 6226 detik, tanpa 
 
 Batasan: satu kali nyala dingin; AC, pintu, dan orang dekat berubah bersamaan di P3.
 
+---
+
+## 9. Tambahan: uji ruang pertemuan dengan ESP baru (26 Oktober sore)
+
+Data: `logs/device-monitor-261026-171515.log` (17:15–18:01, 2746 detik, tanpa mulai ulang). Ruangan 4,6 × 6,7 × 2,5 m, 13 orang, 2 AC, pintu tertutup. ESP baru (CH9102), firmware lama (v0), sensor yang sama dengan sebelumnya, Wi-Fi tidak dipakai. Skrip: `analisis_fase.py`. Hasil mentah: `hasil-uji-ruang-2026-10-26.txt`. Catatan kondisi: `2-lapangan/skenario-uji-mobil.md` bagian 2B.
+
+| # | Temuan | Bukti |
+|---|--------|-------|
+| 1 | **Periode siklus Rs berbeda antara ESP lama dan ESP baru di ruangan.** ESP lama: 7,0 menit (dua hari berbeda). ESP baru di ruangan: sekitar 11,9 menit; amplitudo pada 7,0 menit hanya ±1,4%. (Koreksi: di mobil ESP baru memberi 7,6 menit, lihat bagian 10) | `analisis_fase.py` |
+| 2 | Amplitudo siklus pada ESP baru sama besar (sekitar ±12,6%) | sama |
+| 3 | Korelasi siklus dengan kuadrat amplitudo goyangan bergantian tetap tinggi (0,94), jarak balik tanda median 705 detik | sama |
+| 4 | Goyangan Rs mentah 9,7% (17:20–17:39) dan 12,7% (17:40–18:00); bagian bergantian 92% dan 97% | sama |
+| 5 | SMA 6 tetap lebih halus dari EMA 0,2: sisa noise 1,08 / 0,87% lawan 1,32 / 1,46% | sama |
+| 6 | Interval baca rata-rata: ESP lama 1,00034 detik, ESP baru 1,00007 detik | jam laptop |
+| 7 | CO2 1116–1549 ppm selama 45 menit, tidak mendekati 2500 walau 13 orang | log |
+
+Arti (dikoreksi setelah uji mobil): periode tidak ditentukan oleh ESP saja. ESP baru memberi 11,9 menit di ruangan dan 7,6 menit di mobil, sedangkan ESP lama memberi 7,0 menit dua kali di kamar. Periode bergantung pada kombinasi ESP, catu (USB laptop pada baterai atau charger belum dicatat), dan kondisi tempat. Sumber tepatnya belum diketahui. Dugaan sampling murni (sumber 2 detik dibaca tiap 1 detik) belum cocok secara hitungan dengan perubahan interval baca di atas, jadi sumber tepatnya belum terbukti.
+
+Batasan: hanya sekitar 4 siklus (45 menit), periode ±1 menit; kondisi ruangan berbeda dari kamar; Wi-Fi tidak aktif.
+
+---
+
+## 10. Tambahan: uji mobil Avanza, 26 Oktober malam (firmware lama)
+
+Data: `logs/device-monitor-261026-193817.log` (19:38–20:26). Hasil mentah dari semua skrip: `hasil-uji-mobil-2026-10-26.txt`. Laporan lengkap: `2-lapangan/skenario-uji-mobil.md` bagian 3A.
+
+| # | Temuan | Bukti |
+|---|--------|-------|
+| 1 | Laju naik CO2 tertutup: 3 orang +156, 4 orang +207 sampai +218 ppm/menit (20–40 km/jam); >100 km/jam +164 ppm/menit | kemiringan per fase |
+| 2 | Dua jendela depan setengah terbuka: CO2 4437 → 2384 dalam ±95 detik dan 4447 → 2121 dalam ±110 detik. N sekitar 30–32 per jam (batas bawah) | luruhan eksponensial |
+| 3 | CO2 terus turun 460–550 ppm setelah jendela ditutup (jeda sensor dan pencampuran) | log |
+| 4 | Siklus buka-tutup 15,6 menit dengan 4 orang; CO2 naik dari ~1830 ke ~4100 dalam ~10 menit | log |
+| 5 | Pintu dibuka 19:53: Rs −23% dalam 15 detik, lalu pulih sebagian. Jendela dibuka: Rs naik +4% sampai +8% | per 15 detik |
+| 6 | Perubahan Rs 30 detik tanpa gas: turun > 25% terjadi 0,27% waktu (kejadian pintu terbuka), > 15% 1,07% | semua log mobil dan kamar |
+| 7 | Siklus Rs lambat 7,6 menit ±8%, dengan **ESP baru** (dikonfirmasi). Di ruangan ESP baru memberi 11,9 menit, jadi periode tidak hanya ditentukan ESP | `analisis_mobil.py` bagian 6 | `analisis_mobil.py` bagian 6 |
+| 8 | SMA 6 menang bila goyangan didominasi pola bergantian (fase B, C); saat jalan bergelombang (fase A) EMA 0,2 sedikit lebih halus | `analisis_fase.py` |
+
+Batasan: satu mobil, satu malam, jam jendela sampai menit, tidak ada CO nyata.
+

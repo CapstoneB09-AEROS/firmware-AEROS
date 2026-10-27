@@ -1,0 +1,163 @@
+Berkas: device-monitor-261026-193817.log  | 2665 detik data | 19:42:30 -> 20:26:54
+
+(1) Noise Rs mentah (setelah 16 sampel dirata-rata di firmware)
+    simpangan baku terhadap tren 61 dtk : 7.3%  (di meja, kamar diam: sekitar 13%)
+    bagian goyangan bergantian 0,5 Hz   : 87%  (di meja sekitar 95%)
+
+(2) Filter pada data mobil (sisa goyangan relatif terhadap tren, makin kecil makin halus)
+    Mentah                         sisa noise  7.28%
+    SMA 6                          sisa noise  1.71%
+    SMA 4                          sisa noise  1.79%
+    SMA 8                          sisa noise  1.64%
+    EMA 0.2 (firmware sekarang)    sisa noise  1.63%
+    EMA 0.1                        sisa noise  1.43%
+
+(3) Seberapa mulus ppm CO estimasi (R0 = 1730 kOhm bawaan kode)
+    EMA 0.2 (log)  ppm min   0.0 maks  11.7 | detik berstatus 0 ppm: 2202 | lompatan 0<->~10: 27 | detik >= 35 ppm: 0
+    SMA 6          ppm min   0.0 maks  13.4 | detik berstatus 0 ppm: 2201 | lompatan 0<->~10: 9 | detik >= 35 ppm: 0
+    Rs/R0 (SMA 6): min 0.400  maks 0.693  (di kamar bersih rasio sekitar 1,0; batas hitung ppm = 0,5)
+
+(4) Pergeseran Rs per menit (SMA 6, kOhm) dan CO2
+    19:42 Rs    1057           CO2 2092-2190
+    19:43 Rs    1110     +5%   CO2 2194-2378
+    19:44 Rs    1162     +5%   CO2 2380-2524
+    19:45 Rs    1175     +1%   CO2 2525-2670
+    19:46 Rs    1144     -3%   CO2 2672-2809
+    19:47 Rs    1035    -10%   CO2 2809-3000
+    19:48 Rs    1019     -2%   CO2 3003-3190
+    19:49 Rs    1003     -2%   CO2 3194-3382
+    19:50 Rs    1000     -0%   CO2 3387-3470
+    19:51 Rs    1075     +8%   CO2 3426-3512
+    19:52 Rs    1117     +4%   CO2 3515-3652
+    19:53 Rs     920    -18%   CO2 3645-3879
+    19:54 Rs     898     -2%   CO2 3887-4205
+    19:55 Rs     835     -7%   CO2 4210-4416
+    19:56 Rs     869     +4%   CO2 3786-4444
+    19:57 Rs     935     +8%   CO2 2302-3763
+    19:58 Rs     944     +1%   CO2 1831-2281
+    19:59 Rs    1011     +7%   CO2 1827-1966
+    20:00 Rs    1054     +4%   CO2 1969-2254
+    20:01 Rs    1080     +3%   CO2 2255-2493
+    20:02 Rs    1011     -6%   CO2 2494-2652
+    20:03 Rs     933     -8%   CO2 2652-2854
+    20:04 Rs     924     -1%   CO2 2862-3063
+    20:05 Rs     911     -1%   CO2 3067-3279
+    20:06 Rs     928     +2%   CO2 3287-3497
+    20:07 Rs    1004     +8%   CO2 3498-3710
+    20:08 Rs    1022     +2%   CO2 3710-3910
+    20:09 Rs     990     -3%   CO2 3916-4094
+    20:10 Rs     887    -10%   CO2 4085-4280
+    20:11 Rs     873     -2%   CO2 4260-4453
+    20:12 Rs     890     +2%   CO2 3149-4428
+    20:13 Rs     887     -0%   CO2 1885-3122
+    20:14 Rs     955     +8%   CO2 1657-1875
+    20:15 Rs     987     +3%   CO2 1661-1888
+    20:16 Rs     983     -0%   CO2 1892-2143
+    20:17 Rs     874    -11%   CO2 2148-2361
+    20:18 Rs     858     -2%   CO2 2363-2579
+    20:19 Rs     848     -1%   CO2 2583-2773
+    20:20 Rs     839     -1%   CO2 2783-2997
+    20:21 Rs     889     +6%   CO2 3003-3184
+    20:22 Rs     946     +6%   CO2 3185-3300
+    20:23 Rs     970     +2%   CO2 3295-3411
+    20:24 Rs     894     -8%   CO2 3403-3567
+    20:25 Rs     835     -7%   CO2 3556-3739
+    20:26 Rs     833     -0%   CO2 3736-3842
+
+(5) CO2 MH-Z19C: selisih antar detik rata-rata mutlak 5.2 ppm, simpangan 7.8 ppm
+
+(6) Siklus lambat Rs: periode terkuat 7.6 menit, amplitudo +-7.8% dari Rs
+    seperempat ke-1: +-8.6%
+    seperempat ke-2: +-8.2%
+    seperempat ke-3: +-7.1%
+    seperempat ke-4: +-8.0%
+
+################ filter_compare.py
+Baris dipakai: 2918  t_s 47 -> 2964  (baris file 1-2918)
+Jam: 19:38:17.694 -> 20:26:54.819
+Status CO: {'WARMUP': 253, 'OK(<10ppm)': 2201, 'OK': 464}
+Celah waktu: tidak ada
+Rs mentah valid: 2918 dari 2918  rentang 585-1361 kOhm  rata-rata 972 kOhm
+Amplitudo goyangan detik-ke-detik rata-rata: sekitar +-5.2% dari Rs
+
+Filter                            noise (%)   turun   lag-1  t90 (dtk)   lonjakan +30% tersisa (%)
+Mentah (tanpa filter)                 7.405      0%   -0.76          0                        30.0
+SMA 2                                 2.543     66%    0.97          1                        14.5
+SMA 3                                 3.418     54%    0.08          2                         9.8
+SMA 4                                 2.486     66%    0.98          3                         7.3
+SMA 5                                 2.821     62%    0.52          4                         5.9
+SMA 6                                 2.426     67%    0.99          5                         4.8
+SMA 8                                 2.366     68%    0.99          7                         3.6
+SMA 10                                2.310     69%    0.99          8                         2.9
+SMA 30                                1.915     74%    1.00         26                         1.0
+EMA 0.05                              1.574     79%    0.99         44                         1.5
+EMA 0.1                               2.004     73%    0.95         21                         2.9
+EMA 0.2 (firmware sekarang)           2.374     68%    0.80         10                         5.8
+Median 5                              7.153      3%   -0.76          2                         7.6
+Median 5 lalu EMA 0.1                 2.018     73%    0.95         23                         1.7
+
+noise (%) = simpangan baku Rs di sekitar tren lambat, relatif terhadap tren
+lag-1 negatif besar = goyangan bolak-balik tiap detik
+t90 = detik sampai keluaran filter menempuh 90% dari perubahan mendadak
+
+################ noise_profile.py
+Segmen terpanjang tanpa celah: 2665 detik, t_s 300 -> 2964
+Jam: 19:42:30.724 -> 20:26:54.819
+Jumlah segmen: 1 (celah di antaranya diabaikan)
+
+(1) Noise per blok 15 menit (semua segmen tanpa celah yang cukup panjang)
+jam       V rata2  noise V   noise Rs  goyang   bagian
+          (mV)     (mV)      (%)       +-(mV)   bergantian (%)
+19:42       45.54     3.61      7.80     2.43           75
+19:57       47.86     3.22      7.26     2.50           94
+20:12       51.27     3.43      7.23     2.64           94
+
+(2) Aditif atau multiplikatif?
+jumlah blok: 3; rentang V rata2 45.5-51.3 mV
+korelasi antar blok: V rata2 vs noise V = -0.36; V rata2 vs goyangan = +0.99; V rata2 vs noise Rs (%) = -0.83
+Catatan: V rata2 tinggi berarti Rs rendah. Noise V yang naik bersama V menunjukkan goyangan yang proporsional terhadap sinyal.
+Bila noise Rs (%) hampir tetap walau V berubah, goyangan bersifat relatif terhadap Rs.
+rasio noise V terhadap V rata2 (persen): min 6.7, maks 7.9
+
+(3) Goyangan bergantian tiap detik (0,5 Hz)
+amplitudo bertanda: maks 7.43 mV, rata-rata mutlak 2.47 mV
+jumlah titik amplitudo menyentuh nol (gelombang pembeda): 6
+selang antar titik nol: median 448 detik (min 435, maks 479)
+periode gelombang pembeda sekitar 896 detik, selisih frekuensi sekitar 1.12 mHz
+periode sumber gangguan sekitar 1.9955 atau 2.0045 detik (dua kemungkinan)
+Catatan: perkiraan kasar. Tidak membuktikan sumbernya.
+
+(4) Bentuk sebaran noise Rs (persen terhadap tren 31 detik)
+simpangan baku 7.44%, kemiringan +0.01, kurtosis lebih +0.42 (0 untuk sebaran normal)
+persentil 50/90/99 dari |noise|: 2.52% / 12.61% / 16.40%
+
+(5) Noise CO2
+simpangan baku di sekitar tren 31 detik: 8.08 ppm; perubahan terbesar per detik: 35 ppm
+detik tanpa perubahan nilai: 8%
+
+(6) Filter genap vs ganjil (noise Rs terhadap tren 121 detik, keterlambatan filter dikoreksi)
+Filter     noise Rs (%)   turun
+Mentah             7.72      0%
+SMA 2              2.65     66%
+SMA 3              3.56     54%
+SMA 4              2.59     66%
+SMA 5              2.94     62%
+SMA 6              2.53     67%
+SMA 8              2.46     68%
+SMA 10             2.40     69%
+EMA 0.2            2.47     68%
+EMA 0.1            2.08     73%
+detik dianalisis: 2535
+Catatan: bila SMA 2 sudah sama baiknya dengan SMA 10, sisa noise adalah gerakan lambat (puluhan detik ke atas) yang tidak bisa dibuang filter pendek tanpa keterlambatan.
+
+################ analisis_fase.py (A=19:43-19:55 B=19:57-20:10 C=20:13-20:26)
+Berkas: device-monitor-261026-193817.log | 2918 detik | 19:38:17 -> 20:26:54
+
+Fase        jam              n    Rs rata2  goyang  bergantian | sisa noise: SMA6  EMA0,2 | siklus 7 mnt | CO2
+A          19:43-19:54    720     1054    8.8%       60%   |     3.16%   2.76% |    +-7.1%   | 2194-4205
+B          19:57-20:09    780      980    7.7%       71%   |     0.72%   1.06% |    +-7.3%   | 1827-4094
+C          20:13-20:25    780      905    7.6%       92%   |     0.78%   1.09% |    +-7.7%   | 1657-3739
+
+Seluruh log (setelah 300 dtk pertama): periode siklus lambat terkuat 7.62 menit, amplitudo +-8.1%
+Jarak balik tanda goyangan bergantian: median 450 detik (5 kali balik)
+Korelasi siklus lambat dengan kuadrat amplitudo goyangan bergantian (lag 0): 0.67

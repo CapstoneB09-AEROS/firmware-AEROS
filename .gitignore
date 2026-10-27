@@ -25,3 +25,6 @@ secrets.h
 # PDF besar disimpan lokal saja
 dokumentasi/rencana-awal/*.pdf
 dokumentasi/paper/*.pdf
+
+# Cadangan isi flash ESP (bisa memuat setelan Wi-Fi), jangan dikomit
+arsip-firmware/*.bin

@@ -4,6 +4,23 @@ Dikumpulkan dari seluruh pekerjaan 25 Oktober 2026. Centang saat selesai. Tanda 
 
 Cara memakai: bawa laptop dengan folder `dokumentasi/` dan `logs/`. Setiap butir menyebut file asalnya.
 
+## Skenario pertemuan (ringkas)
+
+Wi-Fi tersambung tapi diam berbeda dengan Wi-Fi mengirim data (arus naik tajam sesaat saat kirim), jadi diuji terpisah.
+
+1. **Buka (5 menit).** Tujuan: ESP final, uji dasar, keputusan Wi-Fi, jadwal sampai 29 Okt siang.
+2. **Persiapan (10 menit).** Ganti ESP. Ukur 5V di pin sensor dan catat. Perbarui `VCC` di kode bila beda dari 4,64 V. Catat pinout PCB.
+3. **Tahap A (30 menit): ESP baru, firmware lama, Wi-Fi mati.** Sambil jalan bahas **hardware**: pinout PCB, penggerak jendela (relay, arus, anti-jepit), waktu buka dan tutup jendela, tegangan ke ADS1115.
+4. **Tahap B1 (15 menit): Wi-Fi tersambung, belum kirim.** Ukur 5V dan lihat noise.
+5. **Tahap B2 (15 menit): kirim telemetri tiap 5 detik (kode tim).** Ukur 5V lagi. Sambil jalan bahas **backend**: format pesan, `sim_mode`, retensi, perubahan database.
+6. **Bandingkan A, B1, B2 (10 menit).** 5V minimum dan maksimum, goyangan Rs, periode siklus 7 menit, ada tidaknya mulai ulang. Putuskan apakah catu sensor dipisah.
+7. **Software (10 menit).** CO sebagai estimasi, pesan "kemungkinan CO atau gas lain", perangkat offline tidak tampil "aman".
+8. **Wi-Fi di pseudocode (10 menit).** Periksa [pseudocode-baru.md](../1-utama/pseudocode-baru.md) bagian 2.8. Putuskan panjang antrean dan sumber jam. Perubahan ditulis setelah rapat.
+9. **Jadwal dan tugas (10 menit).** Siapa memegang ESP dan sensor jam berapa untuk 4 sesi sensor. Siapa mengerjakan apa. Firmware dibekukan 29 Okt siang.
+10. **Tutup.** Daftar keputusan, penanggung jawab, tenggat.
+
+Rincian tiap butir ada di bagian 0–5 di bawah.
+
 ---
 
 ## 0. Keputusan bersama (semua orang)

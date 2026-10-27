@@ -289,7 +289,7 @@ def diagram4():
     tind = k.persegi(900, 300, 330, 100, ['TINDAKAN', 'faseCO2 = TINDAKAN, bunyi ON', 'jendela BUKA sebesar bukaan mobil [B9]'], 'oranye')
     per = k.persegi(900, 430, 330, 100, ['PERINGATAN (sekali per kejadian)', 'bunyi singkat SATU KALI', 'peringatan ke aplikasi'], 'kuning')
     d4 = k.belah(mx, 740, 340, 100, ['faseCO2  tidak sama', 'dengan NORMAL?'])
-    d5 = k.belah(mx, 880, 360, 110, ['CO2  <  2400 ppm selama', '60 detik?  [B8]'])
+    d5 = k.belah(mx, 880, 360, 110, ['CO2  <  2500 ppm selama', '10 detik (3 bacaan)?  [B8]'])
     norm = k.persegi(mx, 1020, 420, 90, ['faseCO2 = NORMAL,  bunyi OFF', 'jendela TUTUP,  reset penghitung CO2'], 'teal')
     sel1 = k.oval(mx, 1120, 200, 40, ['Selesai'], 'teal')
     sel2 = k.oval(900, 740, 160, 40, ['Selesai'], 'teal')
@@ -314,7 +314,7 @@ def diagram4():
     k.garis([d5.kanan, pem0.kiri], 'TIDAK')
     k.garis([pem0.bawah, sel3.atas])
     k.garis([norm.bawah, sel1.atas])
-    k.catatan(40, 640, ['Belum fix:', 'B8 jumlah bacaan konfirmasi (3),', 'batas selesai 2400 dan 60 detik', 'B9 besar bukaan jendela per mobil,', 'jeda minimum antar gerakan'])
+    k.catatan(40, 640, ['Belum fix:', 'B8 jumlah bacaan konfirmasi (3),', 'batas selesai 2500 dan 10 detik', 'B9 bukaan setengah (waktu motor),', 'buka maks 180 dtk, min 20 dtk,', 'jeda minimum antar gerakan'])
     k.simpan('diagram-4-aturan-co2.svg')
 
 
