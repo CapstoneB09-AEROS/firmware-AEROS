@@ -28,3 +28,6 @@ dokumentasi/paper/*.pdf
 
 # Cadangan isi flash ESP (bisa memuat setelan Wi-Fi), jangan dikomit
 arsip-firmware/*.bin
+
+# Salinan kode tim (MQTT/backend) untuk dianalisis; bukan kode kita, jangan dikomit tanpa izin pemiliknya
+kode-tim/

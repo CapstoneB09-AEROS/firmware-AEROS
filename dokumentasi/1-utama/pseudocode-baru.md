@@ -290,29 +290,195 @@ Yang belum diketahui: waktu motor jendela tiap mobil dan perilaku di mobil lain 
 
 Perlu diingat: pemanasan dihitung dari saat ESP32 menyala. Pada uji mobil malam itu alat menyala tiga kali (21:37, 21:41, 22:00) dan setiap kali pemanasan mulai dari nol, sehingga alarm CO mati selama 3 menit pertama tiap kali menyala.
 
-### 2.8 Pengiriman data lewat Wi-Fi (draf untuk dibahas dengan tim backend) [B14]
+### 2.8 Pengiriman data lewat Wi-Fi dan MQTT [B14]
 
-Dua syarat: (1) alarm dan jendela **tidak bergantung internet**; (2) siklus sensor tetap **tepat 1 detik**, karena filter SMA 6 bergantung pada itu. Menyambung Wi-Fi atau MQTT bisa memakan beberapa detik, jadi pengiriman dipisah dari siklus sensor. Nama topik dan isi pesan ada di [rancangan-data.md](rancangan-data.md) bagian 3.
+Versi 27 Oktober 2026. Status: **USULAN**, untuk dibahas dengan tim backend. Dasarnya adalah kode tim (`kode-tim/iot-mainproject/`, analisis di [analisis-kode-mqtt-tim.md](../2-lapangan/analisis-kode-mqtt-tim.md)). Tujuannya **menempelkan** kode itu, bukan menggantinya.
+
+#### 2.8.1 Yang dipertahankan dari kode tim (tidak boleh hilang)
+
+| # | Fitur milik tim | Tetap berlaku |
+|---|---|---|
+| 1 | **Offline first**: setiap pembacaan ditulis ke berkas flash (LittleFS) dulu, baru dikirim | ya |
+| 2 | Berkas **dihapus hanya setelah ACK dari database** yang tanda tangannya benar. Terkirim ke broker belum berarti tersimpan | ya |
+| 3 | Antrean **dipulihkan setelah mati listrik** (dibaca ulang saat menyala). Tidak pernah memformat flash otomatis. Berkas rusak tidak dihapus diam-diam | ya |
+| 4 | **Tanda tangan HMAC-SHA256** pada telemetri, ACK data, perintah, dan ACK perintah. Perbandingan dengan cara aman waktu | ya |
+| 5 | **TLS dengan sertifikat CA diperiksa**, tidak pernah `setInsecure()` | ya |
+| 6 | **Nonce acak** per pesan (database menolak pesan ganda) | ya |
+| 7 | **Last will** `OFFLINE` dan pesan `ONLINE` (retained) | ya |
+| 8 | Perintah hanya diterima bila: tanda tangan benar, umur ≤ 120 detik, dan `alert_id` sama dengan alarm yang **sedang aktif** | ya |
+| 9 | Jam dari NTP. Bila belum ada: `timestamp = 0` dan `time_valid = false` | ya |
+| 10 | Portal Wi-Fi (hotspot AEROS-Setup), 5 kali percobaan sambung, tombol GPIO14 tahan 5 detik, tunggu 30 detik lalu ulangi | ya |
+| 11 | Kata sandi, kunci HMAC, dan sertifikat hanya di `secrets.h` dan `root_ca.h` yang tidak masuk git | ya |
+| 12 | Bendera data simulasi (`demo` di kode tim, `sim` di rancangan kita) dan worker menolaknya kecuali diizinkan | ya |
+
+#### 2.8.2 Dua tugas yang berjalan sendiri
+
+Aturan utama: **alarm, jendela, dan siklus 1 detik tidak pernah menunggu jaringan, dan kegagalan jaringan tidak boleh menghentikan alarm.** Dua tugas berbagi dua antrean kecil di memori (bukan berkas).
 
 ```
-SAAT DINYALAKAN (tambahan):
-    jalankan TUGAS_KIRIM sebagai tugas terpisah (di inti prosesor kedua)
-
-TUGAS_KIRIM  (berjalan sendiri, tidak pernah menahan siklus sensor):
-    ulangi terus:
-        kalau Wi-Fi belum tersambung: coba sambung, lalu tunggu sebentar (tidak memblokir)
-        kalau MQTT belum tersambung: coba sambung, pasang pesan "offline" (last will)
-        ambil satu pesan dari ANTREAN_KIRIM, kirim ke topik yang sesuai
-        kalau gagal: simpan pesan kejadian, buang telemetri yang paling lama
-
-DI SIKLUS UTAMA (langkah 8):
-    tiap 5 detik        : taruh telemetri ke ANTREAN_KIRIM (tidak menunggu terkirim)
-    saat status berubah : taruh kejadian ke ANTREAN_KIRIM
-    kalau antrean penuh : buang telemetri tertua, jangan buang kejadian
-    kalau perintah "Saya Tahu" masuk : matikan bunyi (langkah 9)
+TUGAS_SENSOR   (loop utama, inti 1)          TUGAS_JARINGAN   (tugas terpisah, inti 0)
+  siklus 1 detik, alarm, jendela, LCD          Wi-Fi, NTP, MQTT, LittleFS, portal
+        |                                              ^
+        |-- ANTREAN_KELUAR (pesan jadi) ---------------|
+        |<-- ANTREAN_MASUK (perintah, status) ---------|
 ```
 
-Belum diputuskan: panjang antrean (usulan awal 20 pesan), jam dari NTP atau dari server, dan keamanan koneksi. Semuanya bagian dari B14 dan agenda pertemuan.
+- **Hanya TUGAS_JARINGAN yang menyentuh** Wi-Fi, MQTT, LittleFS, dan NTP. (Objeknya tidak aman dipakai dua tugas sekaligus.)
+- **Hanya TUGAS_SENSOR yang menulis ke LCD**, buzzer, dan jendela. TUGAS_JARINGAN hanya mengirim kode status (misalnya `WIFI_OK`, `MQTT_OK`, `PORTAL_AKTIF`, `OFFLINE`) lewat ANTREAN_MASUK. Alarm selalu mengalahkan pesan jaringan di LCD. Saat portal aktif, boleh tampil layar penuh "PORTAL WIFI" selama tidak ada alarm.
+
+#### 2.8.3 TUGAS_SENSOR: bagian pengiriman (tambahan di langkah 8 dan 9)
+
+```
+SAAT DINYALAKAN:
+    mulai TUGAS_JARINGAN
+    kalau TUGAS_JARINGAN gagal mulai (konfigurasi kosong, flash rusak):
+        tandai JARINGAN_MATI, tampilkan indikator di LCD
+        LANJUTKAN sensor dan alarm seperti biasa          (kode tim saat ini berhenti total di sini; itu tidak boleh)
+
+TIAP 1 DETIK (setelah langkah 1 sampai 7):
+    kumpulkan: nilai CO terfilter, CO2, maksimum sejak pesan terakhir
+
+    TIAP 5 DETIK  (INTERVAL_TELEMETRI, usulan; kode tim 10 detik):
+        susun TELEMETRI dari nilai terakhir:  ppm dibulatkan ke bilangan bulat, rs_r0 dalam per seribu
+        isi: nonce baru, jam dari NTP (atau 0 dan time_valid = tidak), sim, fw, event_id alarm aktif atau kosong
+        tandatangani dengan HMAC
+        taruh di ANTREAN_KELUAR            (tidak menunggu terkirim)
+
+    SAAT ADA KEJADIAN  (alarm mulai atau selesai, hasil uji arah, jendela bergerak,
+                        sensor gangguan, pemanasan selesai, mulai menyala):
+        susun KEJADIAN dengan nonce baru, event_id yang sesuai, tanda tangan
+        taruh di ANTREAN_KELUAR di depan telemetri       (kejadian didahulukan)
+
+    kalau ANTREAN_KELUAR penuh:
+        buang TELEMETRI tertua di antrean RAM
+        KEJADIAN tidak pernah dibuang
+
+    baca ANTREAN_MASUK:
+        status jaringan   -> simpan untuk LCD
+        perintah SAYA_TAHU(alert_id, command_id):
+            kalau alarm aktif dan alert_id = event_id alarm aktif: matikan bunyi, hasil = berhasil
+            selain itu                                          : hasil = gagal
+            kirim hasil ke ANTREAN_KELUAR           (jaringan yang menandatangani dan mengirim ACK)
+```
+
+`event_id` dibuat UUID acak oleh firmware saat alarm dimulai (seperti kode tim) dan tetap sama sampai alarm selesai.
+
+#### 2.8.4 TUGAS_JARINGAN
+
+```
+SAAT DINYALAKAN:
+    periksa secrets.h dan root_ca.h; kalau tidak lengkap: kirim status KONFIGURASI_KOSONG lalu berhenti (hanya tugas ini)
+    mount LittleFS TANPA memformat; kalau gagal: status PENYIMPANAN_RUSAK lalu berhenti (hanya tugas ini)
+    pulihkan antrean dari berkas yang ada (hitung berkas, lanjutkan nomor urut)
+    mulai tugas tombol GPIO14 (tahan 5 detik = buka portal)
+    baca Wi-Fi dari memori NVS; kalau ada: mulai 5 percobaan; kalau tidak ada: buka portal
+
+ULANGI TERUS:
+    1. PINDAHKAN pesan dari ANTREAN_KELUAR ke flash (tulis ke berkas sementara, lalu ganti nama):
+           kalau flash penuh: buang telemetri tertua di flash; kejadian dipertahankan
+           kalau tidak bisa disimpan sama sekali: catat "pesan hilang" (jangan palsukan data)
+
+    2. KELOLA SAMBUNGAN (state machine kode tim, tidak diubah):
+           PORTAL, COBA_WIFI (5 kali, 10 detik), GAGAL (password diduga salah, buka portal),
+           TUNGGU_ULANG (SSID tidak ada, tunggu 30 detik), MENUNGGU_TOMBOL, NORMAL
+           kirim kode status ke TUGAS_SENSOR tiap berubah
+
+    3. KALAU NORMAL dan Wi-Fi tersambung:
+           NTP belum sinkron      : mulai NTP, tunggu (TLS butuh jam valid)
+           MQTT belum tersambung  : sambung dengan TLS + last will OFFLINE (retained);
+                                    subscribe topik perintah dan ACK; kirim ONLINE (retained)
+           MQTT tersambung        : proses pesan masuk, lalu KIRIM_SATU()
+
+KIRIM_SATU:
+    kalau sedang menunggu ACK dan belum lewat 6 detik: tunggu
+    ambil berkas tertua; urutan: KEJADIAN dulu, baru TELEMETRI
+    kirim isinya ke broker
+    tandai "menunggu ACK untuk nonce ini"
+
+SAAT ACK_DATA MASUK:
+    periksa: perangkat benar, versi benar, nonce sama dengan yang ditunggu,
+             tanda tangan HMAC benar (dataack|device|nonce|stored)
+    kalau semua benar: HAPUS berkas itu. Kalau salah satu salah: abaikan (berkas tetap, akan dikirim ulang)
+
+SAAT PERINTAH MASUK:
+    periksa: versi, perangkat, aksi dikenal, tanda tangan, umur <= 120 detik
+    kalau lolos: teruskan ke TUGAS_SENSOR; setelah ada hasilnya, tandatangani dan kirim ACK_PERINTAH
+    kalau tidak lolos: abaikan dan catat di serial
+```
+
+Saat internet mati, tugas ini hanya menyimpan ke flash. Telemetri dan kejadian tersusul otomatis setelah tersambung, tanpa data ganda karena nonce.
+
+#### 2.8.5 Pesan (usulan versi 3, dengan jalan mundur ke versi 2)
+
+Satu jalur untuk telemetri dan kejadian: topik `aeros/data` dan ACK `aeros/{id}/data/ack` tetap seperti kode tim, ditambah field `jenis` (`telemetri` atau `kejadian`). Dengan begitu kejadian ikut offline first dan ACK-nya sama.
+
+| Field | Keterangan | Ada di v2 tim? |
+|---|---|---|
+| `version`, `device_id`, `nonce`, `timestamp`, `time_valid` | seperti kode tim | ya |
+| `jenis` | `telemetri` atau `kejadian` | **baru** |
+| `co_ppm`, `co2_ppm` | bilangan bulat (dibulatkan) | ya |
+| `status` | `normal`, `waspada`, `bahaya` | ya |
+| `buzzer_state`, `window_status` | `on`/`off`, 0 sampai 100 (setengah terbuka = 50) | ya |
+| `event_id` | UUID alarm aktif atau `null` | ya |
+| `demo` | data simulasi | ya |
+| `fw` | versi firmware | **baru** |
+| `rs_r0_milli` | Rs/R0 dikali 1000, bilangan bulat | **baru** |
+| `co_maks`, `co2_maks` | maksimum sejak pesan terakhir | **baru** |
+| `kond_co`, `kond_co2` | `ok`, `pemanasan`, `gangguan` (tempat untuk keadaan yang tidak punya nilai di `status`) | **baru** |
+| `fase_co`, `fase_co2` | fase aturan (uji arah, tindakan, dan seterusnya) | **baru** |
+| `kejadian`, `detail` | hanya pada `jenis = kejadian`: jenis kejadian dan data pendukung | **baru** |
+| `signature` | HMAC dari semua field di atas dengan urutan tetap | ya |
+
+Aturan agar tanda tangan tidak pecah antara C++ dan JavaScript: **semua angka di dalam string yang ditandatangani berupa bilangan bulat**, tidak ada pecahan.
+
+**Jalan mundur (v2 sementara):** bila keputusan v3 belum selesai sebelum 29 Okt, firmware mengirim v2 tim apa adanya: `jenis`, field baru, dan kejadian ditunda. `status` dan `event_id` tetap mengalir, `sim` dipetakan ke `demo`, nilai pemanasan dikirim sebagai pesan yang ditahan (tidak dikirim) sampai sensor siap. Isi lengkap versi 3 mengikuti rancangan data bagian 2 dan 3.
+
+#### 2.8.6 Yang berbeda dari kode tim (perlu persetujuan teman)
+
+| # | Kode tim sekarang | Usulan | Alasan |
+|---|---|---|---|
+| 1 | Satu loop, pengambilan data 10 detik | Dua tugas, telemetri 5 detik | Siklus sensor harus tepat 1 detik untuk filter SMA 6 |
+| 2 | Konfigurasi atau flash rusak: `while(true)` menghentikan semuanya | Hanya jaringan yang berhenti, alarm tetap | Alarm tidak boleh bergantung pada jaringan |
+| 3 | Antrean penuh: pembacaan **baru** ditolak | Telemetri **tertua** dibuang, kejadian dilindungi | Kejadian lebih penting dari telemetri lama |
+| 4 | Tidak ada kejadian terpisah | Field `jenis` dan `kejadian` | Uji arah, jendela, dan gangguan perlu tercatat |
+| 5 | LCD ditulis firmware Wi-Fi | Hanya TUGAS_SENSOR yang menulis | Mencegah tampilan ppm tertimpa |
+| 6 | Tabel partisi bawaan (kode tidak muat) | `huge_app.csv` | Terbukti gagal kompilasi tanpa itu |
+| 7 | Worker membuang `event_id`, tidak menulis `alert_logs` | Worker menyimpan `event_id` dan `jenis`, dan menulis `alert_logs` dengan `id = event_id` (2.8.8, disetujui 27 Okt) | Agar "Saya Tahu" cocok dan alurnya ESP, MQTT, worker, database, aplikasi lengkap |
+
+Semuanya mempertahankan fitur di 2.8.1. Hanya batas penuh antrean (nomor 3) yang mengubah kebijakan yang sengaja dipilih tim, jadi harus disepakati.
+
+#### 2.8.7 Belum diputuskan
+
+- Isi final v3 dan siapa yang mengubah worker (B14).
+- Interval telemetri 5 atau 10 detik.
+- Kapasitas antrean di flash (diuji, dugaan awal sekitar 200 berkas) dan ukuran partisi.
+- Pin buzzer dan jendela di PCB (GPIO14 sudah dipakai tombol).
+- Pengaruh Wi-Fi menyala terhadap catu 5 V dan Rs (uji T22).
+
+#### 2.8.8 Tugas worker untuk `alert_logs` (keputusan 27 Okt: worker yang menulis, id = `event_id`)
+
+Status: **disetujui dari sisi firmware, menunggu persetujuan pemilik worker** (kodenya milik tim). Tidak ada perubahan di ESP selain pesan `kejadian` di 2.8.5.
+
+```
+SAAT PESAN MASUK (setelah HMAC benar dan perangkat aktif, seperti sekarang):
+    simpan baris ke sensor_readings, TERMASUK event_id dan jenis      (sekarang event_id dibuang)
+
+    kalau jenis = kejadian:
+        kejadian ALARM_MULAI:
+            tulis alert_logs dengan id = event_id   (gas, nilai, ambang, sumber, waktu mulai)
+            kalau id sudah ada: dianggap pesan ulang yang sah, bukan kesalahan
+            isi device_state.active_alert_id = event_id
+        kejadian ALARM_SELESAI:
+            isi alert_logs.resolved_at untuk id = event_id (hanya bila belum terisi)
+            kosongkan device_state.active_alert_id bila sama dengan event_id
+            kalau barisnya belum ada (pesan mulai belum sampai): buat baris sudah selesai
+        kejadian JENDELA atau UJI_ARAH:
+            tulis actuator_logs dengan trigger_source = auto dan event_id terkait
+
+    kirim ACK_DATA hanya setelah SEMUA penulisan di atas berhasil (seperti sekarang)
+```
+
+Syaratnya: tiap penulisan **idempoten** (pesan yang sama dua kali tidak menghasilkan baris ganda), karena offline first memang mengirim ulang. Nama kolom mengikuti usulan di [rancangan-data.md](rancangan-data.md) bagian 4.3.
 
 ---
 
@@ -339,6 +505,14 @@ Dibuat dengan gaya contoh yang Anda berikan (oval awal, jajar genjang untuk data
 
 ### Diagram 4. Aturan CO2
 ![Diagram 4: aturan CO2](../diagram/diagram-4-aturan-co2.png)
+
+### Diagram 5. Alur data dari sensor sampai aplikasi Flutter
+![Diagram 5: alur data ke aplikasi](../diagram/diagram-5-alur-data-ke-aplikasi.png)
+
+### Diagram 6. Alur perintah "Saya Tahu" dari aplikasi kembali ke ESP32
+![Diagram 6: alur perintah Saya Tahu](../diagram/diagram-6-alur-perintah-saya-tahu.png)
+
+Diagram 5 dan 6 dibuat oleh [buat_diagram_alur_data.py](../diagram/buat_diagram_alur_data.py). Warna: hijau kebiruan = sudah ada di kode tim, kuning = usulan kita (2.8), abu = bagian Flutter dan Supabase yang kodenya belum kita lihat.
 
 Berkas SVG (bisa dibuka di draw.io atau Inkscape untuk diedit) dan skrip pembuatnya, [diagram/buat_diagram.py](../diagram/buat_diagram.py), ada di folder [diagram/](../diagram/). Mengubah isi diagram berarti mengubah skrip itu lalu menjalankannya lagi (`python3 buat_diagram.py`).
 

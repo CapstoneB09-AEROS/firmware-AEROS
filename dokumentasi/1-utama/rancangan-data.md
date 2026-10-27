@@ -65,6 +65,8 @@ Diturunkan dari variabel di pseudocode baru.
 
 ### 3.1 Topik
 
+> Catatan 27 Okt 2026: kode tim sudah memakai `aeros/data` dan `aeros/{id}/data/ack` (satu jalur untuk telemetri dan kejadian, dengan ACK). Usulan terbaru ada di [pseudocode-baru.md](pseudocode-baru.md) bagian 2.8.5. Tabel di bawah disesuaikan setelah pertemuan tim.
+
 | Topik | Arah | QoS | Isi |
 |---|---|---|---|
 | `aeros/{device_id}/telemetry` | perangkat ke broker | 0 | Telemetri tiap 5 detik |

@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1400" viewBox="0 0 1600 1400"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><text x="800.0" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#111">Diagram 5. Alur data dari sensor sampai aplikasi Flutter</text><rect x="2.5" y="44" width="255" height="1300" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+<text x="130" y="66" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#24292f">ESP32: tugas sensor</text>
+<rect x="267.5" y="44" width="255" height="1300" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+<text x="395" y="66" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#24292f">ESP32: tugas jaringan</text>
+<rect x="532.5" y="44" width="255" height="1300" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+<text x="660" y="66" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#24292f">Broker HiveMQ</text>
+<rect x="797.5" y="44" width="255" height="1300" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+<text x="925" y="66" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#24292f">Worker (Node.js)</text>
+<rect x="1062.5" y="44" width="255" height="1300" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+<text x="1190" y="66" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#24292f">Database Supabase</text>
+<rect x="1327.5" y="44" width="255" height="1300" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+<text x="1455" y="66" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#24292f">Aplikasi Flutter</text>
+<polygon points="34.0,109.0 246.0,109.0 226.0,171.0 14.0,171.0" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="130.0" y="136.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">1. Baca MiCS (ADS1115)</text>
+<text x="130.0" y="154.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">dan MH-Z19C tiap 1 detik</text>
+<rect x="14.0" y="215.0" width="232" height="70" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="130.0" y="237.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">2. Validasi, filter SMA 6,</text>
+<text x="130.0" y="255.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">hitung ppm CO</text>
+<text x="130.0" y="273.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(CO2 apa adanya)</text>
+<polygon points="130,320.0 246.0,375 130,430.0 14.0,375" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="130.0" y="371.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">3. Lewat ambang</text>
+<text x="130.0" y="389.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">CO atau CO2?</text>
+<rect x="14.0" y="464.0" width="232" height="92" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
+<text x="130.0" y="488.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">4. Aktuator (tanpa</text>
+<text x="130.0" y="506.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">menunggu internet):</text>
+<text x="130.0" y="524.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">buzzer, jendela setengah,</text>
+<text x="130.0" y="542.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">LCD</text>
+<rect x="14.0" y="590.0" width="232" height="100" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="130.0" y="618.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">5. Susun pesan:</text>
+<text x="130.0" y="636.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">telemetri tiap 5 detik,</text>
+<text x="130.0" y="654.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">kejadian segera. Nonce, jam,</text>
+<text x="130.0" y="672.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">event_id, tanda tangan HMAC</text>
+<rect x="14.0" y="750.0" width="232" height="80" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="130.0" y="777.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Jaringan putus: data menumpuk</text>
+<text x="130.0" y="795.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">di flash. Sensor dan alarm</text>
+<text x="130.0" y="813.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tetap jalan</text>
+<rect x="14.0" y="1075.0" width="232" height="70" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="130.0" y="1097.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Tidak ada ACK yang benar:</text>
+<text x="130.0" y="1115.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">berkas tetap, kirim ulang</text>
+<text x="130.0" y="1133.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tiap 6 detik</text>
+<rect x="279.0" y="594.0" width="232" height="92" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="395.0" y="627.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">6. Antrean RAM, lalu</text>
+<text x="395.0" y="645.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">TULIS KE FLASH dulu</text>
+<text x="395.0" y="663.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(offline first, LittleFS)</text>
+<polygon points="395,730.0 516.0,790 395,850.0 274.0,790" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="395.0" y="786.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">7. Wi-Fi, NTP, dan</text>
+<text x="395.0" y="804.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">MQTT TLS tersambung?</text>
+<rect x="279.0" y="884.0" width="232" height="92" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="395.0" y="917.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">8. Kirim berkas tertua</text>
+<text x="395.0" y="935.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(kejadian dulu), lalu</text>
+<text x="395.0" y="953.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tunggu ACK</text>
+<polygon points="395,1050.0 516.0,1110 395,1170.0 274.0,1110" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="395.0" y="1106.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">12. ACK benar?</text>
+<text x="395.0" y="1124.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(HMAC dan nonce)</text>
+<rect x="279.0" y="1210.0" width="232" height="60" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="395.0" y="1245.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">13. Hapus berkas dari flash</text>
+<rect x="544.0" y="750.0" width="232" height="80" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="660.0" y="777.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Topik status: ONLINE</text>
+<text x="660.0" y="795.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(retained). OFFLINE lewat</text>
+<text x="660.0" y="813.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">last will</text>
+<rect x="544.0" y="897.0" width="232" height="66" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="660.0" y="926.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">9. Topik aeros/data</text>
+<text x="660.0" y="944.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(TLS, sertifikat diperiksa)</text>
+<rect x="544.0" y="1077.0" width="232" height="66" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="660.0" y="1106.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">11. Topik aeros/{id}/</text>
+<text x="660.0" y="1124.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">data/ack</text>
+<rect x="809.0" y="884.0" width="232" height="92" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="925.0" y="917.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">10. Worker: cek HMAC,</text>
+<text x="925.0" y="935.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">umur jam, perangkat aktif</text>
+<text x="925.0" y="953.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(tabel devices)</text>
+<rect x="809.0" y="999.0" width="232" height="62" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="925.0" y="1026.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Simpan sensor_readings</text>
+<text x="925.0" y="1044.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(+ event_id: perubahan)</text>
+<rect x="809.0" y="1084.0" width="232" height="92" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="925.0" y="1117.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Kejadian: tulis alert_logs</text>
+<text x="925.0" y="1135.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(id = event_id) atau</text>
+<text x="925.0" y="1153.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">actuator_logs (usulan 2.8.8)</text>
+<rect x="809.0" y="1210.0" width="232" height="80" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="925.0" y="1237.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Kirim ACK_DATA ber-HMAC,</text>
+<text x="925.0" y="1255.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">HANYA setelah semua</text>
+<text x="925.0" y="1273.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">penulisan DB berhasil</text>
+<rect x="1074.0" y="1002.0" width="232" height="56" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="1190.0" y="1035.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Tabel sensor_readings</text>
+<rect x="1074.0" y="1095.0" width="232" height="70" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="1190.0" y="1117.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Tabel alert_logs,</text>
+<text x="1190.0" y="1135.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">actuator_logs,</text>
+<text x="1190.0" y="1153.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">device_state</text>
+<rect x="1339.0" y="995.0" width="232" height="70" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="1455.0" y="1017.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Aplikasi menampilkan</text>
+<text x="1455.0" y="1035.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">nilai dan grafik terbaru</text>
+<text x="1455.0" y="1053.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(Realtime atau baca tabel)</text>
+<rect x="1339.0" y="1095.0" width="232" height="70" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="1455.0" y="1117.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Notifikasi dan layar</text>
+<text x="1455.0" y="1135.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">peringatan dari alert_logs</text>
+<text x="1455.0" y="1153.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(belum dicek)</text>
+<path d="M 130.0,171.0 L 130.0,215.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 130.0,285.0 L 130.0,320.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 130.0,430.0 L 130.0,464.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="140.0" y="450.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 130.0,556.0 L 130.0,590.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 14.0,375.0 L 20.0,375.0 L 20.0,640.0 L 14.0,640.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="28.0" y="430.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 246.0,640.0 L 279.0,640.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 395.0,686.0 L 395.0,730.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 274.0,790.0 L 246.0,790.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="270.0" y="780.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 395.0,850.0 L 395.0,884.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="405.0" y="870.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 516.0,790.0 L 544.0,790.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<text x="528.0" y="782.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 511.0,930.0 L 544.0,930.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 776.0,930.0 L 809.0,930.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 925.0,976.0 L 925.0,999.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 925.0,1061.0 L 925.0,1084.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 925.0,1176.0 L 925.0,1210.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 1041.0,1030.0 L 1074.0,1030.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 1041.0,1130.0 L 1074.0,1130.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 1306.0,1030.0 L 1339.0,1030.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<path d="M 1306.0,1130.0 L 1339.0,1130.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<path d="M 809.0,1250.0 L 792.0,1250.0 L 792.0,1110.0 L 776.0,1110.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 544.0,1110.0 L 516.0,1110.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 395.0,1170.0 L 395.0,1210.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="405.0" y="1190.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 274.0,1110.0 L 246.0,1110.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="270.0" y="1100.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 395.0,976.0 L 395.0,990.0 L 395.0,1050.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4"/>
+<path d="M 395.0,1050.0 L 395.0,1050.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<text x="285" y="1020" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#666">menunggu ACK</text>
+<text x="40" y="1290" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">Kunci: ESP32 memutuskan alarm dan menggerakkan aktuator SENDIRI (langkah 1 sampai 4).</text>
+<text x="40" y="1306" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">Pengiriman (langkah 5 sampai 13) berjalan di tugas lain, jadi internet mati tidak menghentikan alarm.</text>
+<text x="40" y="1322" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">Data hanya dihapus dari ESP setelah database membalas (langkah 12 dan 13). Pesan ganda ditolak lewat nonce.</text>
+<rect x="40" y="1330" width="18" height="13" fill="#b0e3e6" stroke="#0e8088"/>
+<text x="65" y="1341" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">sudah ada di kode tim</text>
+<rect x="218.6" y="1330" width="18" height="13" fill="#fff2cc" stroke="#b8922a"/>
+<text x="243.6" y="1341" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">usulan kita (belum ada di kode)</text>
+<rect x="463.2" y="1330" width="18" height="13" fill="#fad7ac" stroke="#b46504"/>
+<text x="488.2" y="1341" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">aktuator</text>
+<rect x="556.0" y="1330" width="18" height="13" fill="#eeeeee" stroke="#666666"/>
+<text x="581.0" y="1341" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">dugaan: kode Flutter/Supabase belum dilihat</text></svg>
