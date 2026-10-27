@@ -1,0 +1,5 @@
+Kondisi Awal,Skenario Kecepatan,N (jam^-1),t (detik),t (menit)
+2.500 ppm (baru mencapai WASPADA),Idle (N=1),1.0,175.64459100995538,2.927409850165923
+2.500 ppm (baru mencapai WASPADA),~20 km/jam (N=3.5),3.5,50.184168859987246,0.8364028143331208
+5.000 ppm (kondisi ekstrem),Idle (N=1),1.0,2998.472842566374,49.97454737610623
+5.000 ppm (kondisi ekstrem),~20 km/jam (N=3.5),3.5,856.7065264475355,14.278442107458924

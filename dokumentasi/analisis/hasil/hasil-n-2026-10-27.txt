@@ -1,0 +1,29 @@
+Mobil Avanza, 26 Okt 2026 (log device-monitor-261026-193817.log)
+Model: dC/dt = P - N (C - Cext), Cext = 420 ppm, sensor lag tau = 52 detik
+
+1. Jendela tertutup, 4 orang, 20-40 km/jam (19:59:00-20:11:40)
+   N_tertutup = 1.0 /jam, Css = 15760 ppm, P = 15340 ppm/jam (= 256 ppm/menit), RMSE 24 ppm
+   G_eff untuk V = 2500 L, 4 orang: 9.6 L/jam/orang (model C-251: 19,6)
+   G_eff untuk V = 2750 L, 4 orang: 10.5 L/jam/orang (model C-251: 19,6)
+   G_eff untuk V = 3000 L, 4 orang: 11.5 L/jam/orang (model C-251: 19,6)
+
+2. Jendela 1: dibuka 19:56:20, ditutup sekitar 19:57:55
+   N_buka = 61.5 /jam (dua jendela depan setengah terbuka, 20-40 km/jam), RMSE 55 ppm
+2. Jendela 2: dibuka 20:11:40, ditutup sekitar 20:13:30
+   N_buka = 58.0 /jam (dua jendela depan setengah terbuka, 20-40 km/jam), RMSE 95 ppm
+
+3. Seberapa kuat N tertutup ditentukan (RMSE untuk N tertentu; P ikut menyesuaikan)
+   N =  0.5 /jam: RMSE   25 ppm, P = 13908 ppm/jam
+   N =  1.0 /jam: RMSE   24 ppm, P = 15340 ppm/jam
+   N =  2.0 /jam: RMSE   29 ppm, P = 18203 ppm/jam
+   N =  3.0 /jam: RMSE   40 ppm, P = 21066 ppm/jam
+   N =  5.0 /jam: RMSE   67 ppm, P = 26795 ppm/jam
+   N =  8.0 /jam: RMSE  109 ppm, P = 35392 ppm/jam
+   N = 12.0 /jam: RMSE  164 ppm, P = 46865 ppm/jam
+
+4. Kepekaan terhadap konstanta waktu sensor (tau) dan CO2 luar
+   tau = 30 s: N_tertutup 0.9 /jam, P 15023 ppm/jam, N_buka jendela 1 = 53.5, jendela 2 = 46.0 /jam
+   tau = 52 s: N_tertutup 1.0 /jam, P 15340 ppm/jam, N_buka jendela 1 = 61.5, jendela 2 = 58.0 /jam
+   tau = 70 s: N_tertutup 1.0 /jam, P 15378 ppm/jam, N_buka jendela 1 = 79.0, jendela 2 = 71.5 /jam
+
+Pembanding asumsi simulasi C-251: N tertutup 0,5 (tabel) atau 1-3 (idle), N jendela terbuka 13,3-26,1, pemulihan 20 km/jam 3,5.

@@ -1,0 +1,6 @@
+Pengecekan,Lolos
+C(0) = C0,True
+C(t->inf) -> C_ext,True
+round-trip time_to_target -> C_of_t,True
+C_inf dengan N sangat besar -> mendekati C_ext,True
+C_inf naik saat N turun (ventilasi lebih buruk),True

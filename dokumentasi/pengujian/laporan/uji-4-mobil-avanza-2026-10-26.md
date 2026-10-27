@@ -28,7 +28,7 @@ Mobil Toyota Avanza. Penumpang awal 3 orang, lalu 4 orang mulai 19:53. Kecepatan
 | CO2 puncak | 4444 ppm (19:56:14) dan 4453 ppm (20:11:52). Tidak sampai 5000 | Terukur |
 | Jendela 1 | Dibuka sekitar 19:56:20, CO2 4437 → 2384 saat ditutup (±95 detik) → turun lagi ke 1831 setelah ditutup | Terukur |
 | Jendela 2 | Dibuka 20:11:40, CO2 4447 → 2121 saat ditutup (±110 detik) → turun lagi ke 1660 setelah ditutup | Terukur |
-| **N saat dua jendela depan setengah terbuka** | **sekitar 30–32 per jam** (luruhan, CO2 luar diasumsikan 400–450). Batas bawah: penumpang masih bernapas dan sensor punya jeda | Perkiraan |
+| **N saat dua jendela depan setengah terbuka** | **sekitar 30–32 per jam** (perkiraan kasar dari luruhan; batas bawah karena penumpang masih bernapas dan sensor punya jeda). **Dihitung ulang dengan model dan jeda sensor: N = 46–79 per jam, terbaik sekitar 60**; N tertutup 0,5–2 per jam ([analisis/ringkasan-temuan.md](../../analisis/ringkasan-temuan.md) baris 13) | Perkiraan |
 | Siklus buka-tutup | Puncak ke puncak 15,6 menit (19:56 dan 20:11). Naik dari 1831 ke sekitar 4100 butuh sekitar 10 menit | Terukur |
 | Rs dan CO | Rs/R0 0,40–0,69, ppm estimasi 0–13, tidak ada alarm CO sama sekali | Terukur |
 | Pintu dibuka 19:53 | Rs turun 1121 → 861 kΩ (−23%) dalam 15 detik, lalu pulih sebagian (950). Cocok dengan "CO naik, lalu turun" | Terukur |

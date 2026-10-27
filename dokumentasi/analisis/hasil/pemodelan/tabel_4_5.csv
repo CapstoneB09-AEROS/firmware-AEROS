@@ -1,0 +1,5 @@
+Skenario C_ext,C_ext (ppm),Skenario N,N (jam^-1),t (menit),Status
+Macet ringan (umum),30.0,Kendaraan diam,0.5,,Tidak akan tercapai (C_ext < C_target)
+Macet ringan (umum),30.0,Bergerak lambat,1.5,,Tidak akan tercapai (C_ext < C_target)
+Ekstrem (di belakang diesel diam),200.0,Kendaraan diam,0.5,20.04649015957995,Ya
+Ekstrem (di belakang diesel diam),200.0,Bergerak lambat,1.5,6.682163386526649,Ya

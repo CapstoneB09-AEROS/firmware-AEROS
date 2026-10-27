@@ -74,7 +74,7 @@ BUNYI_BAHAYA           = 1 bip panjang (sekitar 3 detik), SEKALI saat status mas
 BUNYI_ULANG_CO         = ulangi tiap 60 detik selama CO masih WASPADA atau BAHAYA, berhenti sendiri setelah 5 menit   [B15]
 BUNYI_ULANG_CO2        = tidak diulang                                                           [B15]
 
-A_COEF, BETA           = 3,7 dan 0,856 (kurva datasheet; digitalisasi piksel memberi 3,46 dan 0,840, selisih < 1,5% di 35-100 ppm; nilai kode dipertahankan)
+A_COEF, BETA           = 3,46 dan 0,840 (hasil digitalisasi piksel kurva datasheet; v0 memakai 3,7 dan 0,856 hasil baca mata, selisih < 1,5% di 35-100 ppm)   [diputuskan 27 Okt]
 R0                     = 1730 kOhm, satu nilai tetap, label "estimasi"; ukur ulang SEKALI setelah buck terpasang   [B1 diputuskan 27 Okt]
 VCC                    = 4,64 V sampai buck terpasang (lalu ubah sekali dan ukur R0 ulang)
 ```
@@ -121,7 +121,7 @@ SETIAP INTERVAL_SIKLUS (tepat 1 detik):
             masukkan Rs ke buffer 6 nilai terakhir                  [B13]
             RsHalus = rata-rata buffer (sudah penuh 6?)             [B12]
             rasio   = RsHalus / R0
-            ppmCO   = (3,7 / rasio) ^ (1 / 0,856)  ; 0 bila rasio >= 0,5      [B1, B2]
+            ppmCO   = (A_COEF / rasio) ^ (1 / BETA)  ; A_COEF = 3,46, BETA = 0,840 ; 0 bila rasio >= 0,5      [B1, B2]
         CO2 = angka dari sensor (tanpa filter tambahan)
 
     4. KEADAAN SENSOR
