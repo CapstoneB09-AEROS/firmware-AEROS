@@ -3,7 +3,7 @@
 Cara pakai (Python 3 saja, tanpa library tambahan):
     python3 analisis_fase.py <file_log> [nama=HH:MM-HH:MM ...]
 Contoh (uji kamar pagi 26 Okt):
-    python3 analisis_fase.py ../../logs/device-monitor-261026-090343.log \
+    python3 analisis_fase.py ../../../logs/device-monitor-261026-090343.log \
         P1=09:08-09:45 P2=09:46-10:15 P3=10:16-10:47
 
 Tanpa fase, seluruh log setelah 300 detik pertama dipakai sebagai satu fase.

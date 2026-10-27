@@ -1,10 +1,11 @@
 # Batasan Sistem
 
-Dua jenis batasan:
+Tiga bagian:
 - **A. Batasan operasi sensor**: kondisi yang tidak boleh dilanggar (dari pabrikan).
 - **B. Batasan validasi**: hal yang tidak dilakukan dalam penelitian ini beserta alasannya, dan cara menuliskannya.
+- **C. Ringkasan keterbatasan sistem**.
 
-Terkait: [validasi-parameter.md](validasi-parameter.md), [desain-peringatan.md](desain-peringatan.md).
+Terkait: [parameter-dan-sumber.md](parameter-dan-sumber.md), [peringatan-dan-ambang.md](peringatan-dan-ambang.md).
 
 ---
 
@@ -23,7 +24,7 @@ Sumber: datasheet SGX Sensortech MiCS-5524 rev 6 (sudah dibaca).
 | Pengaruh listrik statis | Direkomendasikan memakai perlindungan ESD saat menangani | Berlaku saat perakitan |
 | Suhu dan kelembapan operasi | −30 sampai 85 °C, 5 sampai 95% RH | Kabin mobil perlu dicek terhadap rentang ini |
 | Kondisi acuan kurva | 25 °C dan 50% RH (kurva Rs/R0) | Di luar kondisi ini, pembacaan bergeser dan tidak dikompensasi |
-| Gas lain | Ikut bereaksi terhadap etanol, hidrogen, amonia, metana, dan lain-lain | Tidak bisa membedakan CO dari gas lain **Terbukti 27 Okt 2026 (uji parfum di ruangan, [laporan](../2-lapangan/laporan-uji-parfum-2026-10-27.md)):** satu semprotan parfum 30 cm membuat Rs turun 92% dalam 13 detik, estimasi CO 72-83 ppm, di atas 35 ppm selama 14 detik. Pemulihan sekitar 5-6 menit. Belum diuji di kabin mobil. |
+| Gas lain | Ikut bereaksi terhadap etanol, hidrogen, amonia, metana, dan lain-lain | Tidak bisa membedakan CO dari gas lain **Terbukti 27 Okt 2026 (uji parfum di ruangan, [laporan](../pengujian/laporan/uji-5-parfum-2026-10-27.md)):** satu semprotan parfum 30 cm membuat Rs turun 92% dalam 13 detik, estimasi CO 72-83 ppm, di atas 35 ppm selama 14 detik. Pemulihan sekitar 5-6 menit. Belum diuji di kabin mobil. |
 
 ### MH-Z19C (CO2)
 
@@ -41,7 +42,7 @@ Sumber: manual Winsen MH-Z19C v1.2 (sudah dibaca).
 | Kalibrasi berkala | Disarankan paling lama tiap 6 bulan | Tidak dilakukan dalam penelitian ini (lihat B) |
 | Kalibrasi titik nol manual | Sensor harus berada di gas stabil 400 ppm lebih dari 30 menit | Tidak tersedia pada penelitian ini |
 | Rentang | 400–5000 ppm (varian lain 400–2000 dan 400–10000) | Pembacaan "mentok" di batas rentang tidak berarti angka sebenarnya |
-| Preheat | 1 menit (manual) | Kode memakai 3 menit. Rencana baru tetap 3 menit (nilai palsu 410/500 teramati sampai detik 128). Alasan di pseudocode-baru.md 2.7 |
+| Preheat | 1 menit (manual) | Kode memakai 3 menit. Rencana baru tetap 3 menit (nilai palsu 410/500 teramati sampai detik 128). Alasan di algoritma-firmware.md 2.7 |
 
 ---
 
@@ -76,11 +77,11 @@ Penguji lebih mudah menerima batasan yang **dinyatakan sendiri, jelas, dan beral
 
 | Klaim | Bukti |
 |---|---|
-| Parameter firmware punya dasar sumber atau data | Tabel di validasi-parameter.md |
+| Parameter firmware punya dasar sumber atau data | Tabel di parameter-dan-sumber.md |
 | Pembacaan di udara bersih konsisten dan stabil setelah waktu tertentu | Log baseline (menunggu data) |
-| Pemilihan filter berbasis data, bukan tebakan | filtering.md dan skrip analisis |
+| Pemilihan filter berbasis data, bukan tebakan | filter.md dan skrip analisis |
 | CO2 sesuai spesifikasi pabrikan | Spesifikasi dan manual (perbandingan dengan CO2 meter lain bila ada) |
-| Ambang peringatan punya alasan | desain-peringatan.md |
+| Ambang peringatan punya alasan | peringatan-dan-ambang.md |
 
 ### B4. Kemungkinan pertanyaan penguji
 
@@ -91,3 +92,13 @@ Penguji lebih mudah menerima batasan yang **dinyatakan sendiri, jelas, dan beral
 | Seberapa akurat alatnya? | Akurasi absolut tidak diklaim. Yang diklaim: konsistensi baseline dan dasar parameter. Akurasi CO2 mengacu pada spesifikasi pabrikan |
 | Bagaimana tahu alarm berbunyi pada saat yang tepat? | Ambang diturunkan dari standar paparan dan alarm yang dikutip. Waktu respons sensor terhadap CO nyata tidak terukur dan dinyatakan sebagai batasan |
 | Bagaimana kalau alarm palsu karena gas lain? | Itu batasan sensor (tidak selektif). Pesan peringatan dirancang menyebut kemungkinan gas pereduksi |
+
+## C. Ringkasan keterbatasan sistem
+
+- Nilai CO adalah **estimasi indikatif** dari kurva datasheet. Tidak ada kalibrasi dengan gas atau alat referensi.
+- Tidak ada kompensasi suhu dan kelembapan. Data kami menunjukkan baseline MiCS bergeser lebih dari 50% dalam 4 jam.
+- MiCS-5524 tidak selektif: alkohol, hidrogen, dan gas lain ikut terbaca.
+- Waktu respons MiCS tidak diketahui dan tidak bisa diukur tanpa CO asli. Waktu untuk CO ditentukan dari model, standar, dan simulasi.
+- Diuji di breadboard, daya dari USB laptop, di kamar. Uji mobil adalah uji tambahan dan satu malam.
+- Alat ini bukan alat keselamatan bersertifikat dan **tidak memenuhi UL 2034**.
+- Bukti dampak CO2 pada kadar umum belum konsisten antar studi [21].

@@ -103,7 +103,7 @@ Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperb
 | [17], [18] | Belum dibaca langsung (nilai OSHA PEL CO2 5000 ppm tercantum di halaman NIOSH [16] dan di dokumen ASHRAE [21]) | |
 | [19] | **Methods dibaca langsung** (kutipan pengguna 25 Okt 2026) | 22 peserta, tiga kondisi (600, 1000, 2500 ppm) pada tiga sesi 2,5 jam dalam satu hari, enam kelompok, urutan diseimbangkan, peserta dan penguji tidak tahu kadarnya, CO2 ditambah dengan injeksi gas murni, ventilasi dan suhu tetap. Results dan Discussion belum dibaca |
 | [20] | Dari lampiran | Hasil "tidak menunjukkan pola dosis–respons yang jelas" belum diverifikasi |
-| [21] | **Dibaca langsung** (teks lengkap 16 halaman, ditempel pengguna 25 Okt 2026) | Klaim "1000 ppm bukan batas ASHRAE" **terverifikasi** (Standard 62 edisi 1989 memuatnya, dihapus kemudian). Ringkasan di desain-peringatan.md bagian A2b |
+| [21] | **Dibaca langsung** (teks lengkap 16 halaman, ditempel pengguna 25 Okt 2026) | Klaim "1000 ppm bukan batas ASHRAE" **terverifikasi** (Standard 62 edisi 1989 memuatnya, dihapus kemudian). Ringkasan di peringatan-dan-ambang.md bagian A2b |
 | [22] | Dari lampiran, belum dibaca | |
 | [23], [24] | Dari lampiran dan hasil pencarian | Data kepustakaan belum lengkap |
 | [25], [26] | Dari lampiran | Halaman tabel dan angka (CO 25 ppm, CO2 5000 ppm di Permenaker; CO 10 ppm, CO2 1000 ppm di Permenkes) **perlu diverifikasi langsung pada tabel resminya** |
@@ -122,8 +122,8 @@ Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperb
 
 | Dokumen | Sumber |
 |---|---|
-| [validasi-parameter.md](validasi-parameter.md), bagian A | [1], [4], [5], [6] |
-| validasi-parameter.md, bagian B | [2] |
-| validasi-parameter.md, bagian C dan [filtering.md](filtering.md) | [3], [7], [8], [9], [10] |
-| validasi-parameter.md bagian D dan [desain-peringatan.md](desain-peringatan.md) | [11]–[26] |
-| [batasan-sistem.md](batasan-sistem.md) | [1], [2], [6] |
+| [parameter-dan-sumber.md](../keputusan/parameter-dan-sumber.md), bagian A | [1], [4], [5], [6] |
+| parameter-dan-sumber.md, bagian B | [2] |
+| parameter-dan-sumber.md, bagian C dan [filter.md](../analisis/filter.md) | [3], [7], [8], [9], [10] |
+| parameter-dan-sumber.md bagian D dan [peringatan-dan-ambang.md](../keputusan/peringatan-dan-ambang.md) | [11]–[26] |
+| [batasan-sistem.md](../keputusan/batasan-sistem.md) | [1], [2], [6] |

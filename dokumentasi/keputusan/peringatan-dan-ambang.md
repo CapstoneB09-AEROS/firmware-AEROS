@@ -1,8 +1,20 @@
-# Rencana Desain Peringatan (CO2 dan CO)
+# Peringatan dan Ambang (Alasan dan Dasar Angka)
 
-> **Catatan:** ini **catatan kerja yang rinci** (riwayat keputusan, hitungan, dan bukti). Dokumen utama yang ringkas dan berurutan (latar belakang, tinjauan, kebutuhan, implementasi) ada di [rencana-desain.md](../1-utama/rencana-desain.md).
+Catatan kerja rinci: dasar angka CO2 dan CO, aturan prioritas, dan prinsip menentukan waktu tunggu. Angka **final** ada di [keputusan.md](keputusan.md) dan [algoritma-firmware.md](algoritma-firmware.md). Bagian di bawah adalah riwayat alasan, dan sebagian angkanya sudah digantikan (lihat tabel pembaruan). Batasan sensor ada di [batasan-sistem.md](batasan-sistem.md).
 
-Bagian D dari [validasi-parameter.md](validasi-parameter.md). Status: **rencana, belum diuji**. Angka bertanda "usulan" atau "belum ditentukan" belum punya dasar data. Batasan sensor dan batasan validasi ada di [batasan-sistem.md](batasan-sistem.md).
+## Pembaruan 27 Oktober 2026 (yang menggantikan angka lama di bawah)
+
+| Hal | Di bawah tertulis | Sekarang |
+|---|---|---|
+| Ambang bahaya CO | sekitar 200 ppm | **87 ppm** (WHO 15 menit) |
+| Lama uji arah | 30 sampai 60 detik (usulan 60) | **30 detik** |
+| Kriteria "CO naik lagi" | sekitar 8% perubahan Rs | **Rs turun lebih dari 25%** (8% dan 15% terlampaui gerakan alami Rs) |
+| Hasil uji arah tidak jelas | belum diputuskan | **anggap sumber luar dan tutup** |
+| CO2 selesai | di bawah 2400 selama 60 detik | **di bawah 2500 selama 10 detik (3 bacaan)** dan jendela sudah terbuka minimal 20 detik |
+| Bukaan jendela | dihitung per mobil dari N | **setengah, lewat waktu motor** (`WAKTU_SETENGAH`), maksimum 180 detik, jeda tertutup minimal 5 menit |
+| Pemanasan | 5 menit di kode | **180 detik** untuk CO dan CO2 |
+| Pola bunyi | CO dan CO2 4000 sama | **WASPADA 3 bip pendek, BAHAYA 1 bip panjang**; CO diulang tiap 60 detik maks. 5 menit, CO2 tidak diulang |
+| Ambang CO2 tindakan | 4000 (alasan di A2 dan A3) | **tetap 4000** (bukan 4500) |
 
 ---
 
@@ -131,7 +143,7 @@ Yang harus diputuskan dengan alasan:
 
 ### B3. Aturan pendukung
 
-- **Tidak ada alarm saat warm-up.** Kode saat ini 5 menit; rencana baru 3 menit (lihat pseudocode-baru.md 2.7; datasheet MiCS tidak memuat angka). Setelah sensor mati sebentar (misalnya sambungan USB putus), warm-up harus dihitung ulang.
+- **Tidak ada alarm saat warm-up.** Kode saat ini 5 menit; rencana baru 3 menit (lihat algoritma-firmware.md 2.7; datasheet MiCS tidak memuat angka). Setelah sensor mati sebentar (misalnya sambungan USB putus), warm-up harus dihitung ulang.
 - **Kerusakan sensor tidak boleh tampil sebagai "OK".** `ADC_ERR` dan `ADC_SATURASI` ditampilkan sebagai gangguan.
 - **Sensor tidak bisa membedakan gas.** Pesan sebaiknya "kemungkinan CO atau gas lain", bukan "CO terdeteksi" (lihat batasan di batasan-sistem.md).
 
@@ -144,106 +156,6 @@ Yang harus diputuskan dengan alasan:
 | 3 | Waktu warm-up yang cukup | Analisis log baseline |
 
 ---
-
-## C. Alur kode saat ini (pseudocode)
-
-Ini gambaran [src/main.cpp](../../src/main.cpp) **versi sekarang** (353 baris, terakhir diubah 23 Oktober 2026). Tanda `⚠` menandai bagian yang **berbeda dari rencana** di bagian A dan B. Perbedaannya dirangkum di bagian D.
-
-### C1. Saat dinyalakan (`setup`, [baris 239](../../src/main.cpp#L239))
-```
-buka Serial 115200, tunggu 1 detik
-matikan buzzer
-buka jalur sensor CO2 (9600)
-   kalau DISABLE_ABC = true -> matikan kalibrasi otomatis       ⚠ sekarang false (ABC aktif)
-nyalakan I2C, cek LCD, tampilkan "CO + CO2 Monitor"
-cek ADS1115 di 0x48
-   kalau tidak ada -> tampilkan error di LCD, BERHENTI SELAMANYA
-atur gain ADS1115 ke tingkat paling sensitif (1.024 V)
-ambil R0 dari memori (bawaan 1730 kOhm kalau belum pernah disimpan)
-cetak petunjuk dan judul kolom CSV
-```
-
-### C2. Setiap 1 detik (`loop`, [baris 278](../../src/main.cpp#L278))
-```
-1. cek perintah keyboard: 'r' = mulai kalibrasi R0, 'd' = R0 kembali ke bawaan
-
-2. CO2:
-     kirim pertanyaan ke MH-Z19C, tunggu jawaban maksimal 0,5 detik
-     valid kalau 9 byte, header benar, checksum cocok
-     ppm CO2 = byte3 x 256 + byte4
-     kalau tidak valid -> CO2 dianggap gagal ("n/a")
-
-3. MiCS (tegangan):
-     rata-ratakan 16 pembacaan ADS1115
-     kalau mentok di batas alat ukur -> SATURASI
-     atur gain otomatis: naik satu tingkat per detik kalau sinyal hampir penuh,
-                         turun satu tingkat kalau sinyal kecil
-        ⚠ saat SATURASI pembacaan detik itu dibuang, tidak dibaca ulang (T8)
-
-4. MiCS (hitungan):
-     Rs = RL x (VCC - V) / V           (RL = 9970, VCC = 4.64)
-     kalau SATURASI           -> status "ADC_SATURASI", ppm CO tidak dihitung
-     kalau Rs tidak valid     -> status "ADC_ERR", ppm CO tidak dihitung
-     kalau valid:
-        kalau sedang kalibrasi -> catat Rs (lihat C3)
-        Rs halus = EMA (20% data baru + 80% yang lama)      ⚠ filter belum diputuskan (T9)
-        rasio = Rs halus / R0
-        kalau rasio >= 0,5 -> ppm CO = 0
-        kalau tidak        -> ppm CO = (3,7 / rasio) ^ (1 / 0,856)    ⚠ A dan BETA asumsi (S2)
-
-5. Status dan alarm CO:
-     kalau sedang kalibrasi        -> "KALIBRASI_R0"
-     kalau menyala < 300 detik     -> "WARMUP"       ⚠ 5 menit belum terbukti (S4)
-                                                      ⚠ tidak dihitung ulang kalau sensor mati sebentar
-     kalau tidak:
-        alarm belum aktif:  ppm >= 35 selama 10 detik berturut-turut -> ALARM AKTIF    ⚠ waktu belum diputuskan (T10)
-        alarm aktif:        ppm <  25 selama 30 detik berturut-turut -> ALARM MATI     ⚠ buzzer tetap bunyi walau ppm 0 di 30 detik ini
-        status: ALARM(est) / DI_ATAS_RENTANG (> 1000 ppm) / OK(<10ppm) / OK
-
-6. Buzzer: bunyi kalau alarm CO aktif, diam kalau tidak
-     ⚠ buzzer hanya untuk CO. CO2 belum punya bunyi sama sekali
-
-7. Status CO2:
-     gagal dibaca                  -> "CO2_ERR"
-     menyala < 180 detik           -> "WARMUP"       ⚠ tidak dihitung ulang kalau sensor CO2 mati
-     < 1000   -> "BAIK"
-     < 2000   -> "SEDANG(ventilasi)"     ⚠ tidak sesuai rencana (A1: tanpa penilaian di 1000)
-     < 5000   -> "TINGGI"                ⚠ tidak ada tingkat 2500 dan 4000
-     >= 5000  -> "BAHAYA"                ⚠ sensor mentok di 5000, tidak akan melihat lebih dari itu
-
-8. LCD: baris 1 "CO: xxxx ppm [kode]", baris 2 "CO2: xxxx ppm [kode]"
-        (LCD 4 baris: dua baris tambahan berisi status lengkap)
-
-9. Serial: satu baris CSV:  t_s, V_mV, Rs_kohm, Rs_per_R0, CO_ppm_est, CO2_ppm, status_CO, status_CO2
-
-10. tunggu sampai genap 1 detik sejak awal loop, lalu ulangi
-```
-
-### C3. Kalibrasi R0 (perintah `r`, [baris 195](../../src/main.cpp#L195))
-```
-mulai hitung 120 detik, kosongkan catatan, matikan alarm
-tiap detik selama 120 detik: catat Rs (jumlah, terkecil, terbesar)
-setelah 120 detik:
-   data < 60 titik                       -> GAGAL
-   selisih (terbesar - terkecil) / rata-rata > 10%  -> DITOLAK, R0 tidak berubah
-   selain itu                            -> R0 = rata-rata, simpan ke memori ESP32
-```
-
-## D. Perbedaan kode sekarang dan rencana
-
-| # | Kode sekarang | Rencana | Tugas |
-|---|---|---|---|
-| 1 | Status CO2 memakai batas 1000, 2000, 5000 | Tampilan angka saja, peringatan 2500, tindakan 4000 | T8 |
-| 2 | CO2 tidak punya bunyi | Bunyi singkat satu kali di 2500 | T8, T11 |
-| 3 | `DISABLE_ABC = false` (ABC aktif) | Dimatikan untuk versi mobil (usulan) | T8 |
-| 4 | Warm-up dihitung dari boot ESP32 | Dihitung ulang kalau sensor mati sebentar | T8 |
-| 5 | Gain naik satu tingkat per detik, data saturasi dibuang | Baca ulang setelah ganti gain | T8 |
-| 6 | Alarm CO: 35 ppm selama 10 detik, buzzer tetap bunyi 30 detik walau ppm 0 | Waktu dan batas selesai ditentukan dengan alasan | T10 |
-| 7 | Filter EMA 0.2 | Belum diputuskan (kandidat EMA 0.1 atau SMA 10) | T9 |
-| 8 | Alarm CO satu tingkat | Tiga tingkat (peringatan, bahaya, di atas rentang) | T10 |
-| 9 | Tidak ada pesan "kemungkinan gas lain" | Pesan memuat kemungkinan gas pereduksi lain | T8 |
-
-Aturan: bagian ini diperbarui setiap kali `main.cpp` berubah, dan perbedaan yang sudah teratasi dihapus.
 
 ## E. Aturan prioritas dan cara menentukan waktu
 
@@ -280,7 +192,7 @@ Dasar prioritas 2 (keputusan tim, 25 Okt 2026): sensor tidak bisa membedakan CO 
 | Parameter waktu | Sumber keputusan | Data yang sudah ada | Status |
 |---|---|---|---|
 | Interval keputusan (rancangan awal 5 detik, kode 1 detik) | Cukup sering untuk menangkap lonjakan terpendek yang relevan. Rancangan awal menyebut lonjakan CO 10 detik di Auckland | Log 1 detik | Usulan: baca tiap 1 detik, keputusan boleh per beberapa detik |
-| Panjang filter CO | Dua syarat: noise yang harus diredam (filtering.md) dan anggaran keterlambatan | Analisis 1000 baris, dua sesi | Kandidat EMA 0.1 (sekitar 21 detik) atau SMA 10 (sekitar 8 detik) |
+| Panjang filter CO | Dua syarat: noise yang harus diredam (filter.md) dan anggaran keterlambatan | Analisis 1000 baris, dua sesi | Kandidat EMA 0.1 (sekitar 21 detik) atau SMA 10 (sekitar 8 detik) |
 | Filter CO2 | Sensor sudah lambat (T90 kurang dari 120 detik) | Manual Winsen | Usulan: tanpa filter tambahan |
 | Konfirmasi sebelum WASPADA CO | Alarm palsu vs keterlambatan. Standar alarm rumah (UL 2034) menuntut respons dalam menit pada 70–400 ppm. Plafon NIOSH 200 ppm dihitung sebagai rata-rata 15 menit (belum diverifikasi) | Belum ada data mobil | Usulan sementara 30 detik. **Tentukan dengan simulasi pada log mobil** |
 | Waktu pemulihan (rancangan awal 60 detik) | C-251 Bab 4.4.3 menyatakan parameter ini "ditetapkan secara empiris" dan belum ada justifikasi baku | Belum | Tentukan dengan simulasi: jalankan mesin status pada log dengan beberapa waktu pemulihan, pilih yang terpendek yang tidak membuat status bolak-balik |

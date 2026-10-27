@@ -23,8 +23,8 @@ secrets.h
 .vscode/readme.md
 
 # PDF besar disimpan lokal saja
-dokumentasi/rencana-awal/*.pdf
-dokumentasi/paper/*.pdf
+dokumentasi/referensi/rencana-awal/*.pdf
+dokumentasi/referensi/paper/*.pdf
 
 # Cadangan isi flash ESP (bisa memuat setelan Wi-Fi), jangan dikomit
 arsip-firmware/*.bin

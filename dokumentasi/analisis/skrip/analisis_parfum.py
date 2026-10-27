@@ -1,5 +1,5 @@
 """Analisis uji parfum (ruangan): lonjakan Rs, estimasi ppm, lama di atas ambang, pemulihan, dan respons aturan baru.
-Jalankan: python3 -I analisis_parfum.py ../../logs/device-monitor-261027-140826.log
+Jalankan: python3 -I analisis_parfum.py ../../../logs/device-monitor-261027-140826.log
 Log berformat 'HH:MM:SS.mmm > t_s,V_mV,Rs,rasio,CO,CO2,status_CO,status_CO2' (ada penanda waktu dari monitor).
 Aturan baru yang ditiru: SMA 6 pada Rs, ppm = (3.7/(Rs/R0))^(1/0.856) (0 bila rasio >= 0.5), R0 1730 kOhm,
 waspada bila ppm >= 35 selama 30 detik berturut-turut, bahaya bila ppm >= 87.

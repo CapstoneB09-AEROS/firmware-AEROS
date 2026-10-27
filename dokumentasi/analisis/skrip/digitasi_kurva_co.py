@@ -1,11 +1,11 @@
 """Digitalisasi kurva CO MiCS-5524 dari gambar datasheet (piksel -> angka), lalu bandingkan dengan rumus di kode.
 Jalankan: python3 -I digitasi_kurva_co.py   (butuh pillow dan numpy)
-Sumbu dikalibrasi dari garis grid utama gambar (dideteksi otomatis). Keluaran: teks + kurva-co-overlay.png
+Sumbu dikalibrasi dari garis grid utama gambar (dideteksi otomatis). Keluaran: teks + hasil/kurva-co-overlay.png
 """
 from PIL import Image, ImageDraw
 import numpy as np, itertools, os
 here = os.path.dirname(os.path.abspath(__file__))
-src = os.path.join(here, '..', '3-bukti', 'kurva-co-mics5524.png')
+src = os.path.join(here, '..', 'data', 'kurva-co-mics5524.png')
 img = Image.open(src).convert('RGB'); im = np.array(img.convert('L')).astype(float)
 A_KODE, BETA_KODE = 3.7, 0.856
 
@@ -45,4 +45,4 @@ for p in np.logspace(0, 3, 120):                        # garis merah = rumus ko
     px = x1 + dx * np.log10(p); py = y1 + dy * -np.log10(A_KODE / p ** BETA_KODE)
     if prev: d.line([prev, (px, py)], fill=(255, 0, 0), width=1)
     prev = (px, py)
-ov.save(os.path.join(here, 'kurva-co-overlay.png'))
+ov.save(os.path.join(here, '..', 'hasil', 'kurva-co-overlay.png'))

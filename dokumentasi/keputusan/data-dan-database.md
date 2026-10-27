@@ -1,179 +1,68 @@
-# Rancangan Data dan DFD (dari Sensor sampai Aplikasi)
+# Data dan Database
 
-Versi 25 Oktober 2026. Status: **PERKIRAAN**. Sisi firmware diturunkan langsung dari [pseudocode-baru.md](pseudocode-baru.md). Sisi **MQTT, database, dan aplikasi dipegang tim lain**, jadi bagian itu adalah usulan yang harus dicocokkan dengan mereka (agenda: [agenda-pertemuan-tim.md](../2-lapangan/agenda-pertemuan-tim.md)).
+Versi 27 Oktober 2026. Status: **perkiraan**; bagian MQTT, database, dan aplikasi dipegang tim lain, jadi yang di sini adalah usulan yang harus dicocokkan dengan mereka. Isi dan format pesan ada di [komunikasi.md](komunikasi.md).
 
-Dokumen terkait: [desain-data-dfd.md](../3-bukti/desain-data-dfd.md) (alasan laju kirim dan retensi), [rencana-desain.md](rencana-desain.md).
+## 1. Laju kirim, laju simpan, dan retensi (alasan)
+Usulan, belum disetujui tim. Angka ukuran data adalah perkiraan dengan asumsi yang tertulis.
 
----
+### 1.1 Dua hal yang perlu dipisahkan
 
-## 1. Gambaran singkat
+| Hal | Pertanyaannya | Usulan |
+|---|---|---|
+| Laju **keputusan** di ESP32 | Seberapa sering sensor dibaca dan logika alarm dievaluasi | Tetap sekitar 1 detik (sekarang). Cukup cepat menangkap lonjakan terpendek yang relevan (C-251 menyebut lonjakan CO 10 detik) |
+| Laju **pengiriman dan penyimpanan** ke MQTT dan database | Seberapa sering data dikirim dan disimpan | Setiap 5 detik, ditambah pesan langsung saat status berubah |
 
-```
-Sensor  ->  ESP32 (firmware)  ->  MQTT  ->  Penyimpan data  ->  Database  ->  Layanan data  ->  Aplikasi  ->  Pengemudi
-                 |  ^                                                                              |
-                 |  +----------------------------- perintah ack ("Saya Tahu") <--------------------+
-                 v
-        jendela, buzzer, LCD
-```
+C-251 menulis siklus 5 detik untuk keduanya. Dengan pemisahan ini keputusan tidak harus menunggu 5 detik.
 
-Tiga jenis data yang mengalir:
-1. **Telemetri**: nilai dan status, tiap 5 detik. Nilai CO yang dikirim adalah hasil filter SMA 6 pada akhir interval, ditambah nilai maksimum selama interval.
-2. **Kejadian (event)**: dikirim **segera** saat status berubah (alarm mulai, uji arah, jendela bergerak, dan seterusnya).
-3. **Perintah ack**: dari aplikasi ke perangkat ("Saya Tahu" mematikan bunyi).
+### 1.2 Mengapa tidak menyimpan tiap detik
 
-Keputusan alarm dan jendela dibuat **di ESP32 tiap 1 detik dan tidak bergantung pada internet**.
+Perkiraan, dengan asumsi satu baris sekitar 150 byte di database dan sekitar 200 byte per pesan di jaringan (termasuk tambahan protokol). Nilai itu belum diukur.
 
----
+| Laju | Baris per hari | Baris per 7 hari | Perkiraan ukuran 7 hari | Perkiraan data jaringan per hari |
+|---|---|---|---|---|
+| Tiap 1 detik | 86.400 | 604.800 | sekitar 91 MB | sekitar 17 MB |
+| Tiap 5 detik | 17.280 | 120.960 | sekitar 18 MB | sekitar 3,5 MB |
+| Rata-rata 1 menit | 1.440 | 10.080 | sekitar 1,5 MB | sekitar 0,3 MB |
 
-## 2. Data yang dihasilkan firmware
+Catatan:
+- Rancangan C-251 memakai hotspot ponsel pengguna untuk internet, jadi data jaringan juga menyangkut kuota pengguna.
+- Batas ukuran database pada paket gratis Supabase perlu dicek di halaman paketnya (belum diverifikasi).
+- Laju 1 detik tidak bermasalah secara teknis untuk ESP32, tetapi boros untuk riwayat yang hanya ditampilkan sebagai grafik.
 
-Diturunkan dari variabel di pseudocode baru.
+### 1.3 Jangan mengambil satu sampel tiap 5 detik
 
-| Variabel di pseudocode | Nama field | Tipe | Satuan | Keterangan | Dipakai di |
-|---|---|---|---|---|---|
-| (jam sejak menyala) | `t_s` | integer | detik | Penghitung sejak menyala. Kembali 0 saat ESP32 mulai ulang | CSV serial |
-| (jam dinding) | `ts` | waktu (UTC) | | Cap waktu. **Belum fix** apakah dari NTP di ESP32 atau diisi server saat pesan diterima [B14] | Telemetri, kejadian |
-| V (tegangan MiCS) | `v_mv` | real | mV | Rata-rata 16 pembacaan ADS1115 | CSV serial |
-| Rs | `rs_kohm_mentah` | real | kΩ | Sebelum filter | CSV serial |
-| RsHalus | `rs_kohm` | real | kΩ | Sesudah filter SMA 6 | CSV, telemetri |
-| rasio | `rs_r0` | real | tanpa satuan | RsHalus dibagi R0 | CSV, telemetri |
-| R0 | `r0_kohm` | real | kΩ | Patokan udara bersih dari memori NVS | Status |
-| ppmCO | `co_ppm` | real | ppm | **Estimasi indikatif**, dihitung dari Rs yang **sudah difilter** | CSV, telemetri (nilai akhir interval), kejadian |
-| (maksimum ppmCO) | `co_ppm_maks` | real | ppm | Nilai terbesar dari ppmCO terfilter selama 5 detik | Telemetri |
-| CO2 | `co2_ppm` | integer | ppm | Angka dari MH-Z19C (tanpa filter di firmware). Di telemetri dirata-ratakan 5 detik | CSV (tiap detik), telemetri |
-| (maksimum CO2) | `co2_maks` | integer | ppm | Nilai terbesar selama 5 detik | Telemetri |
-| CO_VALID, CO2_VALID | `co_ok`, `co2_ok` | boolean | | Hasil validasi data | CSV, telemetri |
-| (pemanasan) | `co_panas`, `co2_panas` | boolean | | Sensor masih memanas | CSV, telemetri |
-| faseCO | `fase_co` | teks | | `TIDAK_AKTIF`, `UJI_ARAH`, `SUMBER_DALAM`, `SUMBER_LUAR` | CSV, telemetri, kejadian |
-| faseCO2 | `fase_co2` | teks | | `NORMAL`, `PERINGATAN`, `TINDAKAN` | CSV, telemetri, kejadian |
-| (status teks) | `st_co`, `st_co2` | teks | | Misalnya `OK`, `WASPADA`, `BAHAYA`, `GANGGUAN`, `PEMANASAN` | CSV, telemetri |
-| jendela | `jendela` | teks | | `TERTUTUP`, `TERBUKA` (dan bukaan bila ada) | Telemetri, kejadian |
-| (bunyi) | `buzzer` | teks | | `OFF`, `SINGKAT`, `CO`, `CO_KERAS`, `CO2` | Telemetri, kejadian |
-| rsAwalUji, waktuUji | `rs_awal_uji`, `waktu_uji_s` | real, integer | kΩ, detik | Hanya pada kejadian uji arah | Kejadian (detail) |
-| MODE_SIMULASI | `sim` | boolean | | Data dari mode simulasi | Semua pesan |
-| (versi) | `fw` | teks | | Versi firmware | Telemetri, status |
-| (identitas) | `device_id` | teks | | Misalnya `aeros-01` | Semua pesan |
-| (urutan pesan) | `seq` | integer | | Untuk mendeteksi pesan hilang | Telemetri |
+Analisis kita menunjukkan Rs MiCS bergoyang bolak-balik tiap detik (periode sekitar 2 detik). Mengambil **satu** sampel tiap 5 detik bisa menghasilkan pola lambat palsu (aliasing). Yang benar: **rata-ratakan sampel 1 detik di dalam setiap interval 5 detik**, lalu kirim rata-rata itu. Untuk grafik riwayat itu cukup. Untuk keputusan alarm tetap dipakai filter dari analisis di [filter.md](../analisis/filter.md).
 
-**Mengapa yang disimpan nilai terfilter.** Filter SMA 6 dijalankan **sebelum** perhitungan ppm: Rs mentah, lalu SMA 6, lalu rasio Rs/R0, lalu ppm. Jadi `rs_kohm`, `rs_r0`, dan `co_ppm` di telemetri sudah berasal dari hasil SMA, dan itu juga nilai yang dipakai alarm di perangkat. Dengan begitu data di database sama dengan yang dipakai untuk memutuskan. Karena sudah terfilter, nilai pada akhir interval 5 detik **tidak perlu dirata-ratakan lagi** (rata-rata ganda tidak menambah manfaat). Nilai maksimum tetap dikirim agar puncak singkat tidak hilang dari riwayat. Hanya CO2 yang dirata-ratakan 5 detik, karena di firmware ia tidak difilter. **Data mentah (`v_mv`, `rs_kohm_mentah`) hanya ada di CSV serial** sebagai bukti analisis noise dan pemilihan filter, tidak dikirim ke database.
+Kirim juga **nilai maksimum** (atau minimum untuk Rs) di setiap interval agar lonjakan pendek tidak hilang dari riwayat.
 
-**Format CSV serial** (usulan, melanjutkan format sekarang): `t_s, v_mv, rs_kohm, rs_r0, co_ppm, co2_ppm, co_ok, co2_ok, fase_co, fase_co2, st_co, st_co2, jendela, buzzer, sim`. Baris tetap dicetak tiap 1 detik untuk bukti pengujian.
+### 1.4 Retensi 7 hari: apakah dihapus?
 
----
+Pilihan:
 
-## 3. Pesan MQTT (usulan)
-
-### 3.1 Topik
-
-> Catatan 27 Okt 2026: kode tim sudah memakai `aeros/data` dan `aeros/{id}/data/ack` (satu jalur untuk telemetri dan kejadian, dengan ACK). Usulan terbaru ada di [pseudocode-baru.md](pseudocode-baru.md) bagian 2.8.5. Tabel di bawah disesuaikan setelah pertemuan tim.
-
-| Topik | Arah | QoS | Isi |
+| Pilihan | Isi | Kelebihan | Kekurangan |
 |---|---|---|---|
-| `aeros/{device_id}/telemetry` | perangkat ke broker | 0 | Telemetri tiap 5 detik |
-| `aeros/{device_id}/event` | perangkat ke broker | 1 | Kejadian (segera saat status berubah) |
-| `aeros/{device_id}/status` | perangkat ke broker | 1, retained | `online` saat tersambung, `offline` lewat pesan last will |
-| `aeros/{device_id}/cmd/ack` | aplikasi ke perangkat | 1 | Konfirmasi "Saya Tahu" |
+| A. Hapus semua data lebih dari 7 hari | Satu tabel, ada tugas terjadwal penghapus | Paling sederhana, ukuran tetap | Riwayat lebih dari 7 hari hilang |
+| B. Data 5 detik disimpan 7 hari, lalu diringkas jadi rata-rata (dan maksimum) 1 menit untuk disimpan lebih lama | Dua tabel | Tren jangka panjang tetap ada, ukuran kecil | Sedikit lebih rumit |
+| C. Simpan semua | Satu tabel, tanpa penghapusan | Paling mudah | Ukuran terus bertambah dan bisa melewati batas paket |
 
-### 3.2 Contoh telemetri (tiap 5 detik) -> tabel `sensor_readings`
+Usulan: **B ringan**. Pembacaan 5 detik disimpan 7 hari. Catatan peringatan (`alert_logs`) dan catatan aktuator (`actuator_logs`) disimpan lama karena jumlahnya sedikit dan itu bukti paling penting. Ringkasan 1 menit disimpan sesuai kebutuhan laporan. Untuk capstone, pilihan A saja juga wajar, asalkan **dinyatakan** dan data pengujian untuk laporan **disimpan terpisah** sebagai berkas (CSV) di komputer, jangan hanya di database.
 
-Nilai teks mengikuti batasan (CHECK) di database tim: `status` hanya `normal`, `waspada`, `bahaya`; `buzzer` hanya `on` atau `off`; `window_status` angka 0 sampai 100 (persen jendela terbuka).
+### 1.5 Dampak ke DFD
 
-```json
-{
-  "device_id": "aeros-01",
-  "nonce": "b7f3-000123",
-  "measured_at": "2026-10-25T13:18:05Z",
-  "co_ppm": 6.2,
-  "co2_ppm": 1412,
-  "status": "normal",
-  "window_status": 0,
+Tambahkan atau ubah:
+- **Proses di ESP32: "Agregasi 5 detik dan deteksi kejadian"** (rata-rata dan maksimum per interval, serta pesan langsung saat status berubah) sebelum proses pengiriman MQTT.
+- **Penyimpanan D1 `sensor_readings`** diberi keterangan retensi (7 hari).
+- **Proses terjadwal "Hapus atau ringkas data lama"** yang berjalan pada D1.
+- **Penyimpanan D2 `alert_logs`** dan **D3 `actuator_logs`** tanpa penghapusan (atau penghapusan sangat panjang).
+- Penyimpanan data uji (CSV lokal) di luar jalur sistem, untuk bukti laporan.
 
-  "rs_kohm": 1480.3,
-  "rs_r0": 0.86,
-  "co_ppm_maks": 7.9,
-  "co2_maks": 1420,
-  "st_co": "OK",
-  "st_co2": "NORMAL",
-  "fase_co": "TIDAK_AKTIF",
-  "fase_co2": "NORMAL",
-  "buzzer": "off",
-  "co_ok": true,
-  "co2_ok": true,
-  "sim": false,
-  "fw": "0.2.0"
-}
-```
-- Enam field pertama (`device_id` sampai `window_status`) **sudah ada kolomnya**. `received_at` diisi server.
-- Field setelah baris kosong (`rs_kohm` dan seterusnya) adalah **tambahan usulan** yang belum ada kolomnya (lihat 4.3).
-- `nonce` = id boot ditambah nomor urut pesan (usulan). Database sudah punya `unique (device_id, nonce)`, jadi pesan ganda otomatis ditolak.
-
-**Aturan `status` (usulan):** `bahaya` bila CO ≥ 87 ppm atau CO2 ≥ 4000. `waspada` bila CO ≥ 35 ppm (setelah konfirmasi) atau CO2 ≥ 2500. Selain itu `normal`. Keadaan gangguan sensor dan pemanasan **belum punya nilai** di database (lihat 4.3 nomor 2).
-
-### 3.3 Contoh kejadian -> tabel `alert_logs` dan `actuator_logs`
-
-Kejadian peringatan (membuka dan menutup satu baris `alert_logs`):
-```json
-{
-  "device_id": "aeros-01",
-  "event_key": "b7f3-000045",
-  "fase": "mulai",
-  "alert_type": "CO2_TINDAKAN",
-  "gas": "CO2",
-  "nilai": 4012,
-  "ambang": 4000,
-  "sumber": null,
-  "detail": { "bukaan": 100 },
-  "sim": false
-}
-```
-Saat selesai, pesan yang sama dikirim dengan `"fase": "selesai"` dan `event_key` yang sama, sehingga backend mengisi `resolved_at`. Kunci `event_key` **belum ada kolomnya** (usulan 4.3 nomor 5).
-
-Gerakan aktuator (satu baris `actuator_logs`):
-```json
-{
-  "device_id": "aeros-01",
-  "event_key": "b7f3-000045",
-  "window_action": "open",
-  "buzzer_state": "on",
-  "trigger_source": "auto",
-  "execution_status": "success",
-  "window_status": 100,
-  "sim": false
-}
-```
-Aksi yang diputuskan di ESP32 dicatat sesudah terjadi (`execution_status` = `success`, `command_id` kosong).
-
-Daftar `alert_type` dan jenis kejadian lain, dan kapan dibuat (dari pseudocode). Kolom `alert_type` di database tidak membatasi nilainya, jadi daftar ini bisa dipakai langsung:
-
-| `tipe` | Dibuat saat |
-|---|---|
-| `CO_WASPADA` | Aturan CO aktif karena CO ≥ 35 ppm setelah konfirmasi |
-| `CO_BAHAYA` | Aturan CO aktif karena CO ≥ 87 ppm |
-| `CO_UJI_ARAH_MULAI` | Jendela dibuka untuk uji arah (`rs_awal_uji` dicatat) |
-| `CO_SUMBER_LUAR` | Uji arah selesai dan Rs turun melebihi kriteria (jendela ditutup dan dikunci) |
-| `CO_SUMBER_DALAM` | Uji arah selesai dan CO turun (jendela tetap terbuka) |
-| `CO_SELESAI` | CO di bawah batas selesai selama waktu pemulihan |
-| `CO2_PERINGATAN` | CO2 ≥ 2500 (sekali per kejadian) |
-| `CO2_TINDAKAN` | CO2 ≥ 4000 |
-| `CO2_SELESAI` | CO2 di bawah 2400 selama 60 detik |
-| `SENSOR_GANGGUAN` | Sensor jadi tidak valid (`gas` menyebut CO atau CO2) |
-| `SENSOR_PULIH` | Sensor valid kembali |
-| `JENDELA_BUKA`, `JENDELA_TUTUP` | Perintah jendela dikirim ke aktuator |
-| `BUZZER_ON`, `BUZZER_OFF` | Bunyi dinyalakan atau dimatikan |
-| `ACK_DITERIMA` | Perintah ack dari aplikasi diterima |
-
-### 3.4 Ukuran pesan
-Contoh telemetri di atas sekitar 350 byte sebagai JSON. Itu **perkiraan kasar** (lebih besar dari asumsi 150–200 byte di [desain-data-dfd.md](../3-bukti/desain-data-dfd.md) karena nama field). Pada 5 detik, sekitar 17.280 pesan per hari, sehingga data jaringan perkiraan sekitar 6 MB per hari. Perlu dicek dengan tim backend, dan nama field bisa dipersingkat.
-
----
-
-## 4. Tabel database
+## 2. Tabel database
 
 Sumber: **skrip SQL yang sudah dibuat tim backend** (25 Oktober 2026). Bagian ini menyatukan **yang sudah ada** dan **yang diusulkan ditambah**, supaya terlihat gambaran akhirnya. Pengembangan berjalan paralel: firmware dan backend saling uji kirim data, jadi yang paling penting adalah **kontrak data** yang disepakati lebih dulu (4.1).
 
 Tanda: ✓ = sudah ada, ＋ = usulan tambahan, ⚠ = ada masalah yang perlu diperbaiki.
 
-### 4.1 Kontrak data minimal yang perlu disepakati sekarang
+### 2.1 Kontrak data minimal yang perlu disepakati sekarang
 
 Tujuh hal ini cukup agar kedua sisi tidak berbeda arah:
 
@@ -187,7 +76,7 @@ Tujuh hal ini cukup agar kedua sisi tidak berbeda arah:
 | 6 | Nilai `alert_type` | `CO_WASPADA`, `CO_BAHAYA`, `CO2_PERINGATAN`, `CO2_TINDAKAN`, `SENSOR_GANGGUAN` |
 | 7 | Pengambil keputusan | Alarm dan jendela diputuskan di ESP32 dan dicatat sesudahnya. Server tidak memerintah jendela kecuali penggantian manual |
 
-### 4.2 Gambaran lengkap tiap tabel (ada dan tambahan)
+### 2.2 Gambaran lengkap tiap tabel (ada dan tambahan)
 
 **`devices`** (✓ semuanya)
 | Kolom | Status | Keterangan |
@@ -257,7 +146,7 @@ Tujuh hal ini cukup agar kedua sisi tidak berbeda arah:
 | `updated_at` | ✓ | |
 | `fase_co`, `fase_co2`, `sim` | ＋ | Aplikasi bisa menampilkan "uji arah" dan label simulasi |
 
-### 4.3 Masalah dan penyesuaian (diurutkan dari yang terpenting)
+### 2.3 Masalah dan penyesuaian (diurutkan dari yang terpenting)
 
 | # | Temuan | Dampak | Usulan |
 |---|---|---|---|
@@ -274,7 +163,7 @@ Tujuh hal ini cukup agar kedua sisi tidak berbeda arah:
 | 11 | ⚠ Fungsi penghapus + `ON DELETE CASCADE` (nomor 1) | Begitu fungsi dijalankan, **catatan peringatan dan log aktuator ikut terhapus**. Bila ada peringatan aktif, penghapusan bisa gagal karena `device_state.active_alert_id` | **Perbaiki nomor 1 dulu**, baru fungsi dijadwalkan |
 | 12 | Fungsi rata-rata per jendela waktu tidak menyaring perangkat | Bila perangkat lebih dari satu, rata-rata tercampur | Tambah parameter `device_id` dan saring (lihat 4.8) |
 
-### 4.4 Contoh skrip SQL usulan (untuk ditinjau tim backend)
+### 2.4 Contoh skrip SQL usulan (untuk ditinjau tim backend)
 
 **Belum dijalankan dan belum diuji.** Ini hanya gambaran bentuk perubahannya.
 
@@ -340,7 +229,7 @@ alter table public.device_state
 --     where coalesce(measured_at, received_at) < now() - interval '7 days'$$);
 ```
 
-### 4.5 Pemetaan pesan firmware ke tabel
+### 2.5 Pemetaan pesan firmware ke tabel
 
 | Pesan atau field firmware | Tabel dan kolom | Keterangan |
 |---|---|---|
@@ -353,20 +242,10 @@ alter table public.device_state
 | Topik `status` (online/offline) | `device_state.connection_status`, `last_seen_at` | Sudah cocok |
 | Ack dari aplikasi | `alert_logs.acknowledged_at`, `device_state.ack_driver`, `ack_at` | Sudah cocok |
 
-### 4.6 Pertanyaan untuk tim backend
-1. Apakah kontrak 4.1 bisa disepakati, terutama arti `status` dan format `nonce`?
-2. Apakah `gangguan` ditambahkan ke nilai `status`, atau gangguan dicatat lewat kolom lain?
-3. Apakah `command_id` dan `execution_status` dipakai untuk perintah dari server, dan perintah apa saja?
-4. Apakah ada tugas penghapusan data lama, indeks, dan kebijakan akses (RLS)?
-5. Apakah perubahan di 4.4 bisa dijalankan, dan siapa yang menjalankannya?
+### 2.6 Retensi
+Bawaan: `sensor_readings` dihapus setelah 7 hari memakai fungsi hapus yang sudah ada (2.7), dijadwalkan **setelah** memperbaiki cascade dan `created_at` (2.3). `alert_logs` dan `actuator_logs` disimpan lama (jumlahnya kecil). `device_state` satu baris per perangkat, ditimpa terus. Data uji untuk laporan disimpan **terpisah sebagai CSV**, bukan hanya di database.
 
-### 4.7 Retensi
-- `sensor_readings`: hapus data lebih dari 7 hari memakai fungsi hapus yang sudah ada (lihat 4.8), dijadwalkan setelah memperbaiki nomor 1 dan 10 di 4.3.
-- `alert_logs`, `actuator_logs`: disimpan lama (jumlahnya kecil).
-- `device_state`: satu baris per perangkat, ditimpa terus.
-- Data uji untuk laporan disimpan **terpisah sebagai CSV**, bukan hanya di database.
-
-### 4.8 Fungsi database yang sudah ada (25 Oktober 2026)
+### 2.7 Fungsi database yang sudah ada (25 Oktober 2026)
 
 Dua fungsi dari tim backend. Nama dan parameter lengkap tidak terlihat dari yang ditempel, jadi saya hanya menilai isinya.
 
@@ -415,13 +294,13 @@ order by 1;
 
 ---
 
-## 5. Diagram aliran data (DFD)
+## 3. Diagram aliran data (DFD)
 
-### 5.1 Level 0 (konteks)
-![DFD level 0](../diagram/dfd-0-konteks.png)
+### 3.1 Level 0 (konteks)
+![DFD level 0](diagram/dfd-0-konteks.png)
 
-### 5.2 Level 1A (perangkat ESP32)
-![DFD level 1A](../diagram/dfd-1a-perangkat.png)
+### 3.2 Level 1A (perangkat ESP32)
+![DFD level 1A](diagram/dfd-1a-perangkat.png)
 
 | Proses | Tugas | Masuk | Keluar |
 |---|---|---|---|
@@ -433,8 +312,8 @@ order by 1;
 
 Penyimpanan: **D5** log serial CSV (berkas di komputer), **D6** memori NVS (R0).
 
-### 5.3 Level 1B (MQTT, database, aplikasi, mengikuti skema tim)
-![DFD level 1B](../diagram/dfd-1b-backend-aplikasi.png)
+### 3.3 Level 1B (MQTT, database, aplikasi, mengikuti skema tim)
+![DFD level 1B](diagram/dfd-1b-backend-aplikasi.png)
 
 | Proses | Tugas | Masuk | Keluar |
 |---|---|---|---|
@@ -446,23 +325,6 @@ Penyimpanan: **D5** log serial CSV (berkas di komputer), **D6** memori NVS (R0).
 
 Penyimpanan: **D1** `sensor_readings`, **D2** `alert_logs`, **D3** `actuator_logs`, **D4** `device_state`, **D5** `devices`.
 
-Pemetaan DFD ke pseudocode: proses 1.1 dan 1.2 adalah langkah 1–3 program utama, 1.3 adalah langkah 4–6 (aturan CO dan CO2), 1.4 adalah langkah 7, dan 1.5 adalah langkah 8 ([pseudocode-baru.md](pseudocode-baru.md) bagian 2.3).
+Pemetaan DFD ke pseudocode: proses 1.1 dan 1.2 adalah langkah 1–3 program utama, 1.3 adalah langkah 4–6 (aturan CO dan CO2), 1.4 adalah langkah 7, dan 1.5 adalah langkah 8 ([algoritma-firmware.md](algoritma-firmware.md) bagian 2.3).
 
-Diagram dibuat lewat skrip [diagram/buat_dfd.py](../diagram/buat_dfd.py). Mengubah isi diagram berarti mengubah skrip lalu menjalankannya lagi.
-
----
-
-## 6. Yang masih perkiraan dan perlu dikonfirmasi tim
-
-| # | Hal | Siapa |
-|---|---|---|
-| 1 | Cap waktu: NTP di ESP32 atau cap waktu server (B14) | Backend |
-| 2 | Nama topik, QoS, dan pesan last will | Backend |
-| 3 | Nama field dan ukuran pesan (bisa dipersingkat) | Backend dan firmware |
-| 4 | Kontrak 4.1, penyesuaian 4.3, dan pertanyaan 4.6 | Backend |
-| 5 | Retensi 7 hari dan batas ukuran paket Supabase (belum dicek) | Backend |
-| 6 | Perilaku saat Wi-Fi atau hotspot putus (buffer atau dibuang) | Backend dan firmware |
-| 7 | Cara aplikasi membaca data (langsung dari database atau lewat layanan) | Software |
-| 8 | Teks pesan dan pola notifikasi (B15, B18) | Software |
-| 9 | Penanda `sim` di semua tampilan | Software |
-| 10 | Target latensi "data tampil di aplikasi" | Semua |
+Diagram dibuat lewat skrip [diagram/buat_dfd.py](diagram/buat_dfd.py). Mengubah isi diagram berarti mengubah skrip lalu menjalankannya lagi.

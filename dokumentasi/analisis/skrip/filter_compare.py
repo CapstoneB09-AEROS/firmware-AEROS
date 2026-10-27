@@ -3,7 +3,7 @@
 Cara pakai (Python 3 saja, tanpa library tambahan):
     python3 filter_compare.py <file_log.csv> [jumlah_baris_terakhir]
 Contoh:
-    python3 filter_compare.py data-baseline-t3314-4313.csv 1000
+    python3 filter_compare.py ../data/data-baseline-t3314-4313.csv 1000
 
 Input : baris CSV dari firmware (t_s,V_mV,Rs_kohm,Rs_per_R0,CO_ppm_est,CO2_ppm,status_CO,status_CO2).
         Boleh berawalan jam, seperti hasil "pio device monitor -f time -f log2file"

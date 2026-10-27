@@ -3,7 +3,7 @@
 Cara pakai (Python 3 saja, tanpa library tambahan):
     python3 noise_profile.py <file_log> [detik_awal_dibuang]
 Contoh:
-    python3 noise_profile.py ../../logs/device-monitor-261025-115335.log 300
+    python3 noise_profile.py ../../../logs/device-monitor-261025-115335.log 300
 
 Input : log berformat CSV firmware, boleh berawalan jam ("HH:MM:SS.mmm > ...").
         Hanya segmen terpanjang tanpa celah waktu setelah masa awal yang dipakai.

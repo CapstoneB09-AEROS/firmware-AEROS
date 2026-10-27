@@ -3,7 +3,7 @@
 Cara pakai (Python 3 saja, tanpa library tambahan):
     python3 analisis_mobil.py <file_log> [detik_awal_dibuang]
 Contoh:
-    python3 analisis_mobil.py ../../logs/device-monitor-261025-214144.log 120
+    python3 analisis_mobil.py ../../../logs/device-monitor-261025-214144.log 120
 
 Beda dengan noise_profile.py: toleran terhadap loncatan t_s 1 detik (itu hanya pembulatan millis()/1000,
 bukan data hilang), jadi cocok untuk sesi pendek di mobil. Waktu dihitung dari jam di log.
