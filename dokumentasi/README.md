@@ -6,7 +6,7 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 - **C-251** = rencana awal tim (14 Agustus 2026). **Tidak direvisi.**
 - **C-501** = laporan hasil. **Tenggat setelah expo.** Dokumentasi ini menjadi bahannya.
 - Expo **30 Oktober 2026**; firmware dibekukan **29 Oktober siang**.
-- Firmware lama (v0, 23 Okt 2026) tetap di `../src/main.cpp`, cadangannya di `../arsip-firmware/`. Firmware baru ditulis di cabang `firmware-baru`.
+- Firmware **v0.1** (28 Okt 2026: v0 + GPIO26 TBout HIGH + buzzer GPIO27) ada di `../src/main.cpp`; v0 (23 Okt 2026) tetap di `../arsip-firmware/main-v0-2026-10-23.cpp`, v0.1 di `../arsip-firmware/main-v0.1-2026-10-28.cpp`. Firmware baru ditulis di cabang `firmware-baru`.
 - Rekaman serial ada di `../logs/`. Salinan kode tim (komunikasi) di `../kode-tim/` (tidak masuk git).
 
 ## Peta folder
@@ -14,8 +14,8 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 |---|---|---|
 | [keputusan/](keputusan/) | Semua keputusan dan alasannya, termasuk yang **belum** diputuskan | [keputusan.md](keputusan/keputusan.md), lalu [belum-diputuskan.md](keputusan/belum-diputuskan.md) |
 | [pengujian/](pengujian/) | Rencana uji, lembar catatan, dan laporan tiap uji | [rencana-uji.md](pengujian/rencana-uji.md) |
-| [analisis/](analisis/) | Hasil analisis data, skrip, dan data yang dianalisis | [ringkasan-temuan.md](analisis/ringkasan-temuan.md) |
-| [tugas/](tugas/) | Tugas dan parkir per subsistem (firmware, hardware, komunikasi, aplikasi, pengujian, laporan) | [tugas-per-subsistem.md](tugas/tugas-per-subsistem.md) |
+| [analisis/](analisis/) | Hasil analisis data, skrip, dan data yang dianalisis; perbandingan model C-251 dengan uji | [ringkasan-temuan.md](analisis/ringkasan-temuan.md), [model-vs-uji.md](analisis/model-vs-uji.md) |
+| [tugas/](tugas/) | Tugas dan parkir per subsistem (firmware, hardware, komunikasi, aplikasi, pengujian, laporan) dan kerangka C-501 | [tugas-per-subsistem.md](tugas/tugas-per-subsistem.md), [kerangka-c501.md](tugas/kerangka-c501.md) |
 | [referensi/](referensi/) | Daftar pustaka dan PDF rencana awal | [daftar-pustaka.md](referensi/daftar-pustaka.md) |
 
 ## Isi folder keputusan

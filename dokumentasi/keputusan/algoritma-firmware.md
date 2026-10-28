@@ -336,7 +336,7 @@ Alarm selalu menang atas pesan jaringan di LCD. Aplikasi memakai pesan `ONLINE`/
 
 ## 3. Yang tidak diubah
 
-- `src/main.cpp` tetap seperti 23 Oktober 2026 (checksum `fa7b8a91070bafe659d7babde142ea8e384bbf44`, cadangan di `arsip-firmware/main-v0-2026-10-23.cpp`).
+- `src/main.cpp` tetap seperti 23 Oktober 2026 **saat dokumen ini ditulis** (checksum `fa7b8a91070bafe659d7babde142ea8e384bbf44`, cadangan di `arsip-firmware/main-v0-2026-10-23.cpp`). Sejak 28 Oktober 2026 `src/main.cpp` adalah v0.1 (lihat README).
 - Pseudocode lama (rencana awal dan alur kode v0) tetap, di [algoritma-firmware-lama-v0.md](algoritma-firmware-lama-v0.md).
 
 ---

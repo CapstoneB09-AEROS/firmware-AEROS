@@ -99,6 +99,7 @@ PCB belum datang, jadi demo dirancang **berjalan di breadboard**; PCB hanya bonu
 | Naskah expo, skrip video 3 menit, isi banner, konsep diorama | pengguna menulis, asisten membantu draf |
 | T5 daftar periksa demo dan rekaman cadangan (hotspot 2,4 GHz, pemanasan 3 menit sebelum penonton datang, uji bip, cek R0) | usulan |
 | Rencana cadangan demo | [belum-diputuskan.md](../keputusan/belum-diputuskan.md) bagian 6 |
+| Kerangka C-501 (bab, sumber data, temuan mana yang masuk badan atau lampiran) | [kerangka-c501.md](kerangka-c501.md) |
 | Bahan C-501: koreksi isi C-251 (T15, T17), cara uji CO (T16), lokasi sensor (T18), anggaran (T20); **C-251 tidak direvisi** | [analisis/perbandingan-c251.md](../analisis/perbandingan-c251.md) |
 | Pembagian penulisan C-501 dari artefak uji | |
 | Commit dan push dokumentasi dan log | menunggu izin |
