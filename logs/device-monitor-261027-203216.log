@@ -1,0 +1,37 @@
+20:32:25.518 > ets Jul 29 2019 12:21:46
+20:32:25.524 > 
+20:32:25.524 > rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+20:32:25.524 > configsip: 0, SPIWP:0xee
+20:32:25.524 > clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+20:32:25.528 > mode:DIO, clock div:2
+20:32:25.533 > load:0x3fff0030,len:1184
+20:32:25.533 > load:0x40078000,len:13232
+20:32:25.538 > load:0x40080400,len:3028
+20:32:25.538 > entry 0x400805e4
+20:32:26.517 > 
+20:32:26.518 > === AEROS ESP32 | Smart WiFi Diagnostic | Portal GPIO14 ===
+20:32:27.533 > [LCD] 0x27 / 0x3F tidak ditemukan. Periksa LCD dan level tegangan I2C.
+20:33:37.704 > [LittleFS] Antrean pulih: 360/360 data; pakai 1183744/1441792 byte
+20:33:37.797 > [BUTTON] Tahan GPIO14 ke GND 5 detik untuk buka portal.
+20:33:37.797 > [WiFi] Ada konfigurasi baru PENDING: SSID=roracomel; diprioritaskan walaupun konfigurasi lama tersedia.
+20:33:37.808 > [WiFi] Boot: coba SSID roracomel dengan maksimal 5 percobaan.
+20:33:37.814 > [WiFi] PERCOBAAN 1/5; SSID=roracomel (maks. 10s)
+20:33:37.820 > [SENSOR] Sketch MiCS/ADS1115/MH-Z19C asli (tidak diubah)
+20:33:38.837 > # PERINGATAN: LCD tidak terdeteksi di alamat I2C yang diset (coba 0x3F / I2C scanner)
+20:33:40.240 > [EVENT] WiFi disconnected, reason=201
+20:33:42.654 > [EVENT] WiFi disconnected, reason=201
+20:33:45.176 > ADS1115 tidak terdeteksi di 0x48 -> cek SDA(21), SCL(22), VDD(3V3), ADDR(GND)
+20:33:47.821 > [WiFi] GAGAL 1/5 (status=1, reason=201)
+20:33:47.821 > [WiFi] PERCOBAAN 2/5; SSID=roracomel (maks. 10s)
+20:33:50.241 > [EVENT] WiFi disconnected, reason=201
+20:33:57.830 > [WiFi] GAGAL 2/5 (status=1, reason=201)
+20:33:57.832 > [WiFi] PERCOBAAN 3/5; SSID=roracomel (maks. 10s)
+20:34:00.249 > [EVENT] WiFi disconnected, reason=201
+20:34:07.844 > [WiFi] GAGAL 3/5 (status=1, reason=201)
+20:34:07.846 > [WiFi] PERCOBAAN 4/5; SSID=roracomel (maks. 10s)
+20:34:10.258 > [EVENT] WiFi disconnected, reason=201
+20:34:17.850 > [WiFi] GAGAL 4/5 (status=1, reason=201)
+20:34:17.851 > [WiFi] PERCOBAAN 5/5; SSID=roracomel (maks. 10s)
+20:34:20.267 > [EVENT] WiFi disconnected, reason=201
+20:34:27.858 > [WiFi] GAGAL 5/5 (status=1, reason=201)
+20:34:27.859 > [SCAN] Memeriksa SSID: roracomel
