@@ -1,3 +1,4 @@
+// VERSI 0.1 (28 Okt 2026) = v0 + GPIO26 (TBout) keluaran HIGH + buzzer pindah GPIO25 -> GPIO27 (sesuai skematik)
 // Monitor CO (estimasi) + CO2 + LCD I2C: ESP32 + ADS1115 + MiCS-5524 + MH-Z19C
 // ppm CO adalah ESTIMASI dari kurva datasheet dan R0 hasil ukur sensor ini (belum dikalibrasi gas referensi,
 // belum dikompensasi suhu/RH). ppm CO2 dibaca langsung dari MH-Z19C lewat UART.
@@ -8,7 +9,8 @@
 //   MH-Z19C: Vin -> 5V, GND -> GND,
 //            TX sensor -> GPIO16 (RX2 ESP32), RX sensor -> GPIO17 (TX2 ESP32)   [menyilang]
 //   LCD I2C: VCC -> 5V, GND -> GND, SDA -> GPIO21, SCL -> GPIO22 (satu jalur I2C dengan ADS1115)
-//   Buzzer aktif (opsional): GPIO25 -> buzzer -> GND
+//   Buzzer aktif (opsional): GPIO27 -> buzzer -> GND
+//   TBout  : GPIO26 -> TBout -> GND (keluaran, diset HIGH saat boot)
 //
 // PERINTAH Serial Monitor (115200 baud, "New Line"):
 //   r = ukur R0 MiCS sekarang (sensor HARUS di udara bersih, tunggu 120 detik). Disimpan ke memori ESP32.
@@ -26,9 +28,10 @@
 // ---------------- Pin ----------------
 const int PIN_SDA    = 21;
 const int PIN_SCL    = 22;
-const int PIN_BUZZER = 25;
+const int PIN_BUZZER = 27;
 const int PIN_CO2_RX = 16;   // ESP32 RX2 <- TX sensor MH-Z19C
 const int PIN_CO2_TX = 17;   // ESP32 TX2 -> RX sensor MH-Z19C
+const int PIN_RELAY  = 26;   // keluaran ke terminal TBout (skematik)
 
 // ---------------- LCD I2C ----------------
 const uint8_t LCD_ADDR = 0x27;   // jika kosong/tidak tampil, coba 0x3F atau jalankan I2C scanner
@@ -241,6 +244,10 @@ void setup() {
   delay(1000);
   pinMode(PIN_BUZZER, OUTPUT);
   digitalWrite(PIN_BUZZER, LOW);
+
+  // Diset sebelum cek ADS1115 supaya tetap aktif walau ADS tidak terdeteksi
+  pinMode(PIN_RELAY, OUTPUT);
+  digitalWrite(PIN_RELAY, HIGH);
 
   Serial2.begin(9600, SERIAL_8N1, PIN_CO2_RX, PIN_CO2_TX);
   if (DISABLE_ABC) setAbc(false);
