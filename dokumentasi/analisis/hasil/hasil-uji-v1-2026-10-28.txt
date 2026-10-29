@@ -1,0 +1,38 @@
+
+1. Sesi (tiap reset ESP32 memulai sesi baru)
+Sesi | Mulai    | Berakhir | Lama    | V MiCS (mV) | CO2 (ppm) | Rs halus (kOhm) | Rs/R0     | CO maks (ppm) | Lewat pemanasan
+-----+----------+----------+---------+-------------+-----------+-----------------+-----------+---------------+----------------
+1    | 18:28:52 | 18:32:24 | 371 dtk | 8.0-11.7    | 609-1297  | 4148-5503       | 2.40-3.18 | 0             | ya             
+2    | 18:32:30 | 18:36:43 | 254 dtk | 7.6-12.0    | 688-2913  | 3976-5430       | 2.30-3.14 | 0             | ya             
+
+2.1 Kejadian penting sesi 1
+Jam      | Detik sesi | Jenis     | Isi                                      
+---------+------------+-----------+------------------------------------------
+18:29:14 | 181        | PEMANASAN | CO selesai: aturan CO aktif sekarang     
+18:29:14 | 181        | PEMANASAN | CO2 selesai: aturan CO2 aktif sekarang   
+18:29:56 | 223        | CO2       | PERINGATAN: >= 700 ppm selama 3 bacaan   
+18:29:59 | 226        | CO2       | TINDAKAN: >= 800 ppm selama 3 bacaan     
+18:29:59 | 226        | JENDELA   | BUKA, alasan: CO2 tindakan               
+18:31:30 | 317        | CO2       | SELESAI: di bawah 700 ppm selama 10 detik
+18:31:30 | 317        | JENDELA   | TUTUP, alasan: CO2 aman                  
+18:32:17 | 364        | CO2       | PERINGATAN: >= 700 ppm selama 3 bacaan   
+18:32:21 | 368        | CO2       | TINDAKAN: >= 800 ppm selama 3 bacaan     
+18:32:21 | 368        | JENDELA   | BUKA, alasan: CO2 tindakan               
+
+2.2 Kejadian penting sesi 2
+Jam      | Detik sesi | Jenis     | Isi                                      
+---------+------------+-----------+------------------------------------------
+18:35:29 | 181        | PEMANASAN | CO selesai: aturan CO aktif sekarang     
+18:35:29 | 181        | PEMANASAN | CO2 selesai: aturan CO2 aktif sekarang   
+18:35:31 | 183        | CO2       | PERINGATAN: >= 700 ppm selama 3 bacaan   
+18:35:44 | 196        | CO2       | SELESAI: di bawah 700 ppm selama 10 detik
+18:35:47 | 199        | CO2       | PERINGATAN: >= 700 ppm selama 3 bacaan   
+18:35:49 | 201        | CO2       | TINDAKAN: >= 800 ppm selama 3 bacaan     
+18:35:49 | 201        | JENDELA   | BUKA, alasan: CO2 tindakan               
+
+3. Siklus jendela (buka lalu tutup)
+Sesi | Buka     | Tutup            | Lama terbuka | Alasan buka  | Alasan tutup                                          
+-----+----------+------------------+--------------+--------------+-------------------------------------------------------
+1    | 18:29:59 | 18:31:30         | 92 detik     | CO2 tindakan | CO2 aman                                              
+1    | 18:32:21 | (tidak tercatat) | -            | CO2 tindakan | log berakhir atau ESP reset saat jendela masih terbuka
+2    | 18:35:49 | (tidak tercatat) | -            | CO2 tindakan | log berakhir atau ESP reset saat jendela masih terbuka

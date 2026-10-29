@@ -11,6 +11,7 @@ Versi 27 Oktober 2026. Rencana, templat, dan lembar catatan untuk uji lapangan d
 | 3. Ruang pertemuan 13 orang (ESP baru) | 26 Okt sore | v0 | [uji-3](laporan/uji-3-ruang-rapat-2026-10-26.md) |
 | 4. Mobil Avanza (jendela) | 26 Okt malam | v0 | [uji-4](laporan/uji-4-mobil-avanza-2026-10-26.md) |
 | 5. Parfum di ruangan | 27 Okt | v0 | [uji-5](laporan/uji-5-parfum-2026-10-27.md) |
+| 6. Firmware v1 di meja (CO2, jendela) | 28 Okt sore | v1 | [uji-6](laporan/uji-6-firmware-v1-2026-10-28.md) |
 
 Semua uji memakai firmware lama sebagai pembanding dasar. Algoritma baru dibandingkan dengan **memutar ulang log yang sama** (bagian 6), bukan dengan mengulang uji.
 
@@ -23,6 +24,39 @@ Semua uji memakai firmware lama sebagai pembanding dasar. Algoritma baru dibandi
 | Pengukuran 5 V dengan Min/Max 15 menit | multimeter di pin ESP, MiCS, MH-Z19C; laptop baterai dan charger | nilai minimum dan maksimum tercatat; ulangi setelah buck |
 | Firmware gabungan di meja | napas ke kotak (CO2 sampai 2500 dan 4000), mode simulasi CO, ukur waktu gerak jendela | aturan CO dan CO2 bekerja sesuai [algoritma-firmware.md](../keputusan/algoritma-firmware.md) |
 | Nyala dingin (opsional) | mati lebih dari 1 jam, rekam 10 menit di kamar | Rs menit ke-3 dekat menit ke-10 (satu uji bersih sudah ada) |
+| Relay jendela di meja, tanpa sensor | bagian 2.1; firmware kecil di `alat-uji/uji-relay-jendela/` | relay klik, jendela turun, ESP tidak reset, waktu turun per ms tercatat |
+
+### 2.1 Uji relay jendela di meja (tanpa sensor)
+
+Tujuan: memastikan rangkaian ESP → transistor → relay → motor bekerja, dan **mengukur berapa jauh jendela turun per milidetik** (mengisi `PULSA_BUKA_MS`, lihat [belum-diputuskan.md](../keputusan/belum-diputuskan.md) butir 1b). Sensor, LCD, dan buzzer tidak dipasang. Firmware: [alat-uji/uji-relay-jendela/src/main.cpp](../../alat-uji/uji-relay-jendela/src/main.cpp) (terpisah dari `src/main.cpp`). Rangkaiannya ada di [algoritma-firmware.md](../keputusan/algoritma-firmware.md) bagian 5.1.
+
+Perintah di serial monitor (+ Enter): `o` (2000 ms), `o<ms>` (maks 5000), `x` (stop), `s` (status), `n` (nolkan total), `h` (bantuan).
+
+| Tahap | Cara | Lulus bila |
+|---|---|---|
+| 0. GPIO26 tanpa beban | firmware `alat-uji/uji-gpio26` (paksa HIGH terus; `h` dan `l` mengganti level); lepas 470 Ω dan PN2222A, ukur GPIO26 terhadap GND ESP | sekitar 3,3 V (3,2-3,35 V); LED ESP ikut menyala |
+| 1. Motor dan relay saja (tanpa ESP) | 12 V langsung ke koil relay (pin 85/86), jendela bebas | relay klik, jendela turun |
+| 2. Transistor dan relay | 3,3 V dari pin 3V3 ke ujung resistor 470 Ω | relay klik |
+| 3. ESP penuh | unggah firmware uji, ketik `o` | LED ESP menyala 2 detik, relay klik, jendela turun, `alasan reset` tidak berubah (tidak reset saat relay menyala) |
+| 4. Ukur jarak per waktu | naikkan jendela manual ke atas, ketik `n`, lalu `o500`, ukur jarak turun; naikkan lagi, ulangi dengan `o1000`, `o2000` | tabel ms → cm tercatat |
+
+Tegangan yang perlu dicatat saat tahap 3 (probe di titik ukur sebelum Enter):
+
+| Titik | Diam | Aktif |
+|---|---|---|
+| GPIO26 terhadap GND ESP | sekitar 0 V | sekitar 3,3 V |
+| Koil relay (85-86) | 0 V | sekitar 12 V |
+| 5 V pada pin VIN atau 5V ESP | stabil | tidak turun di bawah 4,7 V |
+
+Bila ESP reset saat relay menyala, bacaan `alasan reset` di baris pembuka akan menunjukkan penyebabnya (BROWNOUT = catu tidak kuat). Itu berguna untuk memeriksa dugaan masalah catu dan ground (lihat [ringkasan-temuan.md](../analisis/ringkasan-temuan.md)).
+
+Lembar catatan (isi saat uji):
+
+| Pulsa (ms) | Jarak turun (cm) | Jendela | Mobil/rig | ESP reset? | Catatan |
+|---|---|---|---|---|---|
+| 500 | | | | | |
+| 1000 | | | | | |
+| 2000 | | | | | |
 
 ## 3. Skenario uji mobil (templat untuk mobil berikutnya)
 
