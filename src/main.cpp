@@ -1,3 +1,5 @@
+// VERSI 1.7 (29 Okt 2026): v1.6 + TIMER 5 detik: GPIO26 HIGH selama UJI_HIGH_MAKS_MS = 5000 ms sejak masuk BAHAYA, lalu LOW otomatis
+//   (juga bila CO2 sudah turun lebih dulu); x = berhenti lebih awal; HIGH lagi hanya setelah status keluar dari BAHAYA lalu masuk lagi.
 // VERSI 1.6 (29 Okt 2026): v1.5 + GPIO26 TAHAN HIGH sampai dimatikan sendiri dengan perintah x (permintaan pengguna): sekali
 //   status CO2 masuk BAHAYA, GPIO26 tetap HIGH walaupun CO2 turun; tidak ada batas waktu (UJI_HIGH_MAKS_MS = 0).
 //   Hanya perintah x (atau mencabut daya) yang mengembalikannya ke LOW. Dengan motor terpasang, motor tertahan di dasar menarik arus besar.
@@ -39,7 +41,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
 
-#define FW_VERSI "v1.6"
+#define FW_VERSI "v1.7"
 
 // =====================================================================
 // MODE PENGEMBANGAN
@@ -85,7 +87,7 @@ const unsigned long JENDELA_TOTAL_MAKS_MS = 10000;
 // Batas pengaman: HIGH tidak lebih lama dari UJI_HIGH_MAKS_MS dalam satu kejadian BAHAYA (motor tertahan di dasar menarik arus besar).
 // Sesudah batas, GPIO26 LOW sampai status keluar dari BAHAYA lalu masuk lagi.
 const bool UJI_GPIO26_IKUT_BAHAYA = true;
-const unsigned long UJI_HIGH_MAKS_MS = 0;        // 0 = tanpa batas waktu; isi mis. 10000 untuk memotong otomatis
+const unsigned long UJI_HIGH_MAKS_MS = 5000;     // timer HIGH (lama motor turun) per kejadian BAHAYA; 0 = tanpa batas, sampai perintah x
 const bool UJI_TAHAN_SAMPAI_X = true;           // true = tetap HIGH walaupun CO2 turun, sampai perintah x
 
 // ---------------- LCD I2C ----------------
@@ -343,20 +345,24 @@ void tutupJendela(const char* alasan) {
 void servisUjiGpio26() {
   if (!UJI_GPIO26_IKUT_BAHAYA || pulsaPin >= 0) return;   // pulsa manual (o) sedang berjalan: jangan diganggu
   unsigned long now = millis();
+  // 1. Timer: HIGH tidak lebih lama dari UJI_HIGH_MAKS_MS, berlaku juga bila CO2 sudah turun sebelum timer habis
+  if (ujiHighAktif && UJI_HIGH_MAKS_MS > 0 && now - ujiHighMulaiMs >= UJI_HIGH_MAKS_MS) {
+    digitalWrite(PIN_JENDELA_BUKA, LEVEL_DIAM); ujiHighAktif = false; ujiBatasTercapai = true;
+    ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> LOW (timer " + UJI_HIGH_MAKS_MS + " ms habis; HIGH selama " + (now - ujiHighMulaiMs) + " ms). HIGH lagi hanya setelah status keluar dari BAHAYA lalu masuk lagi");
+  }
+  // 2. Status keluar dari BAHAYA
   if (!gBahayaCO2) {
     if (ujiHighAktif && !UJI_TAHAN_SAMPAI_X) {
       digitalWrite(PIN_JENDELA_BUKA, LEVEL_DIAM); ujiHighAktif = false;
       ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> LOW (status keluar dari BAHAYA) | HIGH selama " + (now - ujiHighMulaiMs) + " ms");
     }
-    ujiBatasTercapai = false;
+    ujiBatasTercapai = false;   // siap HIGH lagi pada kejadian BAHAYA berikutnya
     return;
   }
+  // 3. Masuk BAHAYA: HIGH
   if (!ujiHighAktif && !ujiBatasTercapai) {
     digitalWrite(PIN_JENDELA_BUKA, LEVEL_AKTIF); ujiHighAktif = true; ujiHighMulaiMs = now;
-    ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> HIGH (CO2 BAHAYA); " + (UJI_TAHAN_SAMPAI_X ? String("tetap HIGH sampai perintah x") : String("selama status BAHAYA")) + (UJI_HIGH_MAKS_MS > 0 ? String(", batas pengaman ") + UJI_HIGH_MAKS_MS + " ms" : String(", tanpa batas waktu")) + " | " + nilaiSaatIni());
-  } else if (ujiHighAktif && UJI_HIGH_MAKS_MS > 0 && now - ujiHighMulaiMs >= UJI_HIGH_MAKS_MS) {
-    digitalWrite(PIN_JENDELA_BUKA, LEVEL_DIAM); ujiHighAktif = false; ujiBatasTercapai = true;
-    ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> LOW (batas pengaman " + UJI_HIGH_MAKS_MS + " ms tercapai; masih BAHAYA, tidak HIGH lagi sampai status keluar dari BAHAYA)");
+    ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> HIGH (CO2 BAHAYA); " + (UJI_HIGH_MAKS_MS > 0 ? String("timer ") + UJI_HIGH_MAKS_MS + " ms lalu LOW; x = berhenti lebih awal" : String("tetap HIGH sampai perintah x")) + " | " + nilaiSaatIni());
   }
 }
 
@@ -766,7 +772,8 @@ void setup() {
   } else Serial.println(F(" | MVP CO2 SAJA (CO nonaktif)"));
   if (UJI_GPIO26_IKUT_BAHAYA) {
     Serial.print(F("# MODE UJI GPIO26: HIGH saat CO2 BAHAYA (>= ")); Serial.print(CO2_AMBANG_TINDAKAN);
-    Serial.println(UJI_TAHAN_SAMPAI_X ? F(" ppm), TETAP HIGH sampai kamu ketik x + Enter (tanpa batas waktu)") : F(" ppm), LOW saat tidak BAHAYA"));
+    if (UJI_HIGH_MAKS_MS > 0) { Serial.print(F(" ppm), HIGH selama ")); Serial.print(UJI_HIGH_MAKS_MS / 1000); Serial.println(F(" detik lalu LOW (x + Enter = berhenti lebih awal)")); }
+    else Serial.println(UJI_TAHAN_SAMPAI_X ? F(" ppm), TETAP HIGH sampai kamu ketik x + Enter (tanpa batas waktu)") : F(" ppm), LOW saat tidak BAHAYA"));
   } else {
     Serial.print(F("# Relay jendela GPIO26: HIGH ")); Serial.print(PULSA_BUKA_MS / 1000); Serial.print(F(" detik saat CO2 >= ")); Serial.print(CO2_AMBANG_TINDAKAN);
     Serial.print(F(" ppm; total maksimum ")); Serial.print(JENDELA_TOTAL_MAKS_MS / 1000); Serial.println(F(" detik sampai perintah n"));
