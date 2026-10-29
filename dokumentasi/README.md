@@ -6,7 +6,7 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 - **C-251** = rencana awal tim (14 Agustus 2026). **Tidak direvisi.**
 - **C-501** = laporan hasil. **Tenggat setelah expo.** Dokumentasi ini menjadi bahannya.
 - Expo **30 Oktober 2026**; firmware dibekukan **29 Oktober siang**.
-- Firmware **v1.3** (28 Okt 2026: sensor dan keluaran sesuai pseudocode, mode pengembangan, sesuai skematik relay, serial ringkas) ada di `../src/main.cpp`; v0 (23 Okt) di `../arsip-firmware/main-v0-2026-10-23.cpp`, v0.1 (v0 + TBout GPIO26 + buzzer GPIO27) di `../arsip-firmware/main-v0.1-2026-10-28.cpp`, v1, v1.1, v1.2, v1.3 (cadangan) di `../arsip-firmware/`.
+- Firmware **v1.4** (29 Okt 2026: MVP CO2 saja, pulsa jendela 10 detik, batas total waktu turun) ada di `../src/main.cpp`; v1.3 (sensor CO dan CO2 lengkap) di `../arsip-firmware/main-v1.3-2026-10-28.cpp`; v0 (23 Okt) di `../arsip-firmware/main-v0-2026-10-23.cpp`, v0.1 (v0 + TBout GPIO26 + buzzer GPIO27) di `../arsip-firmware/main-v0.1-2026-10-28.cpp`, v1, v1.1, v1.2, v1.4 (cadangan) di `../arsip-firmware/`.
 - Firmware uji kecil untuk bangku (tanpa sensor) ada di `../alat-uji/`: `uji-gpio26` (paksa HIGH untuk ukur 3,3 V) dan `uji-relay-jendela` (pulsa relay dan waktu turun). Rencananya di [pengujian/rencana-uji.md](pengujian/rencana-uji.md) bagian 2.1.
 - Rekaman serial ada di `../logs/`. Salinan kode tim (komunikasi) di `../kode-tim/` (tidak masuk git).
 
@@ -24,6 +24,7 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 |---|---|
 | [keputusan.md](keputusan/keputusan.md) | Semua yang sudah ditetapkan: aturan alarm, pengolahan sinyal, status dan bunyi, data, kebutuhan (FR dan NFR) |
 | [belum-diputuskan.md](keputusan/belum-diputuskan.md) | Semua yang masih terbuka, dengan usulan, dan asumsi yang belum terbukti |
+| [mvp-co2.md](keputusan/mvp-co2.md) | **Skema MVP expo (CO2 saja)**, pekerjaan sampai Jumat, dan kesiapan saat ini |
 | [algoritma-firmware.md](keputusan/algoritma-firmware.md) | Pseudocode firmware baru dan diagram alur |
 | [algoritma-firmware-lama-v0.md](keputusan/algoritma-firmware-lama-v0.md) | Pseudocode lama dan alur kode v0 (disimpan apa adanya) |
 | [komunikasi.md](keputusan/komunikasi.md) | Kontrak pesan v3, rancangan jaringan ESP32, worker, diagram alur data dan perintah |

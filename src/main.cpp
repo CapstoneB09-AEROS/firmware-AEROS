@@ -1,3 +1,6 @@
+// VERSI 1.4 (29 Okt 2026): MVP CO2 saja (dokumentasi/keputusan/mvp-co2.md): MiCS dan ADS1115 diabaikan (CO_AKTIF = false);
+//   ambang CO2 mode pengembangan (700/800/<700); pulsa buka jendela 10 detik; batas total waktu turun (ketik n setelah jendela
+//   dinaikkan manual); perintah q<ppm> = simulasi CO2 (uji tanpa sensor).
 // VERSI 1.3 (28 Okt 2026): v1.2 + serial ringkas ala v0 (bawaan), banner pendek, perintah i dan h yang lebih jelas.
 // VERSI 1.2 (28 Okt 2026): v1.1 + penyesuaian ke skematik relay jendela (GPIO26 -> 470 ohm -> PN2222A -> relay 85/86; kontak 30/87 = motor ARAH TURUN saja): sistem sensor dan keluaran sesuai pseudocode (dokumentasi/keputusan/algoritma-firmware.md).
 // Komunikasi (Wi-Fi, MQTT) BELUM ada di versi ini.
@@ -30,7 +33,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
 
-#define FW_VERSI "v1.3"
+#define FW_VERSI "v1.4"
 
 // =====================================================================
 // MODE PENGEMBANGAN
@@ -39,6 +42,10 @@
 // false = nilai rancangan (pseudocode bagian 2.1).
 // =====================================================================
 const bool MODE_PENGEMBANGAN = true;
+
+// MVP expo: hanya jalur CO2. false = MiCS dan ADS1115 tidak dibaca; tidak ada aturan, status, atau simulasi CO.
+// (komponennya tetap ada di PCB; true mengembalikan perilaku v1.3)
+const bool CO_AKTIF = false;
 
 // ---------------- Pin ----------------
 const int PIN_SDA    = 21;
@@ -60,9 +67,13 @@ const int PIN_JENDELA_BUKA  = 26;
 const int PIN_JENDELA_TUTUP = -1;
 const int LEVEL_AKTIF = HIGH;
 const int LEVEL_DIAM  = LOW;
-const unsigned long PULSA_BUKA_MS  = 2000;   // lama motor TURUN (bukaan); perkiraan, belum diuji
+const unsigned long PULSA_BUKA_MS  = 10000;  // lama motor TURUN (bukaan), permintaan pengguna 29 Okt; waktu tempuh penuh belum diukur
 const unsigned long PULSA_TUTUP_MS = 2000;   // dipakai hanya bila ada relay naik
-const unsigned long PULSA_MAKS_MS  = 5000;   // batas keselamatan: relay tidak pernah menyala lebih lama dari ini
+const unsigned long PULSA_MAKS_MS  = 10000;  // batas keselamatan: relay tidak pernah menyala lebih lama dari ini dalam satu pulsa
+// Batas TOTAL waktu relay turun sejak menyala (atau sejak perintah n). Firmware tidak tahu posisi jendela dan tidak bisa menutupnya,
+// jadi pulsa berikutnya hanya memperpanjang motor tertahan di dasar. Setelah batas ini, pulsa ditolak sampai jendela dinaikkan
+// manual dan pengguna mengetik n.
+const unsigned long JENDELA_TOTAL_MAKS_MS = 10000;
 
 // ---------------- LCD I2C ----------------
 const uint8_t LCD_ADDR = 0x27;
@@ -176,6 +187,8 @@ float  calMin = 1e12, calMax = 0;
 
 // Simulasi CO (pengujian aturan tanpa gas)
 float simCO = 0;   // 0 = mati
+int   simCO2 = 0;  // simulasi CO2 (perintah q<ppm>), 0 = mati; melewati pemanasan agar uji meja cepat
+unsigned long totalTurunMs = 0;   // jumlah lama pulsa relay turun yang sudah diberikan (batas: JENDELA_TOTAL_MAKS_MS)
 
 String cmdBuf;
 int  formatMode = 0;             // 0 = ringkas (seperti v0), 1 = tabel lengkap, 2 = CSV lengkap (perintah 'f' berganti urut)
@@ -238,14 +251,27 @@ void servisBunyi() {
   }
 }
 
-void pulsaJendela(int pin, unsigned long ms) {
-  if (pin < 0) return;
+// Mengembalikan false bila pulsa ditolak (batas total waktu turun tercapai); tidak ada sinyal yang dikirim.
+bool pulsaJendela(int pin, unsigned long ms) {
+  if (pin < 0) return false;
   if (ms > PULSA_MAKS_MS) { ev("SINYAL", String("lama ") + ms + " ms melebihi batas keselamatan, dipotong ke " + PULSA_MAKS_MS + " ms"); ms = PULSA_MAKS_MS; }
+  if (pin == PIN_JENDELA_BUKA) {
+    if (totalTurunMs + ms > JENDELA_TOTAL_MAKS_MS) {
+      static unsigned long tolakTerakhirMs = 0;
+      if (tolakTerakhirMs == 0 || millis() - tolakTerakhirMs >= 10000UL) {
+        tolakTerakhirMs = millis();
+        ev("SINYAL", String("DITOLAK: total waktu turun ") + totalTurunMs + " ms + " + ms + " ms melebihi batas " + JENDELA_TOTAL_MAKS_MS + " ms. Naikkan jendela manual, lalu ketik n");
+      }
+      return false;
+    }
+    totalTurunMs += ms;
+  }
   if (pulsaPin >= 0) digitalWrite(pulsaPin, LEVEL_DIAM);   // pulsa sebelumnya dihentikan
   digitalWrite(pin, LEVEL_AKTIF);
   pulsaPin = pin;
   pulsaSelesaiMs = millis() + ms;
-  ev("SINYAL", String("GPIO") + pin + " -> " + (LEVEL_AKTIF == HIGH ? "HIGH" : "LOW") + " selama " + ms + " ms (" + (pin == PIN_JENDELA_BUKA ? "motor TURUN (buka)" : "motor NAIK (tutup)") + ")");
+  ev("SINYAL", String("GPIO") + pin + " -> " + (LEVEL_AKTIF == HIGH ? "HIGH" : "LOW") + " selama " + ms + " ms (" + (pin == PIN_JENDELA_BUKA ? "motor TURUN (buka)" : "motor NAIK (tutup)") + ") | total turun " + totalTurunMs + "/" + JENDELA_TOTAL_MAKS_MS + " ms");
+  return true;
 }
 
 void servisJendela() {
@@ -278,7 +304,7 @@ void bukaJendela(bool abaikanJeda, const char* alasan) {
     }
     return;
   }
-  pulsaJendela(PIN_JENDELA_BUKA, PULSA_BUKA_MS);
+  if (!pulsaJendela(PIN_JENDELA_BUKA, PULSA_BUKA_MS)) return;   // ditolak: keadaan jendela tidak diubah
   jendelaTerbuka = true; lamaBuka = 0; tutupManual = false;
   gerakTerakhirMs = millis(); pernahGerak = true;
   ev("JENDELA", String("BUKA (motor turun ") + PULSA_BUKA_MS + " ms), alasan: " + alasan + (abaikanJeda ? " (jeda diabaikan)" : "") + " | " + nilaiSaatIni());
@@ -388,10 +414,15 @@ void finishCalibration() {
 
 void cetakBantuan() {
   Serial.println(F("# ===== PERINTAH: ketik hurufnya di jendela serial monitor, lalu tekan Enter ====="));
-  Serial.println(F("#  r    ukur R0 sensor CO (udara bersih, 2 menit; jangan bernapas dekat sensor)"));
-  Serial.println(F("#  o    uji relay jendela: motor TURUN 2 detik"));
+  if (CO_AKTIF) {
+    Serial.println(F("#  r    ukur R0 sensor CO (udara bersih, 2 menit; jangan bernapas dekat sensor)"));
+    Serial.println(F("#  p40  pura-pura CO = 40 ppm untuk uji logika CO (p0 = matikan)"));
+  } else Serial.println(F("#  (perintah CO r, p, d tidak aktif: versi MVP hanya CO2)"));
+  Serial.print(F("#  o    uji relay jendela: motor TURUN ")); Serial.print(PULSA_BUKA_MS / 1000); Serial.println(F(" detik (dihitung ke batas total)"));
+  Serial.println(F("#  x    hentikan relay sekarang"));
+  Serial.println(F("#  n    nolkan batas total setelah jendela dinaikkan manual (tanpa ini pulsa berikutnya ditolak)"));
+  Serial.println(F("#  q900 pura-pura CO2 = 900 ppm untuk uji tanpa sensor (q0 = matikan)"));
   Serial.println(F("#  s    \"Saya Tahu\": matikan bunyi"));
-  Serial.println(F("#  p40  pura-pura CO = 40 ppm untuk uji logika CO (p0 = matikan)"));
   Serial.println(F("#  f    ganti tampilan data: ringkas / tabel lengkap / CSV lengkap"));
   Serial.println(F("#  i    tampilkan semua parameter    h  bantuan ini    d  R0 kembali ke default    c  (penutup jendela belum ada)"));
 }
@@ -400,10 +431,19 @@ void jalankanPerintah(const String &c) {
   if (c.length() == 0) return;
   char k = tolower(c[0]);
   ev("PERINTAH", String("diterima: '") + c + "'");
-  if (k == 'r') startCalibration();
+  if ((k == 'r' || k == 'd' || k == 'p') && !CO_AKTIF) ev("PERINTAH", "perintah CO tidak aktif di versi MVP (CO_AKTIF = false)");
+  else if (k == 'r') startCalibration();
   else if (k == 'd') { r0Ohm = R0_DEFAULT_OHM; prefs.putFloat("r0", r0Ohm); ev("R0", "dikembalikan ke default " + String(r0Ohm / 1000.0, 1) + " kOhm"); }
   else if (k == 's') { bunyiDiam = true; hentikanBunyi(); ev("SAYA TAHU", "bunyi dimatikan; alarm dan jendela tetap berjalan sesuai aturan"); }
-  else if (k == 'o') { pulsaJendela(PIN_JENDELA_BUKA, PULSA_BUKA_MS); jendelaTerbuka = true; lamaBuka = 0; tutupManual = false; ev("UJI MANUAL", "sinyal buka dikirim (motor turun " + String(PULSA_BUKA_MS) + " ms)"); }
+  else if (k == 'o') {
+    if (pulsaJendela(PIN_JENDELA_BUKA, PULSA_BUKA_MS)) { jendelaTerbuka = true; lamaBuka = 0; tutupManual = false; ev("UJI MANUAL", "sinyal buka dikirim (motor turun " + String(PULSA_BUKA_MS) + " ms)"); }
+  }
+  else if (k == 'x') {
+    if (pulsaPin >= 0) { digitalWrite(pulsaPin, LEVEL_DIAM); ev("SINYAL", String("GPIO") + pulsaPin + " -> LOW (dihentikan perintah x)"); pulsaPin = -1; }
+    else ev("SINYAL", "relay sudah diam (LOW)");
+  }
+  else if (k == 'n') { totalTurunMs = 0; jendelaTerbuka = false; tutupManual = false; ev("JENDELA", "total waktu turun dinolkan (jendela dianggap sudah dinaikkan manual)"); }
+  else if (k == 'q') { simCO2 = c.substring(1).toInt(); ev("SIMULASI CO2", simCO2 > 0 ? String(simCO2) + " ppm (aktif; melewati pemanasan; q0 = mati)" : String("mati, kembali ke sensor MH-Z19C")); }
   else if (k == 'c') {
     if (PIN_JENDELA_TUTUP < 0) ev("UJI MANUAL", "tidak ada keluaran penutup di skematik (relay hanya arah turun); tidak ada yang dikirim");
     else { pulsaJendela(PIN_JENDELA_TUTUP, PULSA_TUTUP_MS); jendelaTerbuka = false; ev("UJI MANUAL", "sinyal tutup dikirim"); }
@@ -437,6 +477,20 @@ const char* tagLevel(int lv) { return lv == LV_BAHAYA ? "DANG" : (lv == LV_WASPA
 
 void perbaruiLcd(bool coSiap, bool coValid, float ppm, bool co2Siap, bool co2Valid, int co2) {
   char val[8], line[24];
+  if (!CO_AKTIF) {   // MVP: baris atas = CO2, baris bawah = keadaan jendela
+    const char* tC2;
+    if (!co2Valid)     { tC2 = "ERR";  snprintf(val, sizeof(val), " n/a"); }
+    else if (!co2Siap) { tC2 = "WARM"; snprintf(val, sizeof(val), "----"); }
+    else               { tC2 = tagLevel(levelCO2); snprintf(val, sizeof(val), "%4d", constrain(co2, 0, 9999)); }
+    if (tutupManual && millis() - tutupManualMs > 120000UL) tutupManual = false;
+    char ind = simCO2 > 0 ? 'S' : (jendelaTerbuka ? 'J' : (tutupManual ? 'M' : ' '));
+    snprintf(line, sizeof(line), "CO2%sppm %-4s%c", val, tC2, ind);
+    lcdLine(0, line);
+    const char* t1 = pulsaPin >= 0 ? "Jendela TURUN" : (jendelaTerbuka ? "Jendela terbuka" :
+                     (totalTurunMs >= JENDELA_TOTAL_MAKS_MS ? "Naikkan,ketik n" : "Jendela siap"));
+    lcdLine(1, t1);
+    return;
+  }
   const char* tCO;
   if (calActive)            { tCO = "CAL";  snprintf(val, sizeof(val), "----"); }
   else if (!coValid)        { tCO = "ERR";  snprintf(val, sizeof(val), " n/a"); }
@@ -602,7 +656,8 @@ void cetakDetail() {
   Serial.print(F(", CO2 RX/TX GPIO")); Serial.print(PIN_CO2_RX); Serial.print('/'); Serial.print(PIN_CO2_TX);
   Serial.print(F(", I2C SDA/SCL GPIO")); Serial.print(PIN_SDA); Serial.print('/'); Serial.println(PIN_SCL);
   Serial.print(F("# RELAY JENDELA (TBout GPIO26 -> PN2222A -> relay): HIGH = motor TURUN selama HIGH, LOW = berhenti | lama turun per buka ")); Serial.print(PULSA_BUKA_MS);
-  Serial.print(F(" ms, batas keselamatan ")); Serial.print(PULSA_MAKS_MS); Serial.println(F(" ms"));
+  Serial.print(F(" ms, batas satu pulsa ")); Serial.print(PULSA_MAKS_MS); Serial.print(F(" ms, batas total ")); Serial.print(JENDELA_TOTAL_MAKS_MS); Serial.println(F(" ms (nolkan dengan n)"));
+  Serial.println(CO_AKTIF ? F("# JALUR CO: aktif") : F("# JALUR CO: NONAKTIF (MVP CO2 saja; MiCS dan ADS1115 tidak dibaca)"));
   Serial.println(PIN_JENDELA_TUTUP < 0 ? F("# PENUTUP JENDELA: TIDAK ADA (relay arah naik belum ada). Firmware hanya mencatat 'TUTUP JENDELA MANUAL' dan menampilkan M di LCD") : F("# PENUTUP JENDELA: ada"));
   Serial.print(F("# R0 aktif = ")); Serial.print(r0Ohm / 1000.0, 1); Serial.print(r0Tersimpan ? F(" kOhm (tersimpan di memori ESP32)") : F(" kOhm (DEFAULT: belum pernah dikalibrasi di board ini, kirim 'r' di udara bersih)")); Serial.print(F(" | VCC ")); Serial.print(VCC, 2);
   Serial.print(F(" V | kurva A=")); Serial.print(A_COEF, 2); Serial.print(F(" beta=")); Serial.println(BETA, 3);
@@ -656,9 +711,11 @@ void setup() {
   lcdLine(0, "AEROS " FW_VERSI);
   lcdLine(1, MODE_PENGEMBANGAN ? "Mode pengembang" : "Starting...");
 
-  adsAda = ads.begin(0x48);
-  if (adsAda) { ads.setGain(gains[gainIdx]); Serial.println(F("# ADS1115 terdeteksi di 0x48")); }
-  else Serial.println(F("# PERINGATAN: ADS1115 tidak terdeteksi di 0x48: CO tidak dibaca, dicoba lagi tiap 5 detik"));
+  if (CO_AKTIF) {
+    adsAda = ads.begin(0x48);
+    if (adsAda) { ads.setGain(gains[gainIdx]); Serial.println(F("# ADS1115 terdeteksi di 0x48")); }
+    else Serial.println(F("# PERINGATAN: ADS1115 tidak terdeteksi di 0x48: CO tidak dibaca, dicoba lagi tiap 5 detik"));
+  }
 
   prefs.begin("mics", false);
   r0Tersimpan = prefs.isKey("r0");
@@ -666,8 +723,12 @@ void setup() {
 
   Serial.print(F("# AEROS ")); Serial.print(F(FW_VERSI));
   Serial.print(MODE_PENGEMBANGAN ? F(" | MODE PENGEMBANGAN (ambang CO2 diturunkan)") : F(" | mode rancangan"));
-  Serial.print(F(" | R0 = ")); Serial.print(r0Ohm / 1000.0, 0);
-  Serial.println(r0Tersimpan ? F(" kOhm (tersimpan)") : F(" kOhm (DEFAULT, belum dikalibrasi: ketik r)"));
+  if (CO_AKTIF) {
+    Serial.print(F(" | R0 = ")); Serial.print(r0Ohm / 1000.0, 0);
+    Serial.println(r0Tersimpan ? F(" kOhm (tersimpan)") : F(" kOhm (DEFAULT, belum dikalibrasi: ketik r)"));
+  } else Serial.println(F(" | MVP CO2 SAJA (CO nonaktif)"));
+  Serial.print(F("# Relay jendela GPIO26: HIGH ")); Serial.print(PULSA_BUKA_MS / 1000); Serial.print(F(" detik saat CO2 >= ")); Serial.print(CO2_AMBANG_TINDAKAN);
+  Serial.print(F(" ppm; total maksimum ")); Serial.print(JENDELA_TOTAL_MAKS_MS / 1000); Serial.println(F(" detik sampai perintah n"));
   Serial.println(F("# Pemanasan 3 menit. Ketik h + Enter untuk daftar perintah, i + Enter untuk semua parameter."));
   Serial.println(F("# Baris berawalan '#' = kejadian atau info. Baris lain = data per detik (ketik f untuk tampilan lain)."));
 }
@@ -697,8 +758,9 @@ void loop() {
   int co2 = 0;
   bool co2Baca = readCO2(co2);
   bool co2Siap = tS >= PEMANASAN_CO2_S;   // selama pemanasan nilai (termasuk 410/500 palsu) dicetak tetapi tidak dipakai aturan
+  if (simCO2 > 0) { co2 = simCO2; co2Baca = true; co2Siap = true; }   // simulasi (q<ppm>) menggantikan sensor dan melewati pemanasan
 
-  if (!adsAda && millis() - adsCobaLagiMs >= 5000) {
+  if (CO_AKTIF && !adsAda && millis() - adsCobaLagiMs >= 5000) {
     adsCobaLagiMs = millis();
     adsAda = ads.begin(0x48);
     if (adsAda) { ads.setGain(gains[gainIdx]); Serial.println(F("# ADS1115 terdeteksi kembali")); }
@@ -756,8 +818,8 @@ void loop() {
   bool sim = simCO > 0;
   float rsAturan = rsHalus;
   if (sim) { ppm = simCO; rsAturan = r0Ohm * A_COEF * pow(simCO, -BETA); }
-  bool coSiap = tS >= PEMANASAN_CO_S && !calActive && (sim || !isnan(rsHalus));
-  bool coDipakai = (coValid || sim) && coSiap;
+  bool coSiap = CO_AKTIF && tS >= PEMANASAN_CO_S && !calActive && (sim || !isnan(rsHalus));
+  bool coDipakai = CO_AKTIF && (coValid || sim) && coSiap;
   gPpm = ppm; gRsHalus = rsHalus;
   if (coSiap != coSiapLama) { coSiapLama = coSiap; if (coSiap) { ev("PEMANASAN", "CO selesai: aturan CO aktif sekarang"); if (!r0Tersimpan) ev("R0", "PERINGATAN: masih memakai R0 default " + String(r0Ohm / 1000.0, 0) + " kOhm; ppm CO belum bermakna sebelum kirim 'r' di udara bersih"); } }
   if (co2Siap != co2SiapLama) { co2SiapLama = co2Siap; if (co2Siap) ev("PEMANASAN", "CO2 selesai: aturan CO2 aktif sekarang"); }
@@ -765,7 +827,7 @@ void loop() {
   if (sim != simLama) { simLama = sim; if (!sim) ev("SIMULASI CO", "dimatikan, ppm kembali dari sensor"); }
 
   // ---------- 4. KEADAAN SENSOR ----------
-  bool gangguan = !coValid && !co2Baca;
+  bool gangguan = CO_AKTIF ? (!coValid && !co2Baca) : !co2Baca;
   bool co2DipakaiAturan = co2Baca && co2Siap;
 
   // ---------- 5-6. ATURAN ----------
@@ -778,7 +840,7 @@ void loop() {
   perbaruiLcd(coSiap, coValid || sim, ppm, co2Siap, co2Baca, co2);
   if (gangguan) { lcdLine(1, "SENSOR GANGGUAN"); }
 
-  const char* stCO = gangguan ? "GANGGUAN" : (!(coValid || sim) ? "ERR" : (calActive ? "KALIBRASI" : (!coSiap ? "WARMUP" :
+  const char* stCO = !CO_AKTIF ? "OFF" : gangguan ? "GANGGUAN" : (!(coValid || sim) ? "ERR" : (calActive ? "KALIBRASI" : (!coSiap ? "WARMUP" :
                      (faseCO == CO_SUMBER_LUAR ? "LUAR" : (levelCO == LV_BAHAYA ? "BAHAYA" : (levelCO == LV_WASPADA ? "WASPADA" : "OK"))))));
   const char* stCO2 = gangguan ? "GANGGUAN" : (!co2Baca ? "ERR" : (!co2Siap ? "WARMUP" :
                       (levelCO2 == LV_BAHAYA ? "BAHAYA" : (levelCO2 == LV_WASPADA ? "WASPADA" : "OK"))));
