@@ -367,6 +367,7 @@ Sengaja tidak ditambahkan: baseline adaptif, kalibrasi otomatis, deteksi gas lai
 | Data masa pemanasan | **tidak dikirim** (dibuang); ide kita: dikirim dengan penanda `kond` |
 | Field tambahan kita (`rs_r0_milli`, `kond_co`, `kond_co2`, `fase_*`, `fw`) | **belum** [usulan, perlu diubah di dua sisi sekaligus] |
 | Bisa dikompilasi | **belum apa adanya**: `lcd` dan `prefs` terdefinisi dua kali; perlu `huge_app.csv` |
+| **Antrean offline di flash** | **dimatikan di firmware-v2 (keputusan 29 Okt 2026)**: kapasitas nyata sekitar 200 item (17 menit), pencarian berkas O(N) membuat pengiriman 27 detik per item dan tidak terkejar, dan data baru yang dibuang saat penuh. Diganti penyangga RAM 4 data dan pengiriman hanya saat tersambung; alarm dan jendela tetap jalan tanpa internet. Bila dibutuhkan lagi: indeks antrean di RAM, kirim terbaru dulu, simpan 1 dari 6 data normal saat offline |
 | Alarm tetap jalan bila konfigurasi atau flash gagal | **belum**: `setup()` berhenti sebelum tugas sensor dimulai |
 | Indikator Wi-Fi di LCD | **belum** |
 
