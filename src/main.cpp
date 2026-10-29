@@ -1,3 +1,6 @@
+// VERSI 1.5 (29 Okt 2026): v1.4 + MODE UJI GPIO26: GPIO26 = HIGH selama status CO2 BAHAYA (>= ambang tindakan), LOW bila tidak.
+//   Tanpa pulsa, jeda, status "terbuka", atau batas total; hanya batas pengaman satu kejadian (UJI_HIGH_MAKS_MS).
+//   Tujuan: membuktikan bahwa sensor yang melewati ambang membuat GPIO26 HIGH. Lama buka dan penutupan dipikirkan sesudahnya.
 // VERSI 1.4 (29 Okt 2026): MVP CO2 saja (dokumentasi/keputusan/mvp-co2.md): MiCS dan ADS1115 diabaikan (CO_AKTIF = false);
 //   ambang CO2 mode pengembangan (700/800/<700); pulsa buka jendela 10 detik; batas total waktu turun (ketik n setelah jendela
 //   dinaikkan manual); perintah q<ppm> = simulasi CO2 (uji tanpa sensor).
@@ -33,7 +36,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
 
-#define FW_VERSI "v1.4"
+#define FW_VERSI "v1.5"
 
 // =====================================================================
 // MODE PENGEMBANGAN
@@ -74,6 +77,12 @@ const unsigned long PULSA_MAKS_MS  = 10000;  // batas keselamatan: relay tidak p
 // jadi pulsa berikutnya hanya memperpanjang motor tertahan di dasar. Setelah batas ini, pulsa ditolak sampai jendela dinaikkan
 // manual dan pengguna mengetik n.
 const unsigned long JENDELA_TOTAL_MAKS_MS = 10000;
+
+// MODE UJI GPIO26: true = relay jendela mengikuti status BAHAYA CO2 (HIGH selama BAHAYA), menggantikan logika buka-tutup.
+// Batas pengaman: HIGH tidak lebih lama dari UJI_HIGH_MAKS_MS dalam satu kejadian BAHAYA (motor tertahan di dasar menarik arus besar).
+// Sesudah batas, GPIO26 LOW sampai status keluar dari BAHAYA lalu masuk lagi.
+const bool UJI_GPIO26_IKUT_BAHAYA = true;
+const unsigned long UJI_HIGH_MAKS_MS = 10000;
 
 // ---------------- LCD I2C ----------------
 const uint8_t LCD_ADDR = 0x27;
@@ -187,6 +196,8 @@ float  calMin = 1e12, calMax = 0;
 
 // Simulasi CO (pengujian aturan tanpa gas)
 float simCO = 0;   // 0 = mati
+bool  ujiHighAktif = false, ujiBatasTercapai = false, gBahayaCO2 = false;
+unsigned long ujiHighMulaiMs = 0;
 int   simCO2 = 0;  // simulasi CO2 (perintah q<ppm>), 0 = mati; melewati pemanasan agar uji meja cepat
 unsigned long totalTurunMs = 0;   // jumlah lama pulsa relay turun yang sudah diberikan (batas: JENDELA_TOTAL_MAKS_MS)
 
@@ -325,7 +336,27 @@ void tutupJendela(const char* alasan) {
   ev("JENDELA", String("TUTUP, alasan: ") + alasan + " | terbuka " + lamaBuka + " detik | " + nilaiSaatIni());
 }
 
-void servis() { servisBunyi(); servisJendela(); }
+void servisUjiGpio26() {
+  if (!UJI_GPIO26_IKUT_BAHAYA || pulsaPin >= 0) return;   // pulsa manual (o) sedang berjalan: jangan diganggu
+  unsigned long now = millis();
+  if (!gBahayaCO2) {
+    if (ujiHighAktif) {
+      digitalWrite(PIN_JENDELA_BUKA, LEVEL_DIAM); ujiHighAktif = false;
+      ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> LOW (status keluar dari BAHAYA) | HIGH selama " + (now - ujiHighMulaiMs) + " ms");
+    }
+    ujiBatasTercapai = false;
+    return;
+  }
+  if (!ujiHighAktif && !ujiBatasTercapai) {
+    digitalWrite(PIN_JENDELA_BUKA, LEVEL_AKTIF); ujiHighAktif = true; ujiHighMulaiMs = now;
+    ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> HIGH (CO2 BAHAYA, selama status BAHAYA; batas pengaman " + UJI_HIGH_MAKS_MS + " ms) | " + nilaiSaatIni());
+  } else if (ujiHighAktif && now - ujiHighMulaiMs >= UJI_HIGH_MAKS_MS) {
+    digitalWrite(PIN_JENDELA_BUKA, LEVEL_DIAM); ujiHighAktif = false; ujiBatasTercapai = true;
+    ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> LOW (batas pengaman " + UJI_HIGH_MAKS_MS + " ms tercapai; masih BAHAYA, tidak HIGH lagi sampai status keluar dari BAHAYA)");
+  }
+}
+
+void servis() { servisBunyi(); servisJendela(); servisUjiGpio26(); }
 
 // =====================================================================
 // Sensor
@@ -439,7 +470,8 @@ void jalankanPerintah(const String &c) {
     if (pulsaJendela(PIN_JENDELA_BUKA, PULSA_BUKA_MS)) { jendelaTerbuka = true; lamaBuka = 0; tutupManual = false; ev("UJI MANUAL", "sinyal buka dikirim (motor turun " + String(PULSA_BUKA_MS) + " ms)"); }
   }
   else if (k == 'x') {
-    if (pulsaPin >= 0) { digitalWrite(pulsaPin, LEVEL_DIAM); ev("SINYAL", String("GPIO") + pulsaPin + " -> LOW (dihentikan perintah x)"); pulsaPin = -1; }
+    if (ujiHighAktif) { digitalWrite(PIN_JENDELA_BUKA, LEVEL_DIAM); ujiHighAktif = false; ujiBatasTercapai = true; ev("SINYAL", String("GPIO") + PIN_JENDELA_BUKA + " -> LOW (dihentikan perintah x; tidak HIGH lagi sampai status keluar dari BAHAYA)"); }
+    else if (pulsaPin >= 0) { digitalWrite(pulsaPin, LEVEL_DIAM); ev("SINYAL", String("GPIO") + pulsaPin + " -> LOW (dihentikan perintah x)"); pulsaPin = -1; }
     else ev("SINYAL", "relay sudah diam (LOW)");
   }
   else if (k == 'n') { totalTurunMs = 0; jendelaTerbuka = false; tutupManual = false; ev("JENDELA", "total waktu turun dinolkan (jendela dianggap sudah dinaikkan manual)"); }
@@ -486,7 +518,8 @@ void perbaruiLcd(bool coSiap, bool coValid, float ppm, bool co2Siap, bool co2Val
     char ind = simCO2 > 0 ? 'S' : (jendelaTerbuka ? 'J' : (tutupManual ? 'M' : ' '));
     snprintf(line, sizeof(line), "CO2%sppm %-4s%c", val, tC2, ind);
     lcdLine(0, line);
-    const char* t1 = pulsaPin >= 0 ? "Jendela TURUN" : (jendelaTerbuka ? "Jendela terbuka" :
+    const char* t1 = UJI_GPIO26_IKUT_BAHAYA ? (ujiHighAktif ? "GPIO26 HIGH" : (ujiBatasTercapai ? "Batas, LOW" : "GPIO26 LOW")) :
+                     pulsaPin >= 0 ? "Jendela TURUN" : (jendelaTerbuka ? "Jendela terbuka" :
                      (totalTurunMs >= JENDELA_TOTAL_MAKS_MS ? "Naikkan,ketik n" : "Jendela siap"));
     lcdLine(1, t1);
     return;
@@ -615,9 +648,9 @@ void aturanCO2(int co2) {
   }
 
   // Buka saat TINDAKAN (tunggu bila jeda minimum belum lewat); tidak dibuka lagi setelah dipaksa tutup
-  if (faseCO2 == CO2_TINDAKAN && !jendelaTerbuka && !co2TidakTurun) bukaJendela(false, "CO2 tindakan");
+  if (!UJI_GPIO26_IKUT_BAHAYA && faseCO2 == CO2_TINDAKAN && !jendelaTerbuka && !co2TidakTurun) bukaJendela(false, "CO2 tindakan");
 
-  if (faseCO2 == CO2_TINDAKAN && jendelaTerbuka) {
+  if (!UJI_GPIO26_IKUT_BAHAYA && faseCO2 == CO2_TINDAKAN && jendelaTerbuka) {
     lamaBuka++;
     if (lamaBuka >= JENDELA_BUKA_MAKS_S) {
       ev("CO2", "tidak turun dalam batas lama buka (" + String(JENDELA_BUKA_MAKS_S) + " detik), jendela dipaksa tutup dan tidak dibuka lagi sampai CO2 normal");
@@ -727,8 +760,13 @@ void setup() {
     Serial.print(F(" | R0 = ")); Serial.print(r0Ohm / 1000.0, 0);
     Serial.println(r0Tersimpan ? F(" kOhm (tersimpan)") : F(" kOhm (DEFAULT, belum dikalibrasi: ketik r)"));
   } else Serial.println(F(" | MVP CO2 SAJA (CO nonaktif)"));
-  Serial.print(F("# Relay jendela GPIO26: HIGH ")); Serial.print(PULSA_BUKA_MS / 1000); Serial.print(F(" detik saat CO2 >= ")); Serial.print(CO2_AMBANG_TINDAKAN);
-  Serial.print(F(" ppm; total maksimum ")); Serial.print(JENDELA_TOTAL_MAKS_MS / 1000); Serial.println(F(" detik sampai perintah n"));
+  if (UJI_GPIO26_IKUT_BAHAYA) {
+    Serial.print(F("# MODE UJI GPIO26: HIGH selama CO2 BAHAYA (>= ")); Serial.print(CO2_AMBANG_TINDAKAN);
+    Serial.print(F(" ppm), LOW bila tidak; batas pengaman ")); Serial.print(UJI_HIGH_MAKS_MS / 1000); Serial.println(F(" detik per kejadian"));
+  } else {
+    Serial.print(F("# Relay jendela GPIO26: HIGH ")); Serial.print(PULSA_BUKA_MS / 1000); Serial.print(F(" detik saat CO2 >= ")); Serial.print(CO2_AMBANG_TINDAKAN);
+    Serial.print(F(" ppm; total maksimum ")); Serial.print(JENDELA_TOTAL_MAKS_MS / 1000); Serial.println(F(" detik sampai perintah n"));
+  }
   Serial.println(F("# Pemanasan 3 menit. Ketik h + Enter untuk daftar perintah, i + Enter untuk semua parameter."));
   Serial.println(F("# Baris berawalan '#' = kejadian atau info. Baris lain = data per detik (ketik f untuk tampilan lain)."));
 }
@@ -836,6 +874,9 @@ void loop() {
     if (faseCO == CO_TIDAK_AKTIF && co2DipakaiAturan) aturanCO2(co2);
   }
 
+  gBahayaCO2 = !gangguan && faseCO2 == CO2_TINDAKAN;   // dibaca servisUjiGpio26(); sensor hilang = relay LOW
+  servisUjiGpio26();
+
   // ---------- 8. KELUARAN ----------
   perbaruiLcd(coSiap, coValid || sim, ppm, co2Siap, co2Baca, co2);
   if (gangguan) { lcdLine(1, "SENSOR GANGGUAN"); }
@@ -863,7 +904,7 @@ void loop() {
     String rasioStr = isnan(ratio) ? String("n/a") : String(ratio, 2);
     String co2Str = co2Baca ? String(co2) : String("n/a");
     String baris = pad(String(tS), 5, true) + " | " + pad(String((int)ppm), 4, true) + " | " + pad(co2Str, 5, true) + " | " + pad(rsStr, 8, true) + " | " + pad(rasioStr, 5, true)
-      + " | " + pad(stCOtampil, 10) + " | " + pad(stCO2, 10) + " | " + pad(fCO, 12) + " | " + pad(jendelaTerbuka ? "TERBUKA" : "TERTUTUP", 8) + " | " + pad(namaBunyi, 10)
+      + " | " + pad(stCOtampil, 10) + " | " + pad(stCO2, 10) + " | " + pad(fCO, 12) + " | " + pad(UJI_GPIO26_IKUT_BAHAYA ? (ujiHighAktif ? "GPIO26_HI" : "GPIO26_LO") : (jendelaTerbuka ? "TERBUKA" : "TERTUTUP"), 9) + " | " + pad(namaBunyi, 10)
       + " | " + pad(String(konfirmasiCO), 2, true) + " " + pad(String(pemulihanCO), 2, true) + " " + pad(String(waktuUji), 2, true)
       + " | " + String(atasPeringatan) + "/" + String(atasTindakan) + "  " + pad(String(pemulihanCO2), 2, true) + " " + pad(String(lamaBuka), 3, true) + " " + pad(String(sisaJedaS()), 3, true)
       + (sim ? "  [SIMULASI CO]" : "");
@@ -882,7 +923,7 @@ void loop() {
     Serial.print(','); Serial.print(stCO2);
     Serial.print(','); Serial.print(fCO);
     Serial.print(','); Serial.print(fCO2);
-    Serial.print(','); Serial.print(jendelaTerbuka ? F("TERBUKA") : F("TERTUTUP"));
+    Serial.print(','); Serial.print(UJI_GPIO26_IKUT_BAHAYA ? (ujiHighAktif ? "GPIO26_HIGH" : "GPIO26_LOW") : (jendelaTerbuka ? "TERBUKA" : "TERTUTUP"));
     Serial.print(','); Serial.print(namaBunyi);
     Serial.print(','); Serial.print(sim ? 1 : 0);
     Serial.print(','); if (isnan(rsHalus)) Serial.print(F("n/a")); else Serial.print(rsHalus / 1000.0, 1);
@@ -908,7 +949,7 @@ void loop() {
     if (co2Baca) Serial.print(co2); else Serial.print(F("n/a"));
     Serial.print(','); Serial.print(stCOtampil);
     Serial.print(','); Serial.print(stCO2);
-    Serial.print(','); Serial.print(jendelaTerbuka ? F("TERBUKA") : F("TERTUTUP"));
+    Serial.print(','); Serial.print(UJI_GPIO26_IKUT_BAHAYA ? (ujiHighAktif ? "GPIO26_HIGH" : "GPIO26_LOW") : (jendelaTerbuka ? "TERBUKA" : "TERTUTUP"));
     Serial.print(','); Serial.println(namaBunyi);
   }
 
