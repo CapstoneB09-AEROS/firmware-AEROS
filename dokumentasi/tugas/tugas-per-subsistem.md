@@ -21,7 +21,7 @@ PCB belum datang, jadi demo dirancang **berjalan di breadboard**; PCB hanya bonu
 ## 1. Firmware (ESP32, pengguna dan asisten)
 | Tugas | Status | Catatan |
 |---|---|---|
-| Firmware gabungan lapis 1: SMA 6, validasi, pemanasan 180 detik, aturan CO dan CO2, status 5 level, bunyi, LCD, mode simulasi, `WAKTU_SETENGAH` | menunggu "tulis" | di cabang `firmware-baru`; ganti isi `sensorOriginal.inl` kode tim dengan inti baru, antarmuka berupa struktur data (bukan teks CSV) |
+| Firmware v1 (sensor dan keluaran): SMA 6, validasi, pemanasan 180 detik, aturan CO dan CO2, status 5 level, bunyi, LCD, sinyal jendela, mode pengembangan | **v1.3 diunggah dan diuji di meja 28 Okt (CO2 dan sinyal jendela jalan; aturan CO dan penutup jendela belum), lihat [uji 6](../pengujian/laporan/uji-6-firmware-v1-2026-10-28.md)** | di cabang `firmware-baru`; ganti isi `sensorOriginal.inl` kode tim dengan inti baru, antarmuka berupa struktur data (bukan teks CSV) |
 | Perbaiki kode tim agar bisa dikompilasi (`lcd` dan `prefs` terdefinisi dua kali), pakai `huge_app.csv`, jangan berhenti total bila konfigurasi atau flash gagal | menunggu firmware gabungan | lihat [analisis-kode-tim.md](../analisis/analisis-kode-tim.md) |
 | Bandingkan firmware lama dan baru dengan memutar ulang log yang sama | setelah firmware baru | noise, jumlah alarm, perpindahan status |
 | T1 uji mandiri saat menyala, T2 watchdog dan alasan reset | usulan | [komunikasi.md](../keputusan/komunikasi.md) bagian 7 |

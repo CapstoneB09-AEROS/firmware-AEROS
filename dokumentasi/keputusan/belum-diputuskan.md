@@ -7,7 +7,9 @@ Tenggat: firmware dibekukan **Kamis 29 Okt siang**, expo **Jumat 30 Okt**.
 ## 0. Harus selesai sebelum Kamis siang (urut penting)
 | # | Keputusan | Siapa | Kenapa mendesak |
 |---|---|---|---|
-| 1 | Waktu gerak motor jendela setengah (`WAKTU_SETENGAH`) di mobil demo | hardware (ukur), pengguna (catat) | Tanpa ini logika jendela tidak bisa diuji |
+| 1 | Waktu gerak motor jendela setengah (`WAKTU_SETENGAH`) di mobil demo; v1 sementara memakai pulsa 2 detik | hardware (ukur), pengguna (catat) | Tanpa ini logika jendela tidak bisa diuji |
+| 1b | **Penutup jendela**: skematik relay hanya punya arah turun (kabel motor arah turun). Perlu relay arah naik pada pin lain, atau jendela ditutup manual. Dan lama motor turun untuk setengah bukaan (`PULSA_BUKA_MS`, sekarang 2 detik, belum diuji) | hardware | v1.x tidak mengirim sinyal tutup; hanya mencatat "tutup manual" |
+| 1c | **Catu dan ground papan CP2102**: Rs dasar 3600-5100 kΩ (V 8-12 mV) padahal multimeter di A0 membaca 30 mV (setara Rs sekitar 1500 kΩ); ESP boot berulang; LCD kacau saat pemanasan (dicatu adaptor DC). Dugaan: selisih ground atau catu lemah | hardware (ukur 5 V di MiCS dan LCD; ukur A0 terhadap GND ADS lalu GND MiCS) | Tanpa ini ppm CO tidak bisa dipercaya dan `r` jangan dijalankan. Lihat [uji 6](../pengujian/laporan/uji-6-firmware-v1-2026-10-28.md) bagian 5 |
 | 2 | Pin buzzer dan jendela di PCB | hardware | Firmware butuh pin pasti; GPIO14 sudah dipakai tombol Wi-Fi |
 | 3 | Isi pesan versi 3 dikerjakan teman backend, atau tetap v2 untuk expo | teman backend | Menentukan apa yang boleh dikirim firmware |
 | 4 | Tombol fisik "Saya Tahu" dan jenis buzzer | hardware | Menentukan apakah "bahaya lebih keras" mungkin |

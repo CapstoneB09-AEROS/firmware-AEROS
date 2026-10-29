@@ -334,9 +334,10 @@ Alarm selalu menang atas pesan jaringan di LCD. Aplikasi memakai pesan `ONLINE`/
 
 ---
 
-## 3. Yang tidak diubah
+## 3. Versi firmware
 
-- `src/main.cpp` tetap seperti 23 Oktober 2026 **saat dokumen ini ditulis** (checksum `fa7b8a91070bafe659d7babde142ea8e384bbf44`, cadangan di `arsip-firmware/main-v0-2026-10-23.cpp`). Sejak 28 Oktober 2026 `src/main.cpp` adalah v0.1 (lihat README).
+- `src/main.cpp` sekarang **v1** (28 Okt 2026, bagian 6): sensor dan keluaran sesuai pseudocode ini, tanpa komunikasi.
+- v0 (23 Okt, checksum `fa7b8a91070bafe659d7babde142ea8e384bbf44`) di `arsip-firmware/main-v0-2026-10-23.cpp` dan tag `v0-2026-10-23`; v0.1 (pin buzzer GPIO27, TBout GPIO26) di `arsip-firmware/main-v0.1-2026-10-28.cpp`; salinan v1: `arsip-firmware/main-v1-2026-10-28.cpp`.
 - Pseudocode lama (rencana awal dan alur kode v0) tetap, di [algoritma-firmware-lama-v0.md](algoritma-firmware-lama-v0.md).
 
 ---
@@ -358,3 +359,97 @@ Dibuat dengan gaya contoh yang Anda berikan (oval awal, jajar genjang untuk data
 ![Diagram 4: aturan CO2](diagram/diagram-4-aturan-co2.png)
 
 Berkas SVG (bisa dibuka di draw.io atau Inkscape) dan skrip pembuatnya, [diagram/buat_diagram.py](diagram/buat_diagram.py), ada di folder [diagram/](diagram/). Mengubah isi diagram berarti mengubah skrip itu lalu menjalankannya lagi (`python3 buat_diagram.py`). Diagram alur data dan perintah (diagram 5 dan 6) ada di [komunikasi.md](komunikasi.md).
+
+---
+
+## 5. Pin dan skematik (28 Oktober 2026)
+
+![Skematik pin 28 Okt 2026](diagram/skematik-pin-2026-10-28.png)
+
+Sumber: skematik dari teman hardware, 28 Okt 2026 (ESP32 DevKitC). Dipakai sejak firmware v0.1.
+
+| Komponen | Pin komponen | Ke ESP32 atau rel | Catatan |
+|---|---|---|---|
+| MH-Z19C | VIN | 5V | Vo dan PWM tidak dipakai |
+| | TX | GPIO16 (RX2) | UART2 9600 |
+| | RX | GPIO17 (TX2) | |
+| | GND | GND | |
+| ADS1115 (header 10 pin) | 1 VDD | 3V3 | |
+| | 2 GND | GND | |
+| | 3 SCL | GPIO22 | satu jalur I2C dengan LCD |
+| | 4 SDA | GPIO21 | |
+| | 5 ADDR | GND | alamat 0x48 |
+| | 7 A0 | AO MiCS | pin 6, 8, 9, 10 tidak dipakai |
+| MiCS-5524 (tertulis "MICS-2254" di skematik) | AO | ADS1115 A0 | |
+| | GND | GND | |
+| | 5V | 5V | |
+| LCD 16x2 I2C | 1 GND, 2 5V, 3 SDA, 4 SCL | GND, 5V, GPIO21, GPIO22 | alamat 0x27 |
+| Buzzer | 1, 2 | **GPIO27**, GND | sebelumnya GPIO25 (v0) |
+| TBout (sinyal jendela) | 1, 2 | **GPIO26**, GND | satu-satunya keluaran jendela |
+| TBin dan buck DC-DC | IN+, IN-, OUT+, OUT- | OUT+ ke rel 5V, OUT- ke GND | catu dari TBin; ESP32 diberi 5V di pin 5V |
+
+Yang belum ada di skematik: tombol "Saya Tahu", tombol portal Wi-Fi (GPIO14), dan **keluaran terpisah untuk menutup jendela**.
+
+### 5.1 Rangkaian relay jendela (skematik lanjutan, 28 Oktober 2026)
+
+![Rangkaian relay jendela](diagram/skematik-relay-jendela-2026-10-28.png)
+
+| Bagian | Isi |
+|---|---|
+| Penggerak | GPIO26 (TBout pin 1) -> resistor 470 ohm -> basis PN2222A; basis juga ditarik 10 kohm ke GND; emitor ke GND |
+| Beban | kolektor ke kaki 86 kumparan relay; kaki 85 ke +12 V (lewat fuse 2 A); dioda 1N4007 dipasang melintang kumparan, **katoda ke +12 V** |
+| Kontak | 30 ke aki (+) lewat fuse 15-20 A (kabel tebal AWG 14); **87 ke kabel motor power window arah turun** |
+| Ground | GND aki = TBout pin 2 = emitor, **satu jalur dengan GND ESP32** |
+
+Artinya untuk firmware:
+- **GPIO26 HIGH = relay menarik = motor turun selama pin HIGH.** Lama HIGH adalah lama motor turun, jadi menentukan besar bukaan (ini `WAKTU_SETENGAH`). Ini bukan pemicu satu kali.
+- **GPIO26 LOW = relay lepas = motor berhenti.** Karena basis ditarik 10 kohm ke GND, relay tetap lepas saat boot atau reset.
+- **Hanya ada relay arah turun.** Tidak ada relay arah naik, jadi **menutup jendela belum bisa dilakukan firmware**.
+- **v0.1 membuat GPIO26 HIGH saat boot**, sehingga dengan rangkaian ini jendela akan **turun setiap ESP menyala**. Jangan mengunggah v0.1 saat relay tersambung ke motor.
+
+Sebelum tersambung ke motor: arus kumparan dan penguatan transistor cukup (arus basis sekitar 5,5 mA dari 3,3 V), dan arah dioda sesuai. Pastikan fuse terpasang dan GND bersama.
+
+---
+
+## 6. Firmware v1 (28 Oktober 2026)
+
+`src/main.cpp` versi 1 menjalankan pseudocode bagian 2 untuk **sensor dan keluaran**. Komunikasi (Wi-Fi, MQTT) belum ada. v0.1 tersimpan di `arsip-firmware/main-v0.1-2026-10-28.cpp`.
+
+### 6.1 Mode pengembangan
+`MODE_PENGEMBANGAN = true` di kode menurunkan ambang supaya buka-tutup jendela bisa dicoba di ruang terbuka (CO2 luar sekitar 500-650 ppm; napas ke sensor menaikkannya). Nilai rancangan tetap ada di kode dan dipakai bila diubah ke `false`.
+
+| Parameter | Rancangan | Pengembangan |
+|---|---|---|
+| CO2 peringatan | 2500 | **700** |
+| CO2 tindakan (buka jendela) | 4000 | **800** |
+| CO2 selesai (tutup jendela) | < 2500 selama 10 detik | **< 700** selama 10 detik (di bawah ambang buka) |
+| Lama buka maksimum | 180 detik | **120 detik** |
+| Jeda tertutup sebelum buka lagi | 5 menit | **30 detik** |
+| Lama buka minimum | 20 detik | 20 detik |
+| Aturan CO | 35 dan 87 ppm, uji arah 30 detik | sama (uji lewat perintah simulasi `p<ppm>`) |
+
+### 6.2 Sinyal jendela (relay turun, GPIO26)
+| Aksi | Sinyal | Status |
+|---|---|---|
+| Diam | LOW (relay lepas, motor berhenti) | pasti |
+| Buka | HIGH selama `PULSA_BUKA_MS` = **2000 ms** (motor turun 2 detik) | perkiraan, belum diuji; ini yang diukur sebagai `WAKTU_SETENGAH` |
+| Batas keselamatan | relay tidak pernah menyala lebih lama dari `PULSA_MAKS_MS` = 5000 ms | di kode |
+| Tutup | **tidak ada keluaran** (`PIN_JENDELA_TUTUP = -1`). Firmware mencatat "TUTUP JENDELA MANUAL" di serial dan menampilkan `M` di LCD selama 2 menit | menunggu relay arah naik dari hardware |
+
+Bila hardware menambah relay naik: isi `PIN_JENDELA_TUTUP` (pin lain), atur `PULSA_TUTUP_MS`, dan pastikan kedua relay **tidak pernah menyala bersamaan**. **Uji dulu dengan LED atau multimeter di TBout sebelum menyambung ke motor.** Perintah `o` mengirim pulsa buka; `c` hanya mencatat bahwa penutup tidak ada.
+
+### 6.3 Detail yang ditetapkan saat menulis v1
+- **Kriteria "CO turun" pada uji arah:** Rs naik lebih dari 5% dari awal uji = sumber dalam. Turun lebih dari 25% = sumber luar. Di antaranya = tidak jelas, dianggap luar (pseudocode 2.4 belum memberi angka untuk "CO turun"; 5% usulan).
+- **Perbaikan pseudocode 2.5:** syarat `lamaBuka >= JENDELA_BUKA_MIN` hanya berlaku bila jendela terbuka. Tanpa itu, status PERINGATAN (jendela tidak dibuka) tidak pernah kembali NORMAL.
+- **Jeda minimum** hanya membatasi pembukaan oleh CO2. Pembukaan karena CO tidak ditunda (keselamatan).
+- Setelah jendela ditutup karena lama buka maksimum ("CO2 tidak turun"), jendela tidak dibuka lagi sampai CO2 kembali NORMAL.
+- "Saya Tahu" sementara lewat perintah serial `s` (belum ada tombol).
+- LCD: karakter terakhir baris atas `J` = jendela terbuka, `S` = simulasi CO aktif (belum ada Wi-Fi).
+- **v1.3 (28 Okt, malam):** serial kembali ringkas seperti v0 (banner 4 baris, baris data `t_s,V_mV,Rs_kohm,Rs_per_R0,CO_ppm_est,CO2_ppm,status_CO,status_CO2,jendela,bunyi`); perintah `h` (bantuan) dan `i` (semua parameter); peringatan bila R0 masih default. Format tabel (v1.1) dan CSV lengkap tetap bisa dipilih dengan `f`. Salinan: `arsip-firmware/main-v1.3-2026-10-28.cpp`.
+- **v1.2 (28 Okt, malam):** menyesuaikan dengan skematik relay (bagian 5.1): penutup jendela dinonaktifkan karena belum ada relay naik (pulsa 'tutup' sebelumnya akan menurunkan jendela lebih jauh), batas keselamatan lama relay menyala, GPIO26 dijadikan LOW paling awal saat boot. Salinan: `arsip-firmware/main-v1.2-2026-10-28.cpp`.
+- **v1.1 (28 Okt, sore):** serial default berupa **tabel berjajar dengan header** (diulang tiap 20 baris), perintah `f` mengganti ke CSV untuk skrip analisis; LCD baris CO dan CO2 sudah sejajar (`CO   12ppm WARN J` dan `CO2 623ppm OK`). Salinan: `arsip-firmware/main-v1.1-2026-10-28.cpp`.
+- **Serial (dibuat informatif untuk disimpan sebagai log):**
+  - Saat menyala dicetak banner 4 baris (versi, mode, R0, petunjuk `h`). Banner lengkap (waktu kompilasi, pin, level dan lama sinyal jendela, VCC, kurva, filter, semua ambang CO dan CO2, parameter jendela, daftar kolom) dicetak dengan perintah `i`.
+  - Baris data tiap detik (tanpa `#`): 8 kolom pertama seperti v0 (`Rs_kohm` = Rs mentah, `Rs_per_R0` dari Rs SMA 6), lalu `fase_co, fase_co2, jendela, buzzer, sim`, lalu penghitung: `rs_halus_kohm, gain_ads, konf_co, pulih_co, waktu_uji, atas_peringatan, atas_tindakan, pulih_co2, lama_buka, jeda_sisa, mode`.
+  - Baris kejadian berawalan `# [detik] TAG: isi` untuk: perubahan status, pemanasan selesai, filter terisi atau dikosongkan, nilai placeholder 410/500, gangguan sensor, gain ADS1115, mulai dan selesai bunyi, tiap pulsa sinyal jendela (pin, level, lama), jendela buka atau tutup beserta alasan dan nilai CO dan CO2, buka yang ditunda (sisa jeda), tiap tahap aturan CO dan CO2 (konfirmasi, uji arah dengan Rs awal dan sekarang dan persen perubahan, selesai), semua perintah serial, dan kalibrasi R0.
+- Watchdog (T2) dan uji mandiri (T1) belum dimasukkan karena belum disetujui.

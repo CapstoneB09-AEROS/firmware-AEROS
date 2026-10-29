@@ -6,7 +6,8 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 - **C-251** = rencana awal tim (14 Agustus 2026). **Tidak direvisi.**
 - **C-501** = laporan hasil. **Tenggat setelah expo.** Dokumentasi ini menjadi bahannya.
 - Expo **30 Oktober 2026**; firmware dibekukan **29 Oktober siang**.
-- Firmware **v0.1** (28 Okt 2026: v0 + GPIO26 TBout HIGH + buzzer GPIO27) ada di `../src/main.cpp`; v0 (23 Okt 2026) tetap di `../arsip-firmware/main-v0-2026-10-23.cpp`, v0.1 di `../arsip-firmware/main-v0.1-2026-10-28.cpp`. Firmware baru ditulis di cabang `firmware-baru`.
+- Firmware **v1.3** (28 Okt 2026: sensor dan keluaran sesuai pseudocode, mode pengembangan, sesuai skematik relay, serial ringkas) ada di `../src/main.cpp`; v0 (23 Okt) di `../arsip-firmware/main-v0-2026-10-23.cpp`, v0.1 (v0 + TBout GPIO26 + buzzer GPIO27) di `../arsip-firmware/main-v0.1-2026-10-28.cpp`, v1, v1.1, v1.2, v1.3 (cadangan) di `../arsip-firmware/`.
+- Firmware uji kecil untuk bangku (tanpa sensor) ada di `../alat-uji/`: `uji-gpio26` (paksa HIGH untuk ukur 3,3 V) dan `uji-relay-jendela` (pulsa relay dan waktu turun). Rencananya di [pengujian/rencana-uji.md](pengujian/rencana-uji.md) bagian 2.1.
 - Rekaman serial ada di `../logs/`. Salinan kode tim (komunikasi) di `../kode-tim/` (tidak masuk git).
 
 ## Peta folder
