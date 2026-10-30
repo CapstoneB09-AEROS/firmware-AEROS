@@ -45,7 +45,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
 
-#define FW_VERSI "v2.0"
+#define FW_VERSI "v2.1"   // v2.1: LCD baris bawah = CO (0) + pesan "Jendela membuka/menutup" saat GPIO26 HIGH; logika lain sama dengan v2.0
 
 // =====================================================================
 // MODE PENGEMBANGAN
@@ -94,6 +94,7 @@ const bool UJI_GPIO26_IKUT_BAHAYA = true;
 const unsigned long UJI_TURUN_MS = 1500;          // lama GPIO26 HIGH saat CO2 BAHAYA (jendela turun)
 const unsigned long UJI_NAIK_MS  = 5000;          // lama GPIO26 HIGH setelah CO2 aman (jendela naik; lebih lama dari turun agar sampai atas)
 const unsigned long UJI_JEDA_ANTAR_PULSA_MS = 1000; // LOW minimal antara dua pulsa (arah tidak boleh berbalik seketika)
+const unsigned long LCD_PESAN_JENDELA_MIN_MS = 3000; // tulisan "Jendela membuka/menutup" tampil minimal sekian ms sejak pulsa mulai (pulsa turun hanya 1,5 s)
 
 // ---------------- LCD I2C ----------------
 const uint8_t LCD_ADDR = 0x27;
@@ -541,8 +542,18 @@ void perbaruiLcd(bool coSiap, bool coValid, float ppm, bool co2Siap, bool co2Val
     char ind = simCO2 > 0 ? 'S' : (jendelaTerbuka ? 'J' : (tutupManual ? 'M' : ' '));
     snprintf(line, sizeof(line), "CO2%sppm %-4s%c", val, tC2, ind);
     lcdLine(0, line);
-    const char* t1 = UJI_GPIO26_IKUT_BAHAYA ? (siklus == SJ_TURUN ? "HIGH: TURUN" : (siklus == SJ_NAIK ? "HIGH: NAIK" : (siklus == SJ_BAWAH ? "Tunggu CO2 aman" : "GPIO26 LOW"))) :
-                     pulsaPin >= 0 ? "Jendela TURUN" : (jendelaTerbuka ? "Jendela terbuka" :
+    if (UJI_GPIO26_IKUT_BAHAYA) {   // baris bawah: tampilan CO (selalu ada), diganti pesan jendela hanya saat pulsa GPIO26 HIGH
+      const char* pesan = nullptr;
+      if (siklus == SJ_TURUN) pesan = "Jendela membuka";
+      else if (siklus == SJ_NAIK) pesan = "Jendela menutup";
+      else if (pulsaPin >= 0) pesan = (pulsaPin == PIN_JENDELA_BUKA) ? "Jendela membuka" : "Jendela menutup";
+      else if (ujiHighMulaiMs != 0 && millis() - ujiHighMulaiMs < LCD_PESAN_JENDELA_MIN_MS)   // pulsa baru selesai: tahan tulisan sebentar
+        pesan = (siklus == SJ_BAWAH) ? "Jendela membuka" : "Jendela menutup";
+      if (pesan) lcdLine(1, pesan);
+      else { snprintf(line, sizeof(line), "CO %4dppm", 0); lcdLine(1, line); }   // CO tidak dipakai di MVP: selalu 0
+      return;
+    }
+    const char* t1 = pulsaPin >= 0 ? "Jendela TURUN" : (jendelaTerbuka ? "Jendela terbuka" :
                      (totalTurunMs >= JENDELA_TOTAL_MAKS_MS ? "Naikkan,ketik n" : "Jendela siap"));
     lcdLine(1, t1);
     return;
