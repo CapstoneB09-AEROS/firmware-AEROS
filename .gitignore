@@ -31,3 +31,6 @@ arsip-firmware/*.bin
 
 # Salinan kode tim (MQTT/backend) untuk dianalisis; bukan kode kita, jangan dikomit tanpa izin pemiliknya
 kode-tim/
+
+# Log serial hasil pio device monitor (muncul tiap sesi). Log bukti uji yang penting: git add -f logs/namafile.log
+logs/
