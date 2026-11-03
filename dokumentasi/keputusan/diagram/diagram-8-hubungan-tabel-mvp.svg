@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1030" viewBox="0 0 1500 1030"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><text x="750.0" y="26" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#111">Diagram 8. Hubungan tabel database MVP (rancangan 3 November 2026)</text><rect x="620" y="70" width="260" height="96" fill="#fff" stroke="#333" stroke-width="1.6"/>
+<rect x="620" y="70" width="260" height="30" fill="#dae8fc" stroke="#333" stroke-width="1.6"/>
+<text x="750.0" y="90" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#111">devices</text>
+<rect x="620" y="100" width="260" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="630" y="115" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">device_id</text>
+<text x="870" y="115" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">PK</text>
+<rect x="620" y="122" width="260" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="630" y="137" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">is_active</text>
+<text x="870" y="137" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="620" y="144" width="260" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="630" y="159" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">created_at</text>
+<text x="870" y="159" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="60" y="300" width="330" height="140" fill="#fff" stroke="#333" stroke-width="1.6"/>
+<rect x="60" y="300" width="330" height="30" fill="#dae8fc" stroke="#333" stroke-width="1.6"/>
+<text x="225.0" y="320" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#111">alert_logs</text>
+<rect x="60" y="330" width="330" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="70" y="345" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">id  (= event_id dari ESP)</text>
+<text x="380" y="345" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">PK</text>
+<rect x="60" y="352" width="330" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="70" y="367" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">device_id</text>
+<text x="380" y="367" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">FK devices</text>
+<rect x="60" y="374" width="330" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="70" y="389" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">created_at</text>
+<text x="380" y="389" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="60" y="396" width="330" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="70" y="411" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">resolved_at</text>
+<text x="380" y="411" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="60" y="418" width="330" height="22" fill="#fad7ac" stroke="#bbb" stroke-width="0.8"/>
+<text x="70" y="433" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">alert_type</text>
+<text x="380" y="433" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">sementara</text>
+<text x="60" y="456" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">satu baris per episode peringatan</text>
+<rect x="520" y="250" width="460" height="404" fill="#fff" stroke="#333" stroke-width="1.6"/>
+<rect x="520" y="250" width="460" height="30" fill="#dae8fc" stroke="#333" stroke-width="1.6"/>
+<text x="750.0" y="270" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#111">sensor_readings</text>
+<rect x="520" y="280" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="295" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">id</text>
+<text x="970" y="295" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">PK</text>
+<rect x="520" y="302" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="317" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">device_id</text>
+<text x="970" y="317" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">FK devices</text>
+<rect x="520" y="324" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="339" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">nonce</text>
+<text x="970" y="339" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">unik bersama device_id</text>
+<rect x="520" y="346" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="361" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">measured_at</text>
+<text x="970" y="361" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="368" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="383" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">received_at</text>
+<text x="970" y="383" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="390" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="405" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co_ppm</text>
+<text x="970" y="405" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="412" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="427" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co2_ppm</text>
+<text x="970" y="427" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="434" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="449" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co_peak_ppm</text>
+<text x="970" y="449" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="456" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="471" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co2_peak_ppm</text>
+<text x="970" y="471" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="478" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="493" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co_peak_second</text>
+<text x="970" y="493" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="500" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="515" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co2_peak_second</text>
+<text x="970" y="515" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="520" y="522" width="460" height="22" fill="#b0e3e6" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="537" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co_level</text>
+<text x="970" y="537" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">0 normal, 1 waspada, 2 bahaya</text>
+<rect x="520" y="544" width="460" height="22" fill="#b0e3e6" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="559" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">co2_level</text>
+<text x="970" y="559" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">0 normal, 1 waspada, 2 bahaya</text>
+<rect x="520" y="566" width="460" height="22" fill="#b0e3e6" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="581" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">buzzer_state</text>
+<text x="970" y="581" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">on / off</text>
+<rect x="520" y="588" width="460" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="603" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">window_status</text>
+<text x="970" y="603" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">0 atas, 50 bawah, null bergerak</text>
+<rect x="520" y="610" width="460" height="22" fill="#b0e3e6" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="625" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">event_id</text>
+<text x="970" y="625" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">FK alert_logs (boleh kosong)</text>
+<rect x="520" y="632" width="460" height="22" fill="#fff2cc" stroke="#bbb" stroke-width="0.8"/>
+<text x="530" y="647" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">status</text>
+<text x="970" y="647" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">turunan dari co_level dan co2_level</text>
+<text x="520" y="670" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">satu baris per 5 detik</text>
+<rect x="1120" y="300" width="340" height="250" fill="#fff" stroke="#333" stroke-width="1.6" stroke-dasharray="7,4"/>
+<rect x="1120" y="300" width="340" height="30" fill="#dae8fc" stroke="#333" stroke-width="1.6" stroke-dasharray="7,4"/>
+<text x="1290.0" y="320" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#111">device_state</text>
+<rect x="1120" y="330" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="345" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">device_id</text>
+<text x="1450" y="345" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">PK, FK devices</text>
+<rect x="1120" y="352" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="367" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">connection_status</text>
+<text x="1450" y="367" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="374" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="389" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">last_seen_at</text>
+<text x="1450" y="389" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="396" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="411" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">last_co_ppm</text>
+<text x="1450" y="411" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="418" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="433" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">last_co2_ppm</text>
+<text x="1450" y="433" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="440" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="455" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">status</text>
+<text x="1450" y="455" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="462" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="477" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">buzzer_state</text>
+<text x="1450" y="477" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="484" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="499" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">window_status</text>
+<text x="1450" y="499" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="506" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="521" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">active_alert_id</text>
+<text x="1450" y="521" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">FK alert_logs</text>
+<rect x="1120" y="528" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="543" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">updated_at</text>
+<text x="1450" y="543" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<text x="1120" y="566" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">cache realtime (pengecualian 3NF yang disengaja)</text>
+<rect x="1120" y="660" width="340" height="140" fill="#fff" stroke="#333" stroke-width="1.6" stroke-dasharray="7,4"/>
+<rect x="1120" y="660" width="340" height="30" fill="#eeeeee" stroke="#333" stroke-width="1.6" stroke-dasharray="7,4"/>
+<text x="1290.0" y="680" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#111">v_alert_gas  (view)</text>
+<rect x="1120" y="690" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="705" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">alert_id</text>
+<text x="1450" y="705" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="712" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="727" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">gas</text>
+<text x="1450" y="727" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">CO atau CO2</text>
+<rect x="1120" y="734" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="749" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">tingkat_maks</text>
+<text x="1450" y="749" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="756" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="771" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">puncak_ppm</text>
+<text x="1450" y="771" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="778" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="793" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">mulai_at</text>
+<text x="1450" y="793" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="840" width="340" height="162" fill="#fff" stroke="#333" stroke-width="1.6" stroke-dasharray="7,4"/>
+<rect x="1120" y="840" width="340" height="30" fill="#eeeeee" stroke="#333" stroke-width="1.6" stroke-dasharray="7,4"/>
+<text x="1290.0" y="860" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#111">v_alerts  (view, untuk aplikasi)</text>
+<rect x="1120" y="870" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="885" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">id</text>
+<text x="1450" y="885" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="892" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="907" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">device_id</text>
+<text x="1450" y="907" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="914" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="929" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">created_at</text>
+<text x="1450" y="929" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="936" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="951" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">resolved_at</text>
+<text x="1450" y="951" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555"></text>
+<rect x="1120" y="958" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="973" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">tingkat</text>
+<text x="1450" y="973" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">bahaya / waspada</text>
+<rect x="1120" y="980" width="340" height="22" fill="#ffffff" stroke="#bbb" stroke-width="0.8"/>
+<text x="1130" y="995" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">gas</text>
+<text x="1450" y="995" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">larik, mis. {CO,CO2}</text>
+<path d="M 620.0,133.0 L 225.0,133.0 L 225.0,300.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<text x="606" y="127.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">1</text>
+<text x="235" y="292" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">N</text>
+<path d="M 750.0,166.0 L 750.0,250.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<text x="760" y="184" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">1</text>
+<text x="760" y="244" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">N</text>
+<path d="M 880.0,133.0 L 1290.0,133.0 L 1290.0,300.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<text x="894" y="127.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">1</text>
+<text x="1300" y="292" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">1</text>
+<path d="M 390.0,341.0 L 455.0,341.0 L 455.0,621.0 L 520.0,621.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<text x="398" y="335.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">1</text>
+<text x="506" y="615.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#b46504">N</text>
+<text x="447" y="520" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#555">event_id</text>
+<text x="447" y="536" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">device_id sama</text>
+<path d="M 980.0,533.0 L 1050.0,533.0 L 1050.0,723.0 L 1120.0,723.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<path d="M 1290.0,800.0 L 1290.0,840.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<path d="M 335.0,440.0 L 335.0,960.0 L 1120.0,960.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<text x="345" y="955" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#555">alert_logs → v_alerts</text>
+<rect x="520" y="700" width="420" height="140" fill="#f8cecc" stroke="#b85450" stroke-width="1.4"/>
+<text x="532" y="722" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#b85450">Dibuang (bersama "Saya Tahu")</text>
+<text x="532" y="746" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">tabel actuator_logs</text>
+<text x="532" y="764" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">alert_logs.reading_id dan acknowledged_at</text>
+<text x="532" y="782" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">device_state.ack_driver dan ack_at</text>
+<text x="532" y="800" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">sensor_readings.status sebagai kolom biasa</text>
+<text x="532" y="818" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">(diganti kolom turunan)</text>
+<text x="60" y="1000" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">1 = satu, N = banyak. Garis putus = view atau cache. Sumber: rancangan-database-mvp.md (3 Nov 2026).</text>
+<rect x="60" y="1015" width="18" height="13" fill="#b0e3e6" stroke="#0e8088"/>
+<text x="85" y="1026" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">kolom baru</text>
+<rect x="176.0" y="1015" width="18" height="13" fill="#fff2cc" stroke="#b8922a"/>
+<text x="201.0" y="1026" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">kolom turunan (dijaga database)</text>
+<rect x="430.6" y="1015" width="18" height="13" fill="#fad7ac" stroke="#b46504"/>
+<text x="455.6" y="1026" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">sementara, dibuang nanti</text></svg>
