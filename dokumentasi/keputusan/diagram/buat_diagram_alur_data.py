@@ -4,8 +4,8 @@ Cara pakai:  python3 buat_diagram_alur_data.py
 Hasil     :  diagram-5-alur-data-ke-aplikasi.svg, diagram-6-alur-perintah-saya-tahu.svg
 
 Memakai kelas Kanvas dari buat_diagram.py. Warna di diagram ini:
-  hijau kebiruan = sudah ada di kode tim (kode-tim/iot-mainproject/)
-  kuning         = usulan kita (pseudocode-baru.md bagian 2.8), belum ada di kode
+  hijau kebiruan = sudah ada di kode (firmware-v2 dan worker v3)
+  kuning         = usulan, belum ada di kode (saat ini tidak ada yang kuning di diagram 5)
   oranye         = aktuator
   abu            = bagian Flutter atau Supabase yang kodenya belum kita lihat (dugaan)
 """
@@ -23,7 +23,7 @@ def lane(k, cx, judul, tinggi):
 
 
 def legenda(k, y):
-    items = [('teal', 'sudah ada di kode tim'), ('kuning', 'usulan kita (belum ada di kode)'),
+    items = [('teal', 'sudah ada di kode (firmware v2, worker v3)'),
              ('oranye', 'aktuator'), ('abu', 'dugaan: kode Flutter/Supabase belum dilihat')]
     from buat_diagram import FILL
     x = 40
@@ -36,7 +36,7 @@ def legenda(k, y):
 
 def diagram5():
     W, H = 1600, 1400
-    k = Kanvas(W, H, 'Diagram 5. Alur data dari sensor sampai aplikasi Flutter')
+    k = Kanvas(W, H, 'Diagram 5. Alur data dari sensor sampai aplikasi Flutter (mode online, tanpa penyimpanan offline)')
     X = [130, 395, 660, 925, 1190, 1455]
     for cx, j in zip(X, ['ESP32: tugas sensor', 'ESP32: tugas jaringan', 'Broker HiveMQ', 'Worker (Node.js)',
                          'Database Supabase', 'Aplikasi Flutter']):
@@ -47,30 +47,30 @@ def diagram5():
     s2 = k.persegi(X[0], 250, bw, 70, ['2. Validasi, filter SMA 6,', 'hitung ppm CO', '(CO2 apa adanya)'])
     s3 = k.belah(X[0], 375, bw, 110, ['3. Lewat ambang', 'CO atau CO2?'])
     s4 = k.persegi(X[0], 510, bw, 92, ['4. Aktuator (tanpa', 'menunggu internet):', 'buzzer, jendela setengah,', 'LCD'], 'oranye')
-    s5 = k.persegi(X[0], 640, bw, 100, ['5. Susun pesan:', 'telemetri tiap 5 detik,', 'kejadian segera. Nonce, jam,', 'event_id, tanda tangan HMAC'], 'kuning')
-    sx = k.persegi(X[0], 790, bw, 80, ['Jaringan putus: data menumpuk', 'di flash. Sensor dan alarm', 'tetap jalan'], 'abu')
-    sx2 = k.persegi(X[0], 1110, bw, 70, ['Tidak ada ACK yang benar:', 'berkas tetap, kirim ulang', 'tiap 6 detik'], 'abu')
+    s5 = k.persegi(X[0], 640, bw, 100, ['5. Susun pesan tiap 5 detik:', 'CO, CO2, nilai puncak,', 'event_id bila ada kejadian,', 'nonce, jam, tanda HMAC'], 'teal')
+    sx = k.persegi(X[0], 790, bw, 80, ['Jaringan putus: data tidak', 'disimpan (dibuang). Sensor', 'dan alarm tetap jalan'], 'abu')
+    sx2 = k.persegi(X[0], 1110, bw, 70, ['Tidak ada ACK yang benar:', 'kirim ulang tiap 6 detik,', 'lewat 30 detik dibuang'], 'abu')
 
-    n6 = k.persegi(X[1], 640, bw, 92, ['6. Antrean RAM, lalu', 'TULIS KE FLASH dulu', '(offline first, LittleFS)'], 'teal')
+    n6 = k.persegi(X[1], 640, bw, 92, ['6. Antrean di RAM (maks 4', 'data). Data yang menunggu', 'lebih dari 30 detik dibuang'], 'teal')
     n7 = k.belah(X[1], 790, bw + 10, 120, ['7. Wi-Fi, NTP, dan', 'MQTT TLS tersambung?'])
-    n8 = k.persegi(X[1], 930, bw, 92, ['8. Kirim berkas tertua', '(kejadian dulu), lalu', 'tunggu ACK'], 'teal')
+    n8 = k.persegi(X[1], 930, bw, 92, ['8. Kirim data tertua', 'di antrean, lalu', 'tunggu ACK'], 'teal')
     n12 = k.belah(X[1], 1110, bw + 10, 120, ['12. ACK benar?', '(HMAC dan nonce)'])
-    n13 = k.persegi(X[1], 1240, bw, 60, ['13. Hapus berkas dari flash'], 'teal')
+    n13 = k.persegi(X[1], 1240, bw, 60, ['13. Hapus data dari', 'antrean RAM'], 'teal')
 
     b_st = k.persegi(X[2], 790, bw, 80, ['Topik status: ONLINE', '(retained). OFFLINE lewat', 'last will'], 'teal')
-    b9 = k.persegi(X[2], 930, bw, 66, ['9. Topik aeros/data', '(TLS, sertifikat diperiksa)'], 'teal')
-    b11 = k.persegi(X[2], 1110, bw, 66, ['11. Topik aeros/{id}/', 'data/ack'], 'teal')
+    b9 = k.persegi(X[2], 930, bw, 66, ['9. Topik aeros/{id}/', 'telemetry (TLS, sertifikat', 'diperiksa)'], 'teal')
+    b11 = k.persegi(X[2], 1110, bw, 66, ['11. Topik aeros/{id}/', 'telemetry/ack'], 'teal')
 
     w10 = k.persegi(X[3], 930, bw, 92, ['10. Worker: cek HMAC,', 'umur jam, perangkat aktif', '(tabel devices)'], 'teal')
-    w10b = k.persegi(X[3], 1030, bw, 62, ['Simpan sensor_readings', '(+ event_id: perubahan)'], 'kuning')
-    w10c = k.persegi(X[3], 1130, bw, 92, ['Kejadian: tulis alert_logs', '(id = event_id) atau', 'actuator_logs (usulan 2.8.8)'], 'kuning')
-    w10d = k.persegi(X[3], 1250, bw, 80, ['Kirim ACK_DATA ber-HMAC,', 'HANYA setelah semua', 'penulisan DB berhasil'], 'teal')
+    w10b = k.persegi(X[3], 1030, bw, 62, ['Simpan sensor_readings', '(nilai, puncak, jam)'], 'teal')
+    w10c = k.persegi(X[3], 1130, bw, 92, ['Catat kejadian: alert_logs', '(id = event_id) dan', 'device_state (best-effort)'], 'teal')
+    w10d = k.persegi(X[3], 1250, bw, 80, ['Kirim ACK ber-HMAC setelah', 'sensor_readings tersimpan', '(tidak menunggu alert_logs)'], 'teal')
 
     d1 = k.persegi(X[4], 1030, bw, 56, ['Tabel sensor_readings'], 'abu')
     d2 = k.persegi(X[4], 1130, bw, 70, ['Tabel alert_logs,', 'actuator_logs,', 'device_state'], 'abu')
 
     f1 = k.persegi(X[5], 1030, bw, 70, ['Aplikasi menampilkan', 'nilai dan grafik terbaru', '(Realtime atau baca tabel)'], 'abu')
-    f2 = k.persegi(X[5], 1130, bw, 70, ['Notifikasi dan layar', 'peringatan dari alert_logs', '(belum dicek)'], 'abu')
+    f2 = k.persegi(X[5], 1130, bw, 70, ['Notifikasi dan layar', 'peringatan dari alert_logs'], 'abu')
 
     k.garis([s1.bawah, s2.atas])
     k.garis([s2.bawah, s3.atas])
@@ -99,8 +99,8 @@ def diagram5():
     k.garis([(X[1], 1050), n12.atas], putus=True)
     k.catatan(X[1] - 110, 1020, ['menunggu ACK'], '#666')
     k.catatan(40, 1290, ['Kunci: ESP32 memutuskan alarm dan menggerakkan aktuator SENDIRI (langkah 1 sampai 4).',
-                         'Pengiriman (langkah 5 sampai 13) berjalan di tugas lain, jadi internet mati tidak menghentikan alarm.',
-                         'Data hanya dihapus dari ESP setelah database membalas (langkah 12 dan 13). Pesan ganda ditolak lewat nonce.'], '#333')
+                         'Mode online: tidak ada penyimpanan offline. Pengiriman (langkah 5 sampai 13) berjalan di tugas lain, jadi internet mati tidak menghentikan alarm.',
+                         'Data keluar dari antrean setelah ACK benar (langkah 12 dan 13). Data saat jaringan putus tidak tersimpan. Pesan ganda ditolak lewat nonce.'], '#333')
     legenda(k, H - 70)
     k.simpan('diagram-5-alur-data-ke-aplikasi.svg', legenda=False)
 

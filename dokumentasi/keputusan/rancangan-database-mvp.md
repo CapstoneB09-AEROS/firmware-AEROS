@@ -48,11 +48,14 @@ Tidak ada kolom `gas`. Satu peringatan bisa melibatkan CO, CO2, atau keduanya, d
 
 ## 4. SQL usulan
 
+Dua bagian, karena bagian B **merusak worker lama** (worker lama menulis `status` ke kolom yang menjadi turunan, menulis `ack_driver` dan `ack_at`, dan membaca `actuator_logs`). Bagian A aman dijalankan kapan saja. Bagian B dijalankan bersama worker baru (lihat [rancangan-worker-mvp.md](rancangan-worker-mvp.md) bagian 7). Tiap bagian dijalankan **sekali, utuh** (satu transaksi; gagal berarti tidak ada yang berubah).
+
+### 4a. Tambahan (tidak merusak apa pun)
+
 ```sql
--- Jalankan SEKALI, utuh (tidak aman diulang): semua langkah dalam satu transaksi, gagal berarti tidak ada yang berubah.
 begin;
 
--- 1. sensor_readings: tingkat per gas, buzzer, tautan ke peringatan
+-- A1. sensor_readings: tingkat per gas, buzzer, tautan ke peringatan
 alter table public.sensor_readings
   add column if not exists co_level smallint not null default 0 check (co_level between 0 and 2),
   add column if not exists co2_level smallint not null default 0 check (co2_level between 0 and 2),
@@ -65,25 +68,11 @@ alter table public.sensor_readings add constraint fk_sensor_readings_alert
 create index if not exists idx_sensor_readings_event on public.sensor_readings (event_id);
 create index if not exists idx_sensor_readings_device_time on public.sensor_readings (device_id, measured_at desc);
 
--- 2. data lama: dianggap CO2 saja (CO nonaktif sebelum 2 Nov)
+-- A2. data lama: dianggap CO2 saja (CO nonaktif sebelum 2 Nov)
 update public.sensor_readings
   set co2_level = case status when 'bahaya' then 2 when 'waspada' then 1 else 0 end;
 
--- 3. status jadi kolom turunan
-alter table public.sensor_readings drop column status;
-alter table public.sensor_readings add column status text generated always as
-  (case greatest(co_level, co2_level) when 2 then 'bahaya' when 1 then 'waspada' else 'normal' end) stored;
-
--- 4. alert_logs: buang yang terkait "Saya Tahu" dan reading_id
-alter table public.alert_logs drop constraint if exists alert_logs_reading_id_fkey;
-alter table public.alert_logs drop column if exists reading_id;
-alter table public.alert_logs drop column if exists acknowledged_at;
-
--- 5. buang "Saya Tahu"
-drop table if exists public.actuator_logs;
-alter table public.device_state drop column if exists ack_driver, drop column if exists ack_at;
-
--- 6. view untuk aplikasi: gas dan tingkat tiap peringatan
+-- A3. view untuk aplikasi: gas dan tingkat tiap peringatan
 create or replace view public.v_alert_gas as
 select r.event_id as alert_id, g.gas,
        max(g.tingkat) as tingkat_maks,
@@ -103,7 +92,34 @@ from public.alert_logs a
 left join public.v_alert_gas g on g.alert_id = a.id
 group by a.id;
 
--- 7. hapus bacaan lama yang bukan bukti peringatan (jadwalkan setelah cascade lama dibuang)
+commit;
+```
+
+### 4b. Pemutusan (setelah worker baru berjalan; matikan ESP selama ini)
+
+```sql
+begin;
+
+-- B1. bacaan yang ditulis worker lama sejak 4a belum punya tingkat: isi dari status
+update public.sensor_readings
+  set co2_level = case status when 'bahaya' then 2 when 'waspada' then 1 else 0 end
+  where co_level = 0 and co2_level = 0 and status <> 'normal';
+
+-- B2. status jadi kolom turunan
+alter table public.sensor_readings drop column status;
+alter table public.sensor_readings add column status text generated always as
+  (case greatest(co_level, co2_level) when 2 then 'bahaya' when 1 then 'waspada' else 'normal' end) stored;
+
+-- B3. alert_logs: buang yang terkait "Saya Tahu" dan reading_id
+alter table public.alert_logs drop constraint if exists alert_logs_reading_id_fkey;
+alter table public.alert_logs drop column if exists reading_id;
+alter table public.alert_logs drop column if exists acknowledged_at;
+
+-- B4. buang "Saya Tahu"
+drop table if exists public.actuator_logs;
+alter table public.device_state drop column if exists ack_driver, drop column if exists ack_at;
+
+-- B5. hapus bacaan lama yang bukan bukti peringatan (jadwalkan sesudah B3)
 -- delete from public.sensor_readings where event_id is null and measured_at < now() - interval '7 days';
 
 commit;
@@ -117,11 +133,11 @@ commit;
 |---|---|
 | ESP | `SensorSnapshot` ditambah `coLevel` (dari status CO: WASPADA = 1, BAHAYA = 2, **LUAR = 1, usulan, perlu dipastikan**). Telemetri versi 4: kirim `co_level` dan `co2_level`, buang `status`. Format yang ditandatangani: `r4`, sama dengan `r3` tetapi `co_level\|co2_level` menggantikan `status`. **Perbaiki bug:** sekarang `coAlarm` (termasuk CO waspada) membuat status `bahaya`. |
 | Worker | terima `r3` dan `r4`. Saat ada `event_id`: **buat baris `alert_logs` dulu, baru simpan bacaan** (urutan penting karena kunci tamu). Tulis `co_level`, `co2_level`, `buzzer_state`, `event_id`. Tutup peringatan lama seperti sekarang. Buang `actuatorService.js`, `realtimeAckService.js`, langganan `cmd/ack`, dan pengecekan 15 detik. |
-| Database | SQL bagian 4, dijalankan **sebelum** worker baru. |
+| Database | 4a sebelum worker baru; 4b sesudah worker baru berjalan (ESP dimatikan selama 4b). |
 | Aplikasi | riwayat peringatan dari `v_alerts`; keadaan sekarang dari `device_state`; buang tombol "Saya Tahu". |
 | Firmware (dibiarkan) | `handleCommand` dan sejenisnya boleh tetap ada, tidak dipakai. Dibuang pada versi berikutnya kalau waktu ada. |
 
-Urutan aman: (1) database, (2) worker yang menerima `r3` dan `r4`, (3) ESP versi 4, (4) aplikasi pindah ke `v_alerts`, (5) buang `alert_type`, `actuator_logs`, dan kode lama.
+Urutan aman: (1) database 4a, (2) worker yang menerima `r3` dan `r4`, (3) database 4b dengan ESP dimatikan, (4) ESP versi 4, (5) aplikasi pindah ke `v_alerts`, (6) buang `alert_type`. Rincian worker: [rancangan-worker-mvp.md](rancangan-worker-mvp.md).
 
 ## 6. Batasan yang diterima
 
@@ -147,8 +163,9 @@ Diuji 3 November 2026 di PostgreSQL 17 lokal sementara, dengan 2401 bacaan dan 2
 
 | Uji | Hasil |
 |---|---|
-| Migrasi bagian 4 pada skema lama | berhasil tanpa galat. Dijalankan dua kali: kali kedua gagal dan tidak mengubah apa pun (satu transaksi). |
+| Migrasi (SQL tunggal, sebelum dipisah 4a dan 4b) pada skema lama | berhasil tanpa galat. Dijalankan dua kali: kali kedua gagal dan tidak mengubah apa pun (satu transaksi). |
 | `status` kolom turunan vs `status` lama | 2401 dari 2401 sama, 0 beda |
+| Pemisahan 4a dan 4b dengan worker lama dan baru | 4a: worker lama masih bisa menulis. Sebelum 4b, penulisan tanpa `status` ditolak (kolom masih wajib). Sesudah 4b: penulisan `status` oleh worker lama **ditolak** ("cannot insert a non-DEFAULT value"), `ack_driver` dan `actuator_logs` hilang, penulisan worker baru berhasil, baris yang ditulis worker lama di antara 4a dan 4b diisi ulang tingkatnya dengan benar |
 | Ubah `status` manual | ditolak ("can only be updated to DEFAULT") |
 | `co_level` = 3, `buzzer_state` = 'mungkin', `event_id` tak dikenal, `nonce` ganda, `event_id` milik perangkat lain | kelimanya ditolak |
 | View `v_alerts` pada 29 peringatan nyata (bacaan dihubungkan lewat jendela waktu, bukan `event_id` asli) | 17 tercatat `waspada` padahal mencapai bahaya (sama dengan hitungan sebelumnya), 1 bahaya cocok, 10 waspada cocok, 1 tidak punya bacaan bertingkat |
