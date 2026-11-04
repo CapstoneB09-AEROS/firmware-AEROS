@@ -12,6 +12,8 @@ Versi 27 Oktober 2026. Rencana, templat, dan lembar catatan untuk uji lapangan d
 | 4. Mobil Avanza (jendela) | 26 Okt malam | v0 | [uji-4](laporan/uji-4-mobil-avanza-2026-10-26.md) |
 | 5. Parfum di ruangan | 27 Okt | v0 | [uji-5](laporan/uji-5-parfum-2026-10-27.md) |
 | 6. Firmware v1 di meja (CO2, jendela) | 28 Okt sore | v1 | [uji-6](laporan/uji-6-firmware-v1-2026-10-28.md) |
+| 7. Mobil Civic (4 orang, sampai database) | 30 Okt petang | v2.1 | [uji-7](laporan/uji-7-mobil-civic-firmware-v2-2026-10-30.md) |
+| 8. Meja: Wi-Fi + MQTT + database, ambang 700/800 | 3-4 Nov | v2.3 | [uji-8](laporan/uji-8-meja-wifi-mqtt-firmware-v2.3-2026-11-03.md) |
 
 Semua uji memakai firmware lama sebagai pembanding dasar. Algoritma baru dibandingkan dengan **memutar ulang log yang sama** (bagian 6), bukan dengan mengulang uji.
 
@@ -25,6 +27,17 @@ Semua uji memakai firmware lama sebagai pembanding dasar. Algoritma baru dibandi
 | Firmware gabungan di meja | napas ke kotak (CO2 sampai 2500 dan 4000), mode simulasi CO, ukur waktu gerak jendela | aturan CO dan CO2 bekerja sesuai [algoritma-firmware.md](../keputusan/algoritma-firmware.md) |
 | Nyala dingin (opsional) | mati lebih dari 1 jam, rekam 10 menit di kamar | Rs menit ke-3 dekat menit ke-10 (satu uji bersih sudah ada) |
 | Relay jendela di meja, tanpa sensor | bagian 2.1; firmware kecil di `alat-uji/uji-relay-jendela/` | relay klik, jendela turun, ESP tidak reset, waktu turun per ms tercatat |
+
+### 2.0 Uji 3 mobil berbeda (firmware v2.4)
+
+Tiap mobil diuji **sesuai kondisi aslinya**, tidak diseragamkan. Tulis jenis, tahun, dan posisi alat di lembar catatan (bagian 5), karena N dan laju naik CO2 hanya berlaku untuk mobil itu.
+
+- Firmware **v2.4**: ambang CO2 2500 (waspada) dan 4000 (bahaya), selesai bila di bawah 2500 selama 10 detik. Unggah dan cek LCD menampilkan `AEROS v2.4`.
+- Daya dari USB mobil: alat menyala bersamaan mobil menyala. Setelah menyala tunggu pemanasan 3 menit (LCD `WARM`).
+- Jendela **manual**: saat LCD menulis `Jendela membuka` (tampil sekitar 3 detik, bunyi bahaya ikut), buka 2 jendela depan setengah. Saat LCD menulis `Udara aman` / `Tutup jendela`, tutup kembali. Catat jam buka dan tutup sampai detik. Anggap ideal terhubung ke power window.
+- Hotspot ponsel nyala sebelum alat dinyalakan; catat bila hotspot putus.
+- Rekam serial seperti bagian 4 (`pio device monitor -f time -f log2file`); nama berkas dicatat per mobil.
+- Hati-hati: starter mobil bisa membuat USB drop sesaat dan alat mulai ulang. Catat bila itu terjadi (`t_s` kembali kecil).
 
 ### 2.1 Uji relay jendela di meja (tanpa sensor)
 
