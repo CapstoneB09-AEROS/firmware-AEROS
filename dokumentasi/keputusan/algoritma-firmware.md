@@ -364,6 +364,8 @@ Berkas SVG (bisa dibuka di draw.io atau Inkscape) dan skrip pembuatnya, [diagram
 
 ## 5. Pin dan skematik (28 Oktober 2026)
 
+> **Diperbarui 3 Nov 2026:** pin dan wiring yang berlaku ada di [hardware-wiring.md](hardware-wiring.md). Yang berubah dari bagian ini: **relay naik ada di GPIO25** (GPIO26 = turun), dan tombol Wi-Fi di **GPIO32**, bukan GPIO14. Teks di bawah dibiarkan sebagai catatan 28 Okt.
+
 ![Skematik pin 28 Okt 2026](diagram/skematik-pin-2026-10-28.png)
 
 Sumber: skematik dari teman hardware, 28 Okt 2026 (ESP32 DevKitC). Dipakai sejak firmware v0.1.

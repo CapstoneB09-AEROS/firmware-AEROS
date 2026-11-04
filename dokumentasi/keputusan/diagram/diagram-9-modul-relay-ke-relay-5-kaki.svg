@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1220" viewBox="0 0 1400 1220"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><text x="700.0" y="22" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#111">Diagram 9. Dari modul relay driver sampai relay 5 kaki dan motor (satu kanal: TURUN, GPIO26)</text><text x="30" y="45" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#0b3d91" font-weight="bold">A. Wiring di hardware-wiring.md sekarang: kaki 30 = +12 V aki, kaki 87 = kabel motor</text>
+<text x="30" y="68" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#a40e26">Dari dokumen 28 Okt. Sambungan kontak ke motor ini Belum diketahui, minta konfirmasi teman hardware.</text>
+<rect x="190" y="110" width="450" height="410" fill="#fafafa" stroke="#555" stroke-width="1.6" stroke-dasharray="8,5"/>
+<text x="205" y="132" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#555" font-weight="bold">MODUL RELAY DRIVER (perfboard)</text>
+<path d="M 100,470 L 640,470" fill="none" stroke="#24292f" stroke-width="5"/>
+<path d="M 400,150 L 580,150" fill="none" stroke="#d1242f" stroke-width="5"/>
+<circle cx="400" cy="150" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="384" y="155" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">Terminal 5 (+12 V masuk)</text>
+<circle cx="230" cy="470" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="230" y="495" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">Terminal 6 (GND masuk)</text>
+<rect x="210.0" y="348.0" width="80" height="24" fill="#f6e7c1" stroke="#24292f" stroke-width="1.6"/>
+<text x="250" y="365" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">470 Ω</text>
+<path d="M 290,360 L 330,360" fill="none" stroke="#1f6feb" stroke-width="3"/>
+<circle cx="310" cy="360" r="4.5" fill="#1f6feb"/>
+<path d="M 310,360 L 310,375" fill="none" stroke="#1f6feb" stroke-width="3"/>
+<rect x="299.0" y="375.0" width="22" height="70" fill="#f6e7c1" stroke="#24292f" stroke-width="1.6"/>
+<text x="328" y="415" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111"></text>
+<text x="295" y="415" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">10 kΩ</text>
+<path d="M 310,445 L 310,470" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="310" cy="470" r="4.5" fill="#24292f"/>
+<rect x="330" y="325" width="90" height="80" fill="#2b2b2b" stroke="#24292f" stroke-width="1.6"/>
+<text x="375" y="362" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">PN2222A</text>
+<text x="375" y="378" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#fff">(NPN)</text>
+<text x="340" y="368" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#8ab4ff" font-weight="bold">B</text>
+<text x="395" y="341" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#8ab4ff" font-weight="bold">C</text>
+<text x="395" y="399" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#8ab4ff" font-weight="bold">E</text>
+<path d="M 375,405 L 375,470" fill="none" stroke="#d1242f" stroke-width="3"/>
+<circle cx="375" cy="470" r="4.5" fill="#24292f"/>
+<path d="M 375,325 L 375,250 L 580,250" fill="none" stroke="#e08a00" stroke-width="3"/>
+<path d="M 480,150 L 480,190" fill="none" stroke="#d1242f" stroke-width="3"/>
+<circle cx="480" cy="150" r="4.5" fill="#d1242f"/>
+<line x1="464" y1="190" x2="496" y2="190" stroke="#24292f" stroke-width="3"/>
+<polygon points="480,190 466,230 494,230" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<path d="M 480,230 L 480,250" fill="none" stroke="#e08a00" stroke-width="3"/>
+<circle cx="480" cy="250" r="4.5" fill="#e08a00"/>
+<text x="505" y="215" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">1N4007</text>
+<text x="505" y="188" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">garis = katoda</text>
+<circle cx="580" cy="150" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="580" y="130" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">Terminal 1 (+12 V)</text>
+<circle cx="580" cy="250" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="580" y="275" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">Terminal 2 (kolektor)</text>
+<rect x="30" y="310" width="120" height="200" fill="#e8f0fe" stroke="#24292f" stroke-width="1.6"/>
+<text x="90" y="395" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#111" font-weight="bold">ESP32</text>
+<text x="90" y="420" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#1f6feb" font-weight="bold">GPIO26</text>
+<text x="90" y="438" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#444">(kanal TURUN)</text>
+<path d="M 150,360 L 210,360" fill="none" stroke="#1f6feb" stroke-width="3"/>
+<circle cx="150" cy="360" r="4.5" fill="#1f6feb"/>
+<circle cx="150" cy="470" r="4.5" fill="#24292f"/>
+<text x="40" y="474" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">GND</text>
+<rect x="760" y="150" width="220" height="330" fill="#fff" stroke="#24292f" stroke-width="2.5"/>
+<text x="870" y="140" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111" font-weight="bold">RELAY 5 KAKI (12 V)</text>
+<rect x="780" y="190" width="60" height="120" fill="#f3e5f5" stroke="#555" stroke-width="1.6"/>
+<text x="810" y="245" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">KOIL</text>
+<text x="810" y="263" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111">≈80 Ω</text>
+<text x="810" y="279" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111">150 mA</text>
+<path d="M 760,210 L 780,210" fill="none" stroke="#d1242f" stroke-width="3"/>
+<circle cx="760" cy="210" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="752" y="200" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 85</text>
+<path d="M 760,290 L 780,290" fill="none" stroke="#e08a00" stroke-width="3"/>
+<circle cx="760" cy="290" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="752" y="280" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 86</text>
+<path d="M 580,150 L 690,150 L 690,210 L 752,210" fill="none" stroke="#d1242f" stroke-width="3"/>
+<path d="M 580,250 L 690,250 L 690,290 L 752,290" fill="none" stroke="#e08a00" stroke-width="3"/>
+<path d="M 900,310 L 900,415" fill="none" stroke="#24292f" stroke-width="4"/>
+<line x1="900" y1="310" x2="900" y2="208" stroke="#7a2a8a" stroke-width="3" stroke-dasharray="6,5"/>
+<circle cx="900" cy="310" r="5" fill="#24292f"/>
+<circle cx="900" cy="200" r="5" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<circle cx="900" cy="420" r="5" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="912" y="262" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7a2a8a">koil menyala</text>
+<text x="912" y="278" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7a2a8a">(putus-putus)</text>
+<text x="912" y="370" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">koil mati</text>
+<path d="M 900,200 L 972,200" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="980" cy="200" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="960" y="190" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 87</text>
+<path d="M 900,310 L 972,310" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="980" cy="310" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="960" y="300" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 30</text>
+<path d="M 900,420 L 972,420" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="980" cy="420" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="960" y="410" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 87a</text>
+<text x="855" y="188" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">NO</text>
+<text x="855" y="438" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">NC</text>
+<text x="855" y="328" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">C (common)</text>
+<path d="M 988,200 L 1130,200" fill="none" stroke="#1a7f37" stroke-width="4"/>
+<circle cx="1170" cy="200" r="34" fill="#e6f4ea" stroke="#1a7f37" stroke-width="2.5"/>
+<text x="1170" y="207" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#1a7f37" font-weight="bold">M</text>
+<text x="1170" y="256" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1a7f37" font-weight="bold">MOTOR JENDELA</text>
+<text x="1060" y="188" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1a7f37" font-weight="bold">kabel motor TURUN</text>
+<text x="1170" y="272" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">kabel satunya: ke relay NAIK</text>
+<path d="M 988,310 L 1040,310" fill="none" stroke="#d1242f" stroke-width="4"/>
+<rect x="1040" y="296" width="80" height="28" fill="#fff4e0" stroke="#24292f" stroke-width="1.6"/>
+<text x="1080" y="315" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111" font-weight="bold">FUSE 15-20 A</text>
+<rect x="1170" y="286" width="130" height="48" fill="#ffe5e5" stroke="#d1242f" stroke-width="2"/>
+<text x="1235" y="308" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#d1242f" font-weight="bold">AKI</text>
+<text x="1235" y="325" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#d1242f" font-weight="bold">+12 V</text>
+<path d="M 1120,310 L 1170,310" fill="none" stroke="#d1242f" stroke-width="3"/>
+<text x="1080" y="286" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555"></text>
+<path d="M 988,420 L 1030,420" fill="none" stroke="#999" stroke-width="2"/>
+<text x="1040" y="425" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#777" font-weight="bold">✕  dibiarkan kosong (tidak dipakai)</text>
+<text x="760" y="505" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#222">Koil mati: kaki 30 putus dari 87, motor tidak dapat daya.</text>
+<text x="760" y="523" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#222">Koil menyala: 30 tersambung ke 87, kabel motor TURUN dapat +12 V.</text>
+<text x="760" y="541" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#a40e26" font-weight="bold">Risiko: bila saklar jendela asli masih terpasang dan menghubungkan kabel motor ke GND,</text>
+<text x="760" y="557" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#a40e26" font-weight="bold">+12 V dari kaki 87 ke kabel itu = korsleting.</text>
+<line x1="30" y1="640" x2="1370" y2="640" stroke="#bbb" stroke-width="2" stroke-dasharray="4,6"/>
+<text x="30" y="665" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#0b3d91" font-weight="bold">B. Pola kaki 87a (Usulan, belum diuji): kaki 30 = kabel motor, 87 = +12 V, 87a = GND</text>
+<text x="30" y="688" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#a40e26">Kabel motor tertarik ke GND saat koil mati (mirip saklar asli), dan ke +12 V saat koil menyala. Perlu konfirmasi teman hardware.</text>
+<rect x="190" y="730" width="450" height="410" fill="#fafafa" stroke="#555" stroke-width="1.6" stroke-dasharray="8,5"/>
+<text x="205" y="752" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#555" font-weight="bold">MODUL RELAY DRIVER (perfboard)</text>
+<path d="M 100,1090 L 640,1090" fill="none" stroke="#24292f" stroke-width="5"/>
+<path d="M 400,770 L 580,770" fill="none" stroke="#d1242f" stroke-width="5"/>
+<circle cx="400" cy="770" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="384" y="775" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">Terminal 5 (+12 V masuk)</text>
+<circle cx="230" cy="1090" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="230" y="1115" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">Terminal 6 (GND masuk)</text>
+<rect x="210.0" y="968.0" width="80" height="24" fill="#f6e7c1" stroke="#24292f" stroke-width="1.6"/>
+<text x="250" y="985" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">470 Ω</text>
+<path d="M 290,980 L 330,980" fill="none" stroke="#1f6feb" stroke-width="3"/>
+<circle cx="310" cy="980" r="4.5" fill="#1f6feb"/>
+<path d="M 310,980 L 310,995" fill="none" stroke="#1f6feb" stroke-width="3"/>
+<rect x="299.0" y="995.0" width="22" height="70" fill="#f6e7c1" stroke="#24292f" stroke-width="1.6"/>
+<text x="328" y="1035" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111"></text>
+<text x="295" y="1035" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111">10 kΩ</text>
+<path d="M 310,1065 L 310,1090" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="310" cy="1090" r="4.5" fill="#24292f"/>
+<rect x="330" y="945" width="90" height="80" fill="#2b2b2b" stroke="#24292f" stroke-width="1.6"/>
+<text x="375" y="982" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#fff" font-weight="bold">PN2222A</text>
+<text x="375" y="998" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#fff">(NPN)</text>
+<text x="340" y="988" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#8ab4ff" font-weight="bold">B</text>
+<text x="395" y="961" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#8ab4ff" font-weight="bold">C</text>
+<text x="395" y="1019" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#8ab4ff" font-weight="bold">E</text>
+<path d="M 375,1025 L 375,1090" fill="none" stroke="#d1242f" stroke-width="3"/>
+<circle cx="375" cy="1090" r="4.5" fill="#24292f"/>
+<path d="M 375,945 L 375,870 L 580,870" fill="none" stroke="#e08a00" stroke-width="3"/>
+<path d="M 480,770 L 480,810" fill="none" stroke="#d1242f" stroke-width="3"/>
+<circle cx="480" cy="770" r="4.5" fill="#d1242f"/>
+<line x1="464" y1="810" x2="496" y2="810" stroke="#24292f" stroke-width="3"/>
+<polygon points="480,810 466,850 494,850" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<path d="M 480,850 L 480,870" fill="none" stroke="#e08a00" stroke-width="3"/>
+<circle cx="480" cy="870" r="4.5" fill="#e08a00"/>
+<text x="505" y="835" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">1N4007</text>
+<text x="505" y="808" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">garis = katoda</text>
+<circle cx="580" cy="770" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="580" y="750" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">Terminal 1 (+12 V)</text>
+<circle cx="580" cy="870" r="9" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="580" y="895" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">Terminal 2 (kolektor)</text>
+<rect x="30" y="930" width="120" height="200" fill="#e8f0fe" stroke="#24292f" stroke-width="1.6"/>
+<text x="90" y="1015" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#111" font-weight="bold">ESP32</text>
+<text x="90" y="1040" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#1f6feb" font-weight="bold">GPIO26</text>
+<text x="90" y="1058" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#444">(kanal TURUN)</text>
+<path d="M 150,980 L 210,980" fill="none" stroke="#1f6feb" stroke-width="3"/>
+<circle cx="150" cy="980" r="4.5" fill="#1f6feb"/>
+<circle cx="150" cy="1090" r="4.5" fill="#24292f"/>
+<text x="40" y="1094" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">GND</text>
+<rect x="760" y="770" width="220" height="330" fill="#fff" stroke="#24292f" stroke-width="2.5"/>
+<text x="870" y="760" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111" font-weight="bold">RELAY 5 KAKI (12 V)</text>
+<rect x="780" y="810" width="60" height="120" fill="#f3e5f5" stroke="#555" stroke-width="1.6"/>
+<text x="810" y="865" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">KOIL</text>
+<text x="810" y="883" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111">≈80 Ω</text>
+<text x="810" y="899" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111">150 mA</text>
+<path d="M 760,830 L 780,830" fill="none" stroke="#d1242f" stroke-width="3"/>
+<circle cx="760" cy="830" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="752" y="820" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 85</text>
+<path d="M 760,910 L 780,910" fill="none" stroke="#e08a00" stroke-width="3"/>
+<circle cx="760" cy="910" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="752" y="900" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 86</text>
+<path d="M 580,770 L 690,770 L 690,830 L 752,830" fill="none" stroke="#d1242f" stroke-width="3"/>
+<path d="M 580,870 L 690,870 L 690,910 L 752,910" fill="none" stroke="#e08a00" stroke-width="3"/>
+<path d="M 900,930 L 900,1035" fill="none" stroke="#24292f" stroke-width="4"/>
+<line x1="900" y1="930" x2="900" y2="828" stroke="#7a2a8a" stroke-width="3" stroke-dasharray="6,5"/>
+<circle cx="900" cy="930" r="5" fill="#24292f"/>
+<circle cx="900" cy="820" r="5" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<circle cx="900" cy="1040" r="5" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="912" y="882" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7a2a8a">koil menyala</text>
+<text x="912" y="898" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#7a2a8a">(putus-putus)</text>
+<text x="912" y="990" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#333">koil mati</text>
+<path d="M 900,820 L 972,820" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="980" cy="820" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="960" y="810" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 87</text>
+<path d="M 900,930 L 972,930" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="980" cy="930" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="960" y="920" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 30</text>
+<path d="M 900,1040 L 972,1040" fill="none" stroke="#24292f" stroke-width="3"/>
+<circle cx="980" cy="1040" r="8" fill="#fff" stroke="#24292f" stroke-width="2"/>
+<text x="960" y="1030" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#111" font-weight="bold">kaki 87a</text>
+<text x="855" y="808" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">NO</text>
+<text x="855" y="1058" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">NC</text>
+<text x="855" y="948" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">C (common)</text>
+<path d="M 988,820 L 1040,820" fill="none" stroke="#d1242f" stroke-width="4"/>
+<rect x="1040" y="806" width="80" height="28" fill="#fff4e0" stroke="#24292f" stroke-width="1.6"/>
+<text x="1080" y="825" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#111" font-weight="bold">FUSE 15-20 A</text>
+<rect x="1170" y="796" width="130" height="48" fill="#ffe5e5" stroke="#d1242f" stroke-width="2"/>
+<text x="1235" y="818" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#d1242f" font-weight="bold">AKI</text>
+<text x="1235" y="835" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#d1242f" font-weight="bold">+12 V</text>
+<path d="M 1120,820 L 1170,820" fill="none" stroke="#d1242f" stroke-width="3"/>
+<text x="1080" y="796" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555"></text>
+<path d="M 988,930 L 1130,930" fill="none" stroke="#1a7f37" stroke-width="4"/>
+<circle cx="1170" cy="930" r="34" fill="#e6f4ea" stroke="#1a7f37" stroke-width="2.5"/>
+<text x="1170" y="937" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#1a7f37" font-weight="bold">M</text>
+<text x="1170" y="986" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1a7f37" font-weight="bold">MOTOR JENDELA</text>
+<text x="1060" y="918" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1a7f37" font-weight="bold">kabel motor TURUN</text>
+<text x="1170" y="1002" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">kabel satunya: ke relay NAIK</text>
+<path d="M 988,1040 L 1060,1040" fill="none" stroke="#24292f" stroke-width="3"/>
+<path d="M 1060,1040 L 1060,1055" fill="none" stroke="#24292f" stroke-width="3"/>
+<line x1="1045.0" y1="1055" x2="1075.0" y2="1055" stroke="#24292f" stroke-width="3"/>
+<line x1="1050.0" y1="1062" x2="1070.0" y2="1062" stroke="#24292f" stroke-width="3"/>
+<line x1="1055.0" y1="1069" x2="1065.0" y2="1069" stroke="#24292f" stroke-width="3"/>
+<text x="1085" y="1060" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#111" font-weight="bold">GND (minus aki)</text>
+<text x="760" y="1125" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#222">Koil mati: kabel motor tersambung ke GND lewat 87a, motor diam.</text>
+<text x="760" y="1143" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#222">Koil menyala: kabel motor lepas dari GND dan dapat +12 V lewat 87.</text>
+<text x="760" y="1161" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#a40e26" font-weight="bold">Bukan sekadar memindah kabel 87 ke 87a: itu membuat motor hidup saat koil mati.</text>
+<text x="30" y="1208" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#444">Kanal NAIK (GPIO25) identik. Warna: merah = +12 V, hitam = GND, biru = sinyal basis, oranye = arus koil, hijau = kabel motor. GPIO25 dan GPIO26 tidak boleh HIGH bersamaan.</text></svg>

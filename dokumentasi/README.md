@@ -27,6 +27,7 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 | [keputusan.md](keputusan/keputusan.md) | Semua yang sudah ditetapkan: aturan alarm, pengolahan sinyal, status dan bunyi, data, kebutuhan (FR dan NFR) |
 | [belum-diputuskan.md](keputusan/belum-diputuskan.md) | Semua yang masih terbuka, dengan usulan, dan asumsi yang belum terbukti |
 | [mvp-co2.md](keputusan/mvp-co2.md) | **Skema MVP expo (CO2 saja)**, pekerjaan sampai Jumat, dan kesiapan saat ini |
+| [hardware-wiring.md](keputusan/hardware-wiring.md) | **Pin ESP32, konektor PCB, perfboard relay (GPIO25 naik, GPIO26 turun), catu daya, dan panduan cek wiring** |
 | [algoritma-firmware.md](keputusan/algoritma-firmware.md) | Pseudocode firmware baru dan diagram alur |
 | [algoritma-firmware-lama-v0.md](keputusan/algoritma-firmware-lama-v0.md) | Pseudocode lama dan alur kode v0 (disimpan apa adanya) |
 | [komunikasi.md](keputusan/komunikasi.md) | Kontrak pesan v3, rancangan jaringan ESP32, worker, diagram alur data dan perintah |
