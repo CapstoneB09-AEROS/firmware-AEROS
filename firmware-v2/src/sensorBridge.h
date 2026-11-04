@@ -8,6 +8,7 @@ struct SensorSnapshot {
   int coPpm = 0;
   int co2Ppm = 0;
   bool coAlarm = false;
+  uint8_t coLevel = 0;   // 0=normal, 1=waspada, 2=bahaya (sumber LUAR dihitung bahaya, sama seperti sebelum v2.4)
   uint8_t co2Level = 0;  // 0=baik/sedang, 1=tinggi, 2=bahaya
   uint32_t sampledAtMs = 0;
   bool simulated = false;   // nilai berasal dari simulasi (q<ppm>), bukan sensor: dikirim dengan demo = true

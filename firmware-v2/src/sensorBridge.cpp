@@ -25,7 +25,7 @@ size_t sampleTail = 0;
 size_t sampleCount = 0;
 std::atomic<bool> muted(false);
 std::atomic<bool> running(false);
-std::atomic<bool> alarmFromSensor(false);   // true selama status CO2 WASPADA/BAHAYA
+std::atomic<bool> alarmFromSensor(false);   // true selama status CO atau CO2 WASPADA/BAHAYA
 
 bool parseUnsigned(const char *text, int &value) {
   if (!text || !*text) return false;
@@ -67,23 +67,36 @@ void captureCsvLine(char *line) {
   }
 
   int co = 0, co2 = 0;
-  if (!parseUnsigned(parts[4], co) ||
-      !parseUnsigned(parts[5], co2)) {
+  if (!parseUnsigned(parts[5], co2)) {
     invalidateSnapshot();
     return;
   }
+  // Jalur CO (v2.2). Bila MiCS belum siap atau gagal (WARMUP/ERR/GANGGUAN/KALIBRASI/OFF), ppm CO tidak dipakai (0)
+  // dan alarm CO mati, tetapi data CO2 tetap dikirim: gangguan MiCS tidak boleh memutus CO2.
+  // Catatan: skema telemetri belum punya "CO tidak diketahui", jadi 0 di sini berarti "tidak ada bacaan CO yang sah".
+  const char* statusCO = parts[6];
+  const bool coSah = strncmp(statusCO, "OK", 2) == 0 || strncmp(statusCO, "WASPADA", 7) == 0 ||
+                     strncmp(statusCO, "BAHAYA", 6) == 0 || strncmp(statusCO, "LUAR", 4) == 0;
+  if (coSah) {
+    if (!parseUnsigned(parts[4], co)) co = 0;   // contoh "inf" atau di atas 100000: jangan buang data CO2
+    if (co > 9999) co = 9999;                   // sama dengan batas tampilan LCD
+  }
   SensorSnapshot data;
-  data.coPpm = co;                       // MVP: jalur CO nonaktif, nilainya selalu 0
+  data.coPpm = co;
   data.co2Ppm = co2;
-  data.coAlarm = false;
+  data.coAlarm = coSah && strncmp(statusCO, "OK", 2) != 0;   // WASPADA, BAHAYA, atau LUAR (sumber luar masih alarm CO)
+  // v2.4: tingkat CO dikirim terpisah dari CO2 supaya tiap tingkat jelas berasal dari gas apa.
+  data.coLevel = !coSah ? 0 :
+                 strncmp(statusCO, "WASPADA", 7) == 0 ? 1 :
+                 strncmp(statusCO, "OK", 2) == 0 ? 0 : 2;
   data.co2Level = strncmp(parts[7], "BAHAYA", 6) == 0 ? 2 :
                   strncmp(parts[7], "WASPADA", 7) == 0 ? 1 : 0;
-  data.simulated = strstr(parts[7], "_SIM") != nullptr;
+  data.simulated = strstr(parts[7], "_SIM") != nullptr || strstr(statusCO, "_SIM") != nullptr;
   data.windowState = strncmp(parts[8], "TURUN", 5) == 0 ? 1 :
                      strncmp(parts[8], "BAWAH", 5) == 0 ? 2 :
                      strncmp(parts[8], "NAIK", 4) == 0 ? 3 : 0;
   data.sampledAtMs = millis();
-  alarmFromSensor.store(data.co2Level > 0);
+  alarmFromSensor.store(data.co2Level > 0 || data.coAlarm);
   portENTER_CRITICAL(&snapshotMux);
   latest = data;
   hasSnapshot = true;
@@ -199,5 +212,5 @@ void sensorBridgeSetMuted(bool shouldMute) {
 }
 
 bool sensorBridgeBuzzerOn() {
-  return alarmFromSensor.load() && !muted.load();   // MVP: alarm CO2 aktif dan belum dibungkam
+  return alarmFromSensor.load() && !muted.load();   // alarm CO atau CO2 aktif dan belum dibungkam
 }

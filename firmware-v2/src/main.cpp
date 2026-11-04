@@ -308,8 +308,9 @@ void sampleAndQueue(const SensorSnapshot &snapshot, int coPeak, int co2Peak,
                     uint8_t coSecond, uint8_t co2Second) {
   const int co = snapshot.coPpm;
   const int co2 = snapshot.co2Ppm;
-  const String status = snapshot.coAlarm || snapshot.co2Level == 2 ? "bahaya" :
-                        snapshot.co2Level == 1 ? "waspada" : "normal";
+  // Payload versi 4: tingkat per gas (0 normal, 1 waspada, 2 bahaya). Status gabungan dihitung worker.
+  const int coLevel = snapshot.coLevel;
+  const int co2Level = snapshot.co2Level;
   const String buzzer = sensorBridgeBuzzerOn() ? "on" : "off";
   // Posisi jendela hanya ESTIMASI dari timer (tidak ada sensor posisi): ATAS = 0, BAWAH = 50 (setengah),
   // sedang bergerak = null (tidak diketahui).
@@ -323,16 +324,16 @@ void sampleAndQueue(const SensorSnapshot &snapshot, int coPeak, int co2Peak,
   snprintf(epochText, sizeof(epochText), "%lld", timestamp);
   const String nonce = newNonce();
   const String eventId = alarmActive ? activeEventId : "";
-  const String canonical = String("r3|") + DEVICE_ID + "|" + nonce + "|" +
+  const String canonical = String("r4|") + DEVICE_ID + "|" + nonce + "|" +
       epochText + "|" + (validTime ? "1" : "0") + "|" + co + "|" +
       co2 + "|" + coPeak + "|" + co2Peak + "|" +
       String(coSecond) + "|" + String(co2Second) + "|" +
-      status + "|" + buzzer + "|" + windowText + "|" +
+      coLevel + "|" + co2Level + "|" + buzzer + "|" + windowText + "|" +
       (eventId.isEmpty() ? "-" : eventId) + (snapshot.simulated ? "|1" : "|0");
   char signature[65];
   if (!hmacHex(canonical.c_str(), signature)) return;
   JsonDocument doc;
-  doc["version"] = 3;
+  doc["version"] = 4;
   doc["device_id"] = DEVICE_ID;
   doc["nonce"] = nonce;
   doc["timestamp"] = timestamp;
@@ -343,7 +344,8 @@ void sampleAndQueue(const SensorSnapshot &snapshot, int coPeak, int co2Peak,
   doc["co2_peak_ppm"] = co2Peak;
   doc["co_peak_second"] = coSecond;
   doc["co2_peak_second"] = co2Second;
-  doc["status"] = status;
+  doc["co_level"] = coLevel;
+  doc["co2_level"] = co2Level;
   doc["buzzer_state"] = buzzer;
   // Posisi tidak diketahui (sedang bergerak) = NULL, bukan 0% palsu.
   if (windowText == "-") doc["window_status"] = nullptr;
