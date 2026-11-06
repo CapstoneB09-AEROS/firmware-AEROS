@@ -50,7 +50,7 @@ static constexpr uint32_t WIFI_RETRY_PAUSE_MS = 30000;
 static constexpr uint8_t WIFI_MAX_TRIES = 5;
 static constexpr int8_t MIN_RSSI_FOR_AUTH_DIAG_DBM = -75;
 static constexpr time_t MIN_VALID_EPOCH = 1700000000;
-static constexpr uint8_t BUTTON_PIN = 14;
+static constexpr uint8_t BUTTON_PIN = 32;   // sesuai skematik hardware 3 Nov 2026 (header J2_7)
 static constexpr uint8_t SDA_PIN = 21;
 static constexpr uint8_t SCL_PIN = 22;
 static constexpr uint8_t LCD_COLS = 16;
@@ -821,7 +821,7 @@ void connectMqtt() {
 void setup() {
   Serial.begin(115200);
   delay(500);
-  Serial.println("\n=== AEROS ESP32 | Smart WiFi Diagnostic | Portal GPIO14 ===");
+  Serial.println("\n=== AEROS ESP32 | Smart WiFi Diagnostic | Portal GPIO32 ===");
   initLCD();
   // Inti sensor, alarm, dan jendela dimulai PERTAMA: harus tetap jalan walau konfigurasi, flash, atau Wi-Fi bermasalah.
   if (!sensorBridgeStart()) {
@@ -834,7 +834,7 @@ void setup() {
   BaseType_t taskStatus = xTaskCreatePinnedToCore(
       portalButtonTask, "AEROS_button", 2048, nullptr, 2, nullptr, 1);
   if (taskStatus != pdPASS) {
-    Serial.println("[ERROR] Gagal membuat task tombol GPIO14!");
+    Serial.println("[ERROR] Gagal membuat task tombol GPIO32!");
   }
   if (!settingsValid()) {
     // Tidak berhenti total: inti sensor sudah jalan. Jaringan saja yang tidak dimulai.
@@ -862,7 +862,7 @@ void setup() {
   mqtt.setSocketTimeout(5); // Timeout respons MQTT; BUKAN deadline total TLS.
   secureClient.setTimeout(5000); // Timeout stream untuk uji coba.
   registerPortalRoutes();
-  Serial.println("[BUTTON] Tahan GPIO14 ke GND 5 detik untuk buka portal.");
+  Serial.println("[BUTTON] Tahan GPIO32 ke GND 5 detik untuk buka portal.");
   startWiFiOnBoot();
 }
 
