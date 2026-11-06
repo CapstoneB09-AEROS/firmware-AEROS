@@ -1,5 +1,7 @@
 # Hasil Uji Lapangan dan Evaluasi KPI (isi x-banner)
 
+> **Catatan 4 Nov 2026:** versi lengkap isi x-banner (lima bagian, CO aktif, firmware v2.4) ada di [../tugas/isi-x-banner.md](../tugas/isi-x-banner.md). Berkas ini versi 30 Okt (CO belum dipakai) dan hanya dipertahankan sebagai riwayat.
+
 Versi 30 Oktober 2026. Ringkasan untuk x-banner. Sumber: [uji 4 Avanza](../pengujian/laporan/uji-4-mobil-avanza-2026-10-26.md) dan [uji 7 Civic](../pengujian/laporan/uji-7-mobil-civic-firmware-v2-2026-10-30.md).
 
 ## Uji lapangan: Avanza vs Civic (4 penumpang, jendela tertutup)

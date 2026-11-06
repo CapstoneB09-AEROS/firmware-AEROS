@@ -1,0 +1,13 @@
+stateDiagram-v2
+  [*] --> ATAS
+  ATAS --> TURUN: CO2 bahaya, GPIO26 HIGH
+  TURUN --> BAWAH: 1,5 detik, GPIO26 LOW
+  BAWAH --> PRA_TUTUP: CO2 aman, bip 0,5 detik
+  PRA_TUTUP --> NAIK: jeda 3 detik, GPIO18 HIGH
+  PRA_TUTUP --> BAWAH: batal, CO2 naik lagi
+  PRA_TUTUP --> ATAS: perintah x
+  NAIK --> ATAS: 5 detik, GPIO18 LOW
+  note right of BAWAH
+    jeda LOW minimal 1 detik
+    antar dua pulsa
+  end note

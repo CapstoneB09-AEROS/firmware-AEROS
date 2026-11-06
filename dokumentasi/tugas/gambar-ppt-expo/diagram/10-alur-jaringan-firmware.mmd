@@ -1,0 +1,15 @@
+flowchart TD
+  A["Boot: inti sensor dimulai PERTAMA"] --> B{"Konfigurasi jaringan<br/>lengkap dan benar?"}
+  B -- tidak --> B2["Jaringan tidak dimulai,<br/>alarm tetap jalan"]
+  B -- ya --> C["Wi-Fi: 5 percobaan x 10 detik"]
+  C -- gagal, SSID belum terlihat --> C2["Tunggu 30 detik, ulang"]
+  C2 --> C
+  C -- "gagal, password diduga salah" --> P["Portal AEROS-Setup<br/>192.168.4.1, 5 menit"]
+  P --> C
+  C -- berhasil --> N["Sinkron jam NTP<br/>(wajib untuk TLS)"]
+  N --> M["MQTT TLS port 8883<br/>ulang tiap 5 detik bila gagal"]
+  M --> Q["Tiap 5 sampel:<br/>susun pesan r4 + HMAC"]
+  Q --> R["Kirim, tunggu ACK<br/>ulang tiap 6 detik"]
+  R -- "ACK datang" --> Q
+  R -- "tanpa ACK lebih dari 30 detik" --> Z["Data dibuang<br/>(bukan dikirim terlambat)"]
+  Z --> Q

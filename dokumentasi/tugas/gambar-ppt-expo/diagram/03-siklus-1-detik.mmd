@@ -1,0 +1,16 @@
+flowchart TD
+  A["1. Baca CO2 (MH-Z19C, perintah 0x86 + checksum)<br/>dan tegangan MiCS (ADS1115, rata-rata 16 sampel)"] --> B{"2. Data valid?"}
+  B -- "tidak, lebih dari 3 kali berturut-turut" --> B2["Kosongkan filter,<br/>LCD ERR / GANGGUAN"]
+  B -- ya --> C["3. Rs = RL x (VCC - V) / V<br/>lalu rata-rata 6 detik terakhir (SMA 6)"]
+  C --> D["4. ppm CO = (A / (Rs / R0)) ^ (1 / beta)"]
+  D --> E{"5. Pemanasan<br/>180 detik selesai?"}
+  E -- belum --> E2["LCD ----, aturan tidak jalan,<br/>data tidak dikirim"]
+  E -- sudah --> F{"6. Aturan CO sedang aktif?"}
+  F -- ya --> H["CO menang:<br/>aturan CO2 dilewati"]
+  F -- tidak --> I["Aturan CO2<br/>(3 bacaan berturut-turut)"]
+  H --> J["7. Bunyi, relay jendela, LCD,<br/>cetak 1 baris CSV"]
+  I --> J
+  B2 --> K
+  E2 --> K
+  J --> K["8. Tunggu sampai genap 1 detik<br/>(bunyi dan relay dilayani tiap 2 ms)"]
+  K --> A

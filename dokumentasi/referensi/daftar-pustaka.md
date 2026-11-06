@@ -1,6 +1,6 @@
 # Daftar Pustaka (format IEEE)
 
-Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperbarui 25 Oktober 2026.
+Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperbarui 25 Oktober 2026; [27] dan [28] ditambahkan 4 November 2026.
 
 ## Cara memakai
 
@@ -8,7 +8,7 @@ Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperb
 - Dalam teks laporan, kutip dengan nomor, misalnya "REL NIOSH untuk CO adalah 35 ppm [9]".
 - Tanda `⚠` berarti ada data kepustakaan (penulis, judul, tahun, halaman) yang belum bisa saya pastikan dan **harus dilengkapi atau dicek** sebelum dipakai.
 - Kolom "Status baca" di bagian B menjelaskan apakah sumber itu sudah dibaca langsung, atau hanya dari ringkasan. **Jangan mengutip sumber yang belum dibaca.**
-- Semua tanggal akses: 25 Oktober 2026.
+- Tanggal akses: 25 Oktober 2026, kecuali [27] dan [28] (4 November 2026).
 
 ---
 
@@ -80,6 +80,12 @@ Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperb
 
 [26] Menteri Kesehatan Republik Indonesia, *Peraturan Menteri Kesehatan Nomor 48 Tahun 2016 tentang Standar Keselamatan dan Kesehatan Kerja Perkantoran*, 2016. [Online]. Available: https://peraturan.bpk.go.id/Home/Download/104043/Permenkes%20Nomor%2048%20Tahun%202016.pdf (accessed Oct. 25, 2026).
 
+### Kualitas udara kabin kendaraan (studi lapangan)
+
+[27] N. M. Barnes, T. W. Ng, K. K. Ma, and K. M. Lai, "In-cabin air quality during driving and engine idling in air-conditioned private vehicles in Hong Kong," *Int. J. Environ. Res. Public Health*, vol. 15, no. 4, Art. no. 611, Mar. 2018, doi: 10.3390/ijerph15040611. [Online]. Available: https://pmc.ncbi.nlm.nih.gov/articles/PMC5923653 (accessed Nov. 4, 2026).
+
+[28] K. N. Dirks, N. Talbot, J. A. Salmond, and S. B. Costello, "In-cabin vehicle carbon monoxide concentrations under different ventilation settings," *Atmosphere*, vol. 9, no. 9, Art. no. 338, Aug. 2018, doi: 10.3390/atmos9090338. [Online]. Available: https://www.mdpi.com/2073-4433/9/9/338 (accessed Nov. 4, 2026).
+
 ---
 
 ## B. Status baca dan verifikasi
@@ -107,6 +113,8 @@ Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperb
 | [22] | Dari lampiran, belum dibaca | |
 | [23], [24] | Dari lampiran dan hasil pencarian | Data kepustakaan belum lengkap |
 | [25], [26] | Dari lampiran | Halaman tabel dan angka (CO 25 ppm, CO2 5000 ppm di Permenaker; CO 10 ppm, CO2 1000 ppm di Permenkes) **perlu diverifikasi langsung pada tabel resminya** |
+| [27] | **Dibaca langsung** (teks lengkap, PMC, 4 Nov 2026) | Terverifikasi: 51 mobil ber-AC diuji saat berkendara rutin (10 di antaranya juga saat mesin idle); **96%** melewati 1000 ppmv CO2; **16%** (8 mobil) di atas 5000 ppmv; rata-rata saat berkendara **3413 ppmv**. Catatan: 4 mobil melewati batas deteksi alat (8888 ppmv) dan nilai batas itu dipakai untuk menghitung rata-rata, jadi rata-rata itu pendekatan. Sekitar 73% mobil memakai mode sirkulasi dalam. Studi ini juga menyebut tidak ada pedoman kadar polutan di kabin. Satuan di artikel: ppmv |
+| [28] | **Abstrak dibaca** (metadata Crossref dan hasil pencarian, 4 Nov 2026); teks lengkap ditolak server MDPI (403), **belum dibaca** | Terverifikasi dari abstrak: 3 kendaraan hampir identik di Auckland, tiap kendaraan satu pengaturan ventilasi (jendela terbuka, udara luar, sirkulasi dalam), CO diukur dengan monitor portabel. Satu puncak **±170 ppm** (abstrak menulis "170 ppm", bukan 171) terjadi pada pengaturan **udara luar** saat mengikuti kendaraan tua, tidak terawat, dan berasap. Sirkulasi dalam memberi rata-rata CO lebih tinggi dari dua lainnya (bergantung pada kadar awal), tetapi paling efektif menghindari lonjakan, terutama saat berhenti di persimpangan. **Tidak terverifikasi:** "171 ppm dalam 10 detik" dan "lebih dari 11 menit untuk pulih" (kutipan C-251, tidak ada di abstrak) |
 
 ## C. Hal yang harus dicek sebelum dikutip
 
@@ -117,6 +125,7 @@ Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperb
 5. **AN-0172 dari SGX** belum bisa dibaca dan karena itu **tidak dimasukkan** ke daftar.
 6. **Angka Permenaker 5/2018** (CO2 5000 ppm) belum terverifikasi pada tabel lampirannya.
 7. **Sumber latar belakang yang tidak dikutip** (hanya ringkasan hasil pencarian): halaman UMEM, BRK, ATSDR, dan situs komersial. Dipakai untuk menemukan angka, bukan sebagai kutipan.
+8. **Klaim C-251 Bab 1 yang diperiksa 4 Nov 2026**: Hong Kong (96%, 3413, 16%) **terverifikasi** pada [27]. Auckland: puncak ±170 ppm **terverifikasi** pada [28] (abstrak), tetapi "171 ppm dalam 10 detik" dan "pulih lebih dari 11 menit" **tidak terverifikasi**; jangan dikutip sebagai angka pasti sebelum teks lengkap dibaca. C-251 juga menulis seolah CO terjebak oleh sirkulasi dalam, sedangkan [28] menemukan sirkulasi dalam justru paling baik menghindari lonjakan CO (rata-rata lebih tinggi hanya bila kadar awal sudah tinggi). Klaim C-251 tentang Satish "6 dari 9 indikator pada 1000 ppm dan 7 pada 2500 ppm" belum dicek terhadap Results [19]. Hemoglobin 240 kali (C-251 [27]) dan klaim "belum ada standar kualitas udara kabin di Indonesia" belum diverifikasi.
 
 ## D. Sumber dipakai di mana
 
@@ -127,3 +136,4 @@ Semua sumber yang dipakai di dokumentasi ini, digabung dalam satu tempat. Diperb
 | parameter-dan-sumber.md, bagian C dan [filter.md](../analisis/filter.md) | [3], [7], [8], [9], [10] |
 | parameter-dan-sumber.md bagian D dan [peringatan-dan-ambang.md](../keputusan/peringatan-dan-ambang.md) | [11]–[26] |
 | [batasan-sistem.md](../keputusan/batasan-sistem.md) | [1], [2], [6] |
+| [isi-x-banner.md](../tugas/isi-x-banner.md), bagian latar belakang | [19], [27], [28] |

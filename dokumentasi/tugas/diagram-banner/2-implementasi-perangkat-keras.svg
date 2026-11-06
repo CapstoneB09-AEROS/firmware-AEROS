@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 720" font-family="Inter, 'Open Sans', Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#FFB020"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="720" rx="24" fill="#0B1F33"/>
+
+  <!-- kolom judul -->
+  <text x="160" y="40" font-size="24" font-weight="800" text-anchor="middle" fill="#B8C7D6">SENSOR</text>
+  <text x="520" y="40" font-size="24" font-weight="800" text-anchor="middle" fill="#B8C7D6">OTAK</text>
+  <text x="880" y="40" font-size="24" font-weight="800" text-anchor="middle" fill="#B8C7D6">KELUARAN</text>
+
+  <!-- sensor -->
+  <rect x="20" y="60" width="280" height="110" rx="16" fill="#12304D"/>
+  <text x="160" y="105" font-size="30" font-weight="800" text-anchor="middle" fill="#FFFFFF">MH-Z19C</text>
+  <text x="160" y="142" font-size="24" text-anchor="middle" fill="#FFB020">CO2 · NDIR</text>
+
+  <rect x="20" y="230" width="280" height="100" rx="16" fill="#12304D"/>
+  <text x="160" y="275" font-size="30" font-weight="800" text-anchor="middle" fill="#FFFFFF">MiCS-5524</text>
+  <text x="160" y="312" font-size="24" text-anchor="middle" fill="#FFB020">CO · estimasi</text>
+  <line x1="160" y1="330" x2="160" y2="368" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="178" y="357" font-size="22" fill="#B8C7D6">analog</text>
+
+  <rect x="20" y="370" width="280" height="100" rx="16" fill="#12304D"/>
+  <text x="160" y="415" font-size="30" font-weight="800" text-anchor="middle" fill="#FFFFFF">ADS1115</text>
+  <text x="160" y="452" font-size="24" text-anchor="middle" fill="#FFB020">ADC 16-bit</text>
+
+  <!-- ESP32 -->
+  <rect x="380" y="60" width="280" height="410" rx="20" fill="#12304D" stroke="#FFB020" stroke-width="5"/>
+  <text x="520" y="120" font-size="36" font-weight="800" text-anchor="middle" fill="#FFFFFF">ESP32</text>
+  <text x="520" y="152" font-size="24" text-anchor="middle" fill="#FFB020">DevKitC</text>
+  <text x="520" y="232" font-size="24" text-anchor="middle" fill="#FFFFFF">Baca tiap 1 detik</text>
+  <text x="520" y="268" font-size="24" text-anchor="middle" fill="#FFFFFF">Filter SMA 6</text>
+  <text x="520" y="304" font-size="24" text-anchor="middle" fill="#FFFFFF">Pemanasan 180 detik</text>
+  <text x="520" y="340" font-size="24" text-anchor="middle" fill="#FFFFFF">Keputusan alarm</text>
+  <text x="520" y="376" font-size="24" text-anchor="middle" fill="#FFFFFF">Kirim data via Wi-Fi</text>
+
+  <!-- panah sensor -->
+  <line x1="300" y1="115" x2="380" y2="115" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="326" y="100" font-size="22" text-anchor="middle" fill="#B8C7D6">UART</text>
+  <line x1="300" y1="420" x2="380" y2="420" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="326" y="405" font-size="22" text-anchor="middle" fill="#B8C7D6">I²C</text>
+
+  <!-- keluaran -->
+  <rect x="740" y="60" width="280" height="80" rx="16" fill="#12304D"/>
+  <text x="880" y="112" font-size="30" font-weight="800" text-anchor="middle" fill="#FFFFFF">LCD 16x2</text>
+  <line x1="660" y1="100" x2="740" y2="100" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="698" y="85" font-size="22" text-anchor="middle" fill="#B8C7D6">I²C</text>
+
+  <rect x="740" y="170" width="280" height="80" rx="16" fill="#12304D"/>
+  <text x="880" y="222" font-size="30" font-weight="800" text-anchor="middle" fill="#FFFFFF">Buzzer</text>
+  <line x1="660" y1="210" x2="740" y2="210" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="698" y="195" font-size="22" text-anchor="middle" fill="#B8C7D6">GPIO</text>
+
+  <rect x="740" y="280" width="280" height="120" rx="16" fill="#12304D"/>
+  <text x="880" y="328" font-size="28" font-weight="800" text-anchor="middle" fill="#FFFFFF">Driver relay</text>
+  <text x="880" y="362" font-size="24" text-anchor="middle" fill="#FFB020">PN2222A · 2 kanal</text>
+  <text x="880" y="390" font-size="22" text-anchor="middle" fill="#B8C7D6">turun dan naik</text>
+  <line x1="660" y1="340" x2="740" y2="340" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="698" y="325" font-size="22" text-anchor="middle" fill="#B8C7D6">GPIO</text>
+
+  <line x1="880" y1="400" x2="880" y2="438" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <rect x="740" y="440" width="280" height="80" rx="16" fill="#12304D"/>
+  <text x="880" y="492" font-size="30" font-weight="800" text-anchor="middle" fill="#FFFFFF">Jendela mobil</text>
+
+  <!-- catu daya -->
+  <line x1="520" y1="580" x2="520" y2="472" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <rect x="20" y="580" width="1000" height="110" rx="16" fill="#12304D"/>
+  <text x="520" y="626" font-size="28" font-weight="800" text-anchor="middle" fill="#FFFFFF">Catu: 12 V → buck 5 V</text>
+  <text x="520" y="664" font-size="24" text-anchor="middle" fill="#FFB020">Uji mobil: USB mobil · GND bersama</text>
+</svg>

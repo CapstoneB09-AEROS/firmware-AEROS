@@ -1,0 +1,37 @@
+erDiagram
+  devices ||--o{ sensor_readings : "punya"
+  devices ||--o{ alert_logs : "punya"
+  devices ||--|| device_state : "keadaan terkini"
+  alert_logs ||--o{ sensor_readings : "event_id"
+  devices {
+    text device_id PK
+    boolean is_active
+  }
+  alert_logs {
+    uuid id PK "sama dengan event_id dari ESP"
+    text device_id FK
+    timestamptz created_at
+    timestamptz resolved_at
+  }
+  sensor_readings {
+    bigint id PK
+    text device_id FK
+    text nonce "unik bersama device_id"
+    timestamptz measured_at
+    int co_ppm
+    int co2_ppm
+    smallint co_level "0 sampai 2"
+    smallint co2_level "0 sampai 2"
+    text buzzer_state
+    int window_status
+    uuid event_id FK
+    text status "turunan, diisi database"
+  }
+  device_state {
+    text device_id PK
+    text connection_status
+    int last_co_ppm
+    int last_co2_ppm
+    text status
+    uuid active_alert_id
+  }

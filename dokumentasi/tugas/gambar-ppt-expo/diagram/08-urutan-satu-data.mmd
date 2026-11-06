@@ -1,0 +1,16 @@
+sequenceDiagram
+  participant S as Inti sensor (1 Hz)
+  participant N as Jaringan ESP32
+  participant B as HiveMQ
+  participant W as Worker
+  participant D as Supabase
+  S->>N: 5 sampel (baris CSV per detik)
+  N->>N: nilai terakhir, puncak 5 detik, nonce, tanda tangan HMAC
+  N->>B: telemetry (TLS)
+  B->>W: telemetry
+  W->>W: cek HMAC, waktu, perangkat terdaftar
+  W->>D: buat alert_logs (bila ada event_id), lalu simpan sensor_readings
+  W->>D: perbarui device_state (hanya data baru, kurang dari 90 detik)
+  W->>B: telemetry/ack bertanda tangan
+  B->>N: ack
+  N->>N: buang dari penyangga RAM

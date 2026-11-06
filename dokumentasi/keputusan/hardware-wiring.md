@@ -95,7 +95,7 @@ Ini yang perlu diubah di kode (belum diubah; menunggu persetujuan, sebab `main.c
 | # | Hardware | Firmware sekarang | Akibat | Prioritas |
 |---|---|---|---|---|
 | 1 | Relay naik ada di **GPIO25** | v1.8 memberi pulsa "naik" lewat **GPIO26** juga (`sensorOriginal.inl`, `PIN_JENDELA_TUTUP = -1`, siklus di `servisUjiGpio26`) | Pulsa "naik" menyalakan relay **turun**: jendela turun lagi, bukan naik | **P1** |
-| 2 | Tombol reset Wi-Fi di **GPIO32** | `BUTTON_PIN = 14` (`main.cpp`) dan pesan "Portal GPIO14" | Menekan tombol tidak membuka portal Wi-Fi | **P1** |
+| 2 | Tombol reset Wi-Fi di **GPIO32** | **Sudah diubah 4 Nov 2026**: `BUTTON_PIN = 32` dan pesan serial "GPIO32" (`main.cpp`); belum dikompilasi dan belum diuji di alat | Perlu uji: tahan tombol 5 detik, portal terbuka | cocok (menunggu uji) |
 | 3 | Buzzer di GPIO27 | benar (27) | | cocok |
 | 4 | | Komentar `main.cpp` "Original sensor sketch owns GPIO25" sudah usang (buzzer v0 di GPIO25 sudah pindah ke 27) | Menyesatkan; GPIO25 sekarang relay naik | rendah |
 | 5 | | `alat-uji/uji-relay-jendela` hanya GPIO26 | GPIO25 belum bisa diuji dengan firmware uji; pakai kabel 3,3 V (bagian 6, langkah C) | sedang |

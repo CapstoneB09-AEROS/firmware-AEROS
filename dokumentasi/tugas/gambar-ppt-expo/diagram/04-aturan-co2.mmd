@@ -1,0 +1,17 @@
+stateDiagram-v2
+  direction LR
+  [*] --> NORMAL
+  NORMAL --> PERINGATAN: CO2 2500 ppm atau lebih, 3 bacaan berturut-turut
+  NORMAL --> TINDAKAN: CO2 4000 ppm atau lebih, 3 bacaan berturut-turut
+  PERINGATAN --> TINDAKAN: CO2 4000 ppm atau lebih, 3 bacaan
+  PERINGATAN --> NORMAL: CO2 di bawah 2500 selama 10 detik
+  TINDAKAN --> NORMAL: CO2 di bawah 2500 selama 10 detik
+  note right of PERINGATAN
+    tingkat 1 (waspada)
+    buzzer 3 bip pendek
+  end note
+  note right of TINDAKAN
+    tingkat 2 (bahaya)
+    buzzer 1 bip panjang 3 detik
+    jendela turun 1,5 detik
+  end note

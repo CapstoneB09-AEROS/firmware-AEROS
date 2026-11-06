@@ -1,0 +1,14 @@
+flowchart LR
+  subgraph MOBIL["Di dalam mobil: ESP32 memutuskan sendiri"]
+    S1["MH-Z19C<br/>CO2 (UART)"] --> E["ESP32"]
+    S2["MiCS-5524 lewat ADS1115<br/>CO estimasi (I2C)"] --> E
+    E --> B["Buzzer<br/>GPIO27"]
+    E --> L["LCD 16x2<br/>I2C"]
+    E --> R["Driver relay<br/>GPIO26 turun<br/>GPIO18 naik"]
+  end
+  E -- "Wi-Fi, TLS, MQTT" --> H["HiveMQ Cloud"]
+  H --> W["Worker Node.js<br/>cek HMAC, simpan"]
+  W --> D[("Supabase<br/>PostgreSQL")]
+  D --> A["Aplikasi Flutter"]
+  W -. "ACK bertanda tangan" .-> H
+  H -. "ACK" .-> E

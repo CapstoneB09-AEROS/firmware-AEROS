@@ -1,0 +1,7 @@
+flowchart TD
+  A["Pemicu tutup:<br/>CO2 aman (di bawah 2500 selama 10 detik)<br/>atau CO selesai, atau sumber CO dari luar"] --> B["t = 0: buzzer bip 1 kali (0,5 detik)<br/>menimpa pola alarm yang sedang bunyi"]
+  B --> C["Tunggu jeda 3 detik<br/>(sambil diperiksa tiap siklus)"]
+  C --> D{"Masih boleh menutup?"}
+  D -- "tidak: CO2 naik lagi,<br/>ada pulsa lain, atau perintah x" --> X["Batal: GPIO18 tidak menyala"]
+  D -- ya --> E["t = 3,5 detik: GPIO26 dipastikan LOW,<br/>GPIO18 HIGH selama 5 detik"]
+  E --> F["t = 8,5 detik: GPIO18 LOW,<br/>jendela dianggap di ATAS"]

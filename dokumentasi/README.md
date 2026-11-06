@@ -8,6 +8,7 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 - Expo **30 Oktober 2026**; firmware dibekukan **29 Oktober siang**.
 - Firmware **v1.8** (29 Okt 2026: MVP CO2 saja, GPIO26 turun 1,5 detik saat BAHAYA dan naik 5 detik setelah aman) ada di `../src/main.cpp`; v1.7 (HIGH 5 detik) di `../arsip-firmware/main-v1.7-2026-10-29.cpp`; v1.6 (ditahan sampai x) di `../arsip-firmware/main-v1.6-2026-10-29.cpp`; v1.5 (HIGH selama BAHAYA, batas 10 detik) di `../arsip-firmware/main-v1.5-2026-10-29.cpp`; v1.4 (pulsa 10 detik dan batas total) di `../arsip-firmware/main-v1.4-2026-10-29.cpp`; v1.3 (sensor CO dan CO2 lengkap) di `../arsip-firmware/main-v1.3-2026-10-28.cpp`; v0 (23 Okt) di `../arsip-firmware/main-v0-2026-10-23.cpp`, v0.1 (v0 + TBout GPIO26 + buzzer GPIO27) di `../arsip-firmware/main-v0.1-2026-10-28.cpp`, v1, v1.1, v1.2, v1.8 (cadangan) di `../arsip-firmware/`.
 - Perubahan database dan data untuk teman software: [tugas/perubahan-database-untuk-software.md](tugas/perubahan-database-untuk-software.md).
+- Simulator ESP palsu (rencana cadangan pembuktian firmware, komunikasi, database, aplikasi; skenario CO2, CO, dan gabungan): [tugas/rencana-simulator-integrasi.md](tugas/rencana-simulator-integrasi.md).
 - Firmware gabungan **v2.0** (komunikasi + inti v1.8) ada di `../firmware-v2/`; langkahnya di [tugas/langkah-integrasi-v2.md](tugas/langkah-integrasi-v2.md).
 - Firmware uji kecil untuk bangku (tanpa sensor) ada di `../alat-uji/`: `uji-gpio26` (paksa HIGH untuk ukur 3,3 V) dan `uji-relay-jendela` (pulsa relay dan waktu turun). Rencananya di [pengujian/rencana-uji.md](pengujian/rencana-uji.md) bagian 2.1.
 - Rekaman serial ada di `../logs/`. Salinan kode tim (komunikasi) di `../kode-tim/` (tidak masuk git).
@@ -17,7 +18,7 @@ Prototipe pemantau CO dan CO2 di kabin mobil (ESP32, MiCS-5524 lewat ADS1115, MH
 |---|---|---|
 | [keputusan/](keputusan/) | Semua keputusan dan alasannya, termasuk yang **belum** diputuskan | [keputusan.md](keputusan/keputusan.md), lalu [belum-diputuskan.md](keputusan/belum-diputuskan.md) |
 | [pengujian/](pengujian/) | Rencana uji, lembar catatan, dan laporan tiap uji | [rencana-uji.md](pengujian/rencana-uji.md) |
-| [analisis/](analisis/) | Hasil analisis data, skrip, dan data yang dianalisis; perbandingan model C-251 dengan uji | [ringkasan-temuan.md](analisis/ringkasan-temuan.md), [model-vs-uji.md](analisis/model-vs-uji.md) |
+| [analisis/](analisis/) | Hasil analisis data, skrip, dan data yang dianalisis; perbandingan model C-251 dengan uji | [ringkasan-temuan.md](analisis/ringkasan-temuan.md), [model-vs-uji.md](analisis/model-vs-uji.md), [perbandingan-mobil-2026-11-04.md](analisis/perbandingan-mobil-2026-11-04.md) |
 | [tugas/](tugas/) | Tugas dan parkir per subsistem (firmware, hardware, komunikasi, aplikasi, pengujian, laporan) dan kerangka C-501 | [tugas-per-subsistem.md](tugas/tugas-per-subsistem.md), [kerangka-c501.md](tugas/kerangka-c501.md) |
 | [referensi/](referensi/) | Daftar pustaka dan PDF rencana awal | [daftar-pustaka.md](referensi/daftar-pustaka.md) |
 

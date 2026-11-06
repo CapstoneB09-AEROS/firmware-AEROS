@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 820" font-family="Inter, 'Open Sans', Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#FFB020"/>
+    </marker>
+    <marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2EC4B6"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="820" rx="24" fill="#0B1F33"/>
+
+  <!-- baris atas: ESP32 -> HiveMQ -> Worker -->
+  <rect x="20" y="40" width="260" height="185" rx="18" fill="#12304D" stroke="#FFB020" stroke-width="5"/>
+  <text x="150" y="95" font-size="32" font-weight="800" text-anchor="middle" fill="#FFFFFF">ESP32</text>
+  <text x="150" y="135" font-size="24" text-anchor="middle" fill="#FFB020">Data tiap 5 detik</text>
+  <text x="150" y="170" font-size="24" text-anchor="middle" fill="#FFFFFF">Tanda tangan</text>
+  <text x="150" y="198" font-size="24" text-anchor="middle" fill="#FFFFFF">HMAC-SHA256</text>
+
+  <line x1="280" y1="95" x2="388" y2="95" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="334" y="75" font-size="22" text-anchor="middle" fill="#B8C7D6">TLS</text>
+
+  <rect x="390" y="40" width="260" height="185" rx="18" fill="#12304D"/>
+  <text x="520" y="95" font-size="32" font-weight="800" text-anchor="middle" fill="#FFFFFF">HiveMQ</text>
+  <text x="520" y="135" font-size="24" text-anchor="middle" fill="#FFB020">Cloud · MQTT</text>
+  <text x="520" y="170" font-size="24" text-anchor="middle" fill="#FFFFFF">Penghubung</text>
+  <text x="520" y="198" font-size="24" text-anchor="middle" fill="#FFFFFF">pesan</text>
+
+  <line x1="650" y1="95" x2="758" y2="95" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+
+  <rect x="760" y="40" width="260" height="185" rx="18" fill="#12304D"/>
+  <text x="890" y="95" font-size="32" font-weight="800" text-anchor="middle" fill="#FFFFFF">Worker</text>
+  <text x="890" y="135" font-size="24" text-anchor="middle" fill="#FFB020">Node.js</text>
+  <text x="890" y="170" font-size="24" text-anchor="middle" fill="#FFFFFF">Periksa tanda</text>
+  <text x="890" y="198" font-size="24" text-anchor="middle" fill="#FFFFFF">tangan</text>
+
+  <!-- ACK kembali -->
+  <line x1="758" y1="175" x2="652" y2="175" stroke="#2EC4B6" stroke-width="5" stroke-dasharray="12 8" marker-end="url(#ac)"/>
+  <line x1="390" y1="175" x2="282" y2="175" stroke="#2EC4B6" stroke-width="5" stroke-dasharray="12 8" marker-end="url(#ac)"/>
+  <text x="334" y="160" font-size="22" font-weight="800" text-anchor="middle" fill="#2EC4B6">ACK</text>
+  <text x="704" y="160" font-size="22" font-weight="800" text-anchor="middle" fill="#2EC4B6">ACK</text>
+
+  <!-- worker -> supabase -->
+  <line x1="890" y1="225" x2="890" y2="298" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <text x="910" y="262" font-size="22" fill="#B8C7D6">simpan</text>
+
+  <!-- Supabase -->
+  <rect x="520" y="300" width="500" height="260" rx="18" fill="#12304D"/>
+  <text x="770" y="350" font-size="32" font-weight="800" text-anchor="middle" fill="#FFFFFF">Supabase</text>
+  <text x="770" y="385" font-size="24" text-anchor="middle" fill="#FFB020">Database</text>
+  <rect x="545" y="410" width="450" height="56" rx="12" fill="#0B1F33"/>
+  <text x="770" y="448" font-size="24" text-anchor="middle" fill="#FFFFFF">Peringatan (satu episode)</text>
+  <rect x="545" y="480" width="450" height="56" rx="12" fill="#0B1F33"/>
+  <text x="770" y="518" font-size="24" text-anchor="middle" fill="#FFFFFF">Bacaan sensor · status alat</text>
+  <line x1="770" y1="466" x2="770" y2="480" stroke="#FFB020" stroke-width="5"/>
+
+  <!-- supabase -> aplikasi -->
+  <line x1="520" y1="430" x2="412" y2="430" stroke="#FFB020" stroke-width="5" marker-end="url(#ar)"/>
+  <rect x="20" y="300" width="390" height="260" rx="18" fill="#12304D" stroke="#FFB020" stroke-width="5"/>
+  <text x="215" y="370" font-size="32" font-weight="800" text-anchor="middle" fill="#FFFFFF">Aplikasi Flutter</text>
+  <text x="215" y="420" font-size="24" text-anchor="middle" fill="#FFFFFF">Nilai CO dan CO2</text>
+  <text x="215" y="456" font-size="24" text-anchor="middle" fill="#FFFFFF">Peringatan</text>
+  <text x="215" y="492" font-size="24" text-anchor="middle" fill="#FFFFFF">Riwayat</text>
+
+  <!-- catatan bawah -->
+  <rect x="20" y="600" width="1000" height="190" rx="18" fill="none" stroke="#7F93A8" stroke-width="4" stroke-dasharray="14 10"/>
+  <text x="520" y="650" font-size="26" font-weight="800" text-anchor="middle" fill="#B8C7D6">Jaminan di jalur data</text>
+  <text x="520" y="696" font-size="24" text-anchor="middle" fill="#FFFFFF">Tanda tangan HMAC: pesan palsu atau berubah ditolak</text>
+  <text x="520" y="734" font-size="24" text-anchor="middle" fill="#FFFFFF">ACK: data yang belum dibalas dikirim ulang</text>
+  <text x="520" y="772" font-size="24" text-anchor="middle" fill="#FFFFFF">Peringatan disimpan lebih dulu, lalu bacaan menaut ke sana</text>
+</svg>

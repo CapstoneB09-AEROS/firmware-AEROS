@@ -1,0 +1,17 @@
+flowchart LR
+  subgraph TS["TASK SENSOR (sensorOriginal.inl)"]
+    direction TB
+    a1["Baca MH-Z19C dan MiCS"] --> a2["Filter, aturan CO dan CO2"] --> a3["Buzzer, LCD, relay jendela"] --> a4["Cetak 1 baris CSV per detik"]
+  end
+  subgraph BR["JEMBATAN (sensorBridge.cpp)"]
+    direction TB
+    c1["Tangkap baris CSV (10 kolom)"] --> c2["Penyangga 128 sampel"]
+  end
+  subgraph TN["LOOP UTAMA (main.cpp)"]
+    direction TB
+    b1["Wi-Fi, portal, NTP"] --> b2["MQTT TLS"] --> b3["Ambil 5 sampel, HMAC, kirim"] --> b4["Terima ACK, buang dari RAM"]
+  end
+  TB["TASK TOMBOL<br/>GPIO32 ditahan 5 detik,<br/>hanya menaikkan satu penanda"]
+  TS -- "baris CSV" --> BR
+  BR -- "5 sampel" --> TN
+  TB -.-> TN

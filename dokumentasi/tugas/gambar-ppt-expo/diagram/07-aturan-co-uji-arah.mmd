@@ -1,0 +1,19 @@
+stateDiagram-v2
+  [*] --> TIDAK_AKTIF
+  TIDAK_AKTIF --> UJI_ARAH: CO 35 ppm atau lebih selama 30 detik, atau CO 87 ppm atau lebih langsung
+  UJI_ARAH --> SUMBER_DALAM: setelah 30 detik Rs naik lebih dari 5 persen
+  UJI_ARAH --> SUMBER_LUAR: Rs turun lebih dari 25 persen, atau perubahannya tidak jelas
+  SUMBER_DALAM --> TIDAK_AKTIF: CO di bawah 30 ppm selama 60 detik
+  SUMBER_LUAR --> TIDAK_AKTIF: CO di bawah 30 ppm selama 60 detik
+  UJI_ARAH --> TIDAK_AKTIF: CO di bawah 30 ppm selama 60 detik
+  note right of UJI_ARAH
+    masuk: buzzer, jendela turun 10 detik (GPIO26)
+  end note
+  note right of SUMBER_LUAR
+    jendela ditutup lewat GPIO18
+    (bip, jeda 3 detik, 5 detik)
+  end note
+  note right of SUMBER_DALAM
+    jendela tetap terbuka
+    ditutup saat CO selesai
+  end note
