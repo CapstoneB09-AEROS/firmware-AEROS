@@ -45,7 +45,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
 
-#define FW_VERSI "v2.5"   // v2.5: sebelum jendela naik (tutup), buzzer bip 1 kali lalu jeda beberapa detik, baru GPIO25 HIGH; berlaku untuk CO2 aman dan CO (jalur CO kini memakai GPIO25, bukan "tutup manual"); perintah x membatalkan; logika sensor dan ambang sama dengan v2.4. v2.4 (uji 3 mobil): MODE_PENGEMBANGAN = false (ambang CO2 2500/4000, selesai < 2500); LCD "CO2 2500ppm" diberi spasi; pesan baru "Udara aman / Tutup jendela" dan pesan informatif CO (naik >35, sumber diduga dalam/luar mobil, CO aman); logika sensor, ambang CO, dan sinyal GPIO sama dengan v2.3. v2.3: siklus jendela memakai dua pin: GPIO26 = turun 1,5 s, GPIO25 = naik 5 s (sebelumnya keduanya GPIO26); logika lain sama dengan v2.2.1. v2.2.1: batas selisih kalibrasi R0 CAL_MAX_SPREAD_PCT 10 -> 40 (logika lain sama dengan v2.2). v2.2: jalur CO AKTIF (CO_AKTIF = true) + CO ikut ke jaringan lewat sensorBridge; pesan "Jendela membuka/menutup" juga tampil di mode CO. v2.1: LCD baris bawah = CO (0) + pesan jendela saat GPIO26 HIGH
+#define FW_VERSI "v2.6"   // v2.6: uji tanpa CO (CO_AKTIF = false, MVP CO2 saja: MiCS dan ADS1115 tidak dibaca, status CO = OFF); semua pin (turun GPIO26, naik GPIO18) dan logika lain sama dengan v2.5. v2.5: sebelum jendela naik (tutup), buzzer bip 1 kali lalu jeda beberapa detik, baru GPIO25 HIGH; berlaku untuk CO2 aman dan CO (jalur CO kini memakai GPIO25, bukan "tutup manual"); perintah x membatalkan; logika sensor dan ambang sama dengan v2.4. v2.4 (uji 3 mobil): MODE_PENGEMBANGAN = false (ambang CO2 2500/4000, selesai < 2500); LCD "CO2 2500ppm" diberi spasi; pesan baru "Udara aman / Tutup jendela" dan pesan informatif CO (naik >35, sumber diduga dalam/luar mobil, CO aman); logika sensor, ambang CO, dan sinyal GPIO sama dengan v2.3. v2.3: siklus jendela memakai dua pin: GPIO26 = turun 1,5 s, GPIO25 = naik 5 s (sebelumnya keduanya GPIO26); logika lain sama dengan v2.2.1. v2.2.1: batas selisih kalibrasi R0 CAL_MAX_SPREAD_PCT 10 -> 40 (logika lain sama dengan v2.2). v2.2: jalur CO AKTIF (CO_AKTIF = true) + CO ikut ke jaringan lewat sensorBridge; pesan "Jendela membuka/menutup" juga tampil di mode CO. v2.1: LCD baris bawah = CO (0) + pesan jendela saat GPIO26 HIGH
 
 // =====================================================================
 // MODE PENGEMBANGAN
@@ -57,7 +57,7 @@ const bool MODE_PENGEMBANGAN = true;   // true = ambang CO2 700/800 untuk pengem
 
 // v2.2: jalur CO aktif (MiCS lewat ADS1115, R0, aturan CO, uji arah, simulasi p<ppm>). false = MVP CO2 saja (perilaku v2.1).
 // Catatan: ppm CO adalah ESTIMASI; sampai R0 diukur ulang di PCB final (perintah r), nilai R0 default 1730 kOhm belum bermakna.
-const bool CO_AKTIF = true;
+const bool CO_AKTIF = false;   // v2.6: uji tanpa CO. Ubah ke true untuk mengaktifkan jalur CO (v2.5)
 
 // ---------------- Pin ----------------
 const int PIN_SDA    = 21;
