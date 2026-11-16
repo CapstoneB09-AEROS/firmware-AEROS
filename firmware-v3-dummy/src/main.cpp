@@ -23,7 +23,7 @@
 // Firmware AEROS: portal custom, bukan WiFiManager.
 // POST /save HANYA menerima kredensial. Firmware yang melakukan tepat
 // lima percobaan di tingkat aplikasi dengan batas waktu tiap percobaan.
-static const char *DEVICE_ID = "AEROS_DUMMY_01";   // v3 dummy: dibedakan dari ESP asli (AEROS_01); harus terdaftar dan aktif di tabel devices
+static const char *DEVICE_ID = "AEROS_01";   // v3 dummy: memakai ID alat asli (permintaan pengguna 6 Nov 2026)
 static const char *AP_SSID = "AEROS-Setup";
 static constexpr uint16_t MQTT_PORT = 8883;
 static constexpr uint8_t SAMPLES_PER_TELEMETRY = 5;

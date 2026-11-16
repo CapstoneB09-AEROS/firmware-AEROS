@@ -30,6 +30,17 @@ constexpr int CO2_DASAR = 700, CO2_PUNCAK = 4100, CO2_AMAN = 2400, CO2_AKHIR = 8
 constexpr int CO_DASAR = 0, CO_PUNCAK = 90, CO_AMAN = 30;
 constexpr uint16_t NAIK_DETIK = 300, BAHAYA_DETIK = 120, TURUN_DETIK = 60;
 
+// MODE OTOMATIS: langsung jalan saat ESP menyala (tanpa perintah serial), berhenti saat USB dicabut (ESP mati).
+// Satu gelombang = 15 menit: normal 120 s -> naik 300 s -> puncak 60 s -> turun 180 s -> normal 240 s.
+// Kenaikan tiap gelombang = 70% kenaikan gelombang sebelumnya. Setelah 6 gelombang (90 menit) mulai lagi dari yang terbesar.
+// Puncak CO2: 4300, 3220, 2464, 1935, 1564, 1305. Puncak CO: 95, 66, 47, 33, 23, 16 (ditambah derau acak kecil).
+constexpr uint16_t GEL_NORMAL = 120, GEL_NAIK = 300, GEL_PUNCAK = 60, GEL_TURUN = 180, GEL_DETIK = 900;
+constexpr int GEL_CO2_PUNCAK = 4300, GEL_CO_PUNCAK = 95;
+constexpr float GEL_SUSUT = 0.70f;
+constexpr uint8_t GEL_PER_RANGKAIAN = 6;
+constexpr int DERAU_CO2 = 25, DERAU_CO = 1;     // derau acak +/- per detik supaya data tidak mulus sempurna
+constexpr uint8_t JENDELA_GERAK_DETIK = 5;      // lama fase jendela TURUN/NAIK di mode otomatis
+
 // S0. Normal
 const Langkah L_NORMAL[] = {
   {"Normal", 40, CO_DASAR, CO_DASAR, CO2_DASAR, CO2_DASAR, 0},
@@ -115,11 +126,16 @@ uint32_t detikTotal = 0;
 bool semuaBerurutan = false;
 uint8_t levelCO = 0, levelCO2 = 0;
 
+// Keadaan mode otomatis (berjalan saat aktif = -1).
+uint32_t detikOtomatis = 0;   // detik sejak awal rangkaian 6 gelombang
+uint8_t jendelaOtomatis = 0;
+uint8_t detikJendela = 0;
+
 void cetakBantuan() {
   Serial.println(F("# --- AEROS v3 DUMMY: data dummy, tanpa sensor ---"));
-  Serial.println(F("# Ketik di Serial Monitor (115200, New Line). Tunggu '[BIRTH] ONLINE' dulu, karena data tidak disimpan saat MQTT putus."));
-  Serial.println(F("# Tiap skenario: normal -> bahaya naik bertahap 5 menit, bahaya sekitar 3 menit, lalu turun; total sekitar 8 menit."));
-  Serial.println(F("# Tanpa skenario (dan setelah skenario selesai) ESP mengirim data normal: CO 0, CO2 700."));
+  Serial.println(F("# MODE OTOMATIS (bawaan): gelombang tiap 15 menit, tiap puncak 70% dari puncak sebelumnya, ulang tiap 6 gelombang."));
+  Serial.println(F("# Data hanya tersimpan saat MQTT tersambung ('[BIRTH] ONLINE'). Cabut USB = ESP mati = berhenti mengirim."));
+  Serial.println(F("# Skenario manual di bawah menjeda mode otomatis; setelah selesai, mode otomatis lanjut."));
   Serial.println(F("#   0 = normal (40 detik)   1 = CO2 tinggi   2 = CO tinggi   3 = CO dan CO2 bersamaan   4 = CO2 dulu lalu CO   5 = CO2 waspada 1 menit lalu bahaya 2 menit"));
   Serial.println(F("#   a = semua skenario berurutan (1,2,3,4; sekitar 33 menit)   h = bantuan"));
 }
@@ -160,12 +176,48 @@ void dorongSampel(const SensorSnapshot &data) {
   portEXIT_CRITICAL(&snapshotMux);
 }
 
+int derau(int batas) { return static_cast<int>(esp_random() % (2 * batas + 1)) - batas; }
+
+// Satu detik mode otomatis: nilai gelombang + derau, tingkat, dan jendela (turun saat bahaya, naik saat kembali normal).
+void detikGelombang(int &co, int &co2, uint8_t &jendela) {
+  const uint8_t ke = detikOtomatis / GEL_DETIK;
+  const uint16_t t = detikOtomatis % GEL_DETIK;
+  float bentuk = 0;   // 0 = normal, 1 = puncak
+  if (t >= GEL_NORMAL && t < GEL_NORMAL + GEL_NAIK) bentuk = float(t - GEL_NORMAL + 1) / GEL_NAIK;
+  else if (t >= GEL_NORMAL + GEL_NAIK && t < GEL_NORMAL + GEL_NAIK + GEL_PUNCAK) bentuk = 1;
+  else if (t >= GEL_NORMAL + GEL_NAIK + GEL_PUNCAK && t < GEL_NORMAL + GEL_NAIK + GEL_PUNCAK + GEL_TURUN)
+    bentuk = 1 - float(t - GEL_NORMAL - GEL_NAIK - GEL_PUNCAK + 1) / GEL_TURUN;
+  const float skala = powf(GEL_SUSUT, ke) * bentuk;
+  co2 = max(400, CO2_DASAR + int((GEL_CO2_PUNCAK - CO2_DASAR) * skala) + derau(DERAU_CO2));
+  co = max(0, CO_DASAR + int((GEL_CO_PUNCAK - CO_DASAR) * skala) + (bentuk > 0 ? derau(DERAU_CO) : 0));
+
+  // Jendela memakai tingkat detik sebelumnya (levelCO/levelCO2 diperbarui di satuDetik).
+  if (jendelaOtomatis == TURUN || jendelaOtomatis == NAIK) {
+    if (++detikJendela >= JENDELA_GERAK_DETIK) jendelaOtomatis = jendelaOtomatis == TURUN ? BAWAH : 0;
+  } else if (jendelaOtomatis == 0 && (levelCO == 2 || levelCO2 == 2)) {
+    jendelaOtomatis = TURUN; detikJendela = 0;
+  } else if (jendelaOtomatis == BAWAH && levelCO == 0 && levelCO2 == 0) {
+    jendelaOtomatis = NAIK; detikJendela = 0;
+  }
+  jendela = jendelaOtomatis;
+
+  if (t == 0 || t % 30 == 0) {
+    Serial.printf("[OTOMATIS] gelombang %u/%u, detik %u/%u | CO=%d CO2=%d | level %u/%u | jendela=%u\n",
+                  ke + 1, GEL_PER_RANGKAIAN, t, GEL_DETIK, co, co2, levelCO, levelCO2, jendela);
+  }
+  if (++detikOtomatis >= uint32_t(GEL_DETIK) * GEL_PER_RANGKAIAN) {
+    detikOtomatis = 0;
+    Serial.println(F("[OTOMATIS] 6 gelombang selesai, mulai lagi dari gelombang terbesar"));
+  }
+}
+
 void satuDetik() {
   int co = CO_DASAR, co2 = CO2_DASAR;
   uint8_t jendela = 0;
   const Skenario *s = nullptr;
   const Langkah *l = nullptr;
-  if (aktif >= 0) {
+  if (aktif < 0) detikGelombang(co, co2, jendela);
+  else {
     s = &SKENARIO[aktif];
     l = &s->langkah[langkahKe];
     // Linier per detik; sampel terakhir langkah = nilai "Ke". Perkalian selalu di bawah batas int.
@@ -190,7 +242,7 @@ void satuDetik() {
   dorongSampel(data);
 
   ++detikTotal;
-  if (!l) return;   // idle: tanpa cetakan, hanya data normal
+  if (!l) return;   // mode otomatis: cetakan sudah di detikGelombang
   if (detikDiLangkah == 0 || detikTotal % DETIK_PER_PESAN == 0) {
     Serial.printf("[DUMMY] %s | fase '%s' | CO=%d CO2=%d | level %u/%u | jendela=%u\n",
                   s->nama, l->nama, co, co2, levelCO, levelCO2, jendela);
@@ -201,7 +253,7 @@ void satuDetik() {
     if (++langkahKe >= s->jumlah) {
       Serial.printf("[DUMMY] Skenario '%s' selesai\n", s->nama);
       if (semuaBerurutan && aktif < 4) mulaiSkenario(aktif + 1);
-      else { aktif = -1; semuaBerurutan = false; Serial.println(F("[DUMMY] Kembali ke idle: data normal (CO 0, CO2 700).")); }
+      else { aktif = -1; semuaBerurutan = false; jendelaOtomatis = 0; Serial.println(F("[DUMMY] Kembali ke mode otomatis (gelombang).")); }
     }
   }
 }
