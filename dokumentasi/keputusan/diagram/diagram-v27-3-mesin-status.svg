@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="780" viewBox="0 0 1500 780"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><rect x="30" y="250" width="1440" height="190" rx="14" fill="none" stroke="#999" stroke-width="1.4" stroke-dasharray="8,5"/>
+<text x="42.0" y="268.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#666"></text>
+<text x="45.0" y="428.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#666">Berlaku untuk tiap gas (CO dan CO2) secara terpisah. GANGGUAN bisa terjadi dari status mana pun di dalam kotak ini.</text>
+<rect x="45.0" y="307.0" width="190" height="76" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="140.0" y="332.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">PEMANASAN</text>
+<text x="140.0" y="350.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(WARMUP)</text>
+<text x="140.0" y="368.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">180 detik</text>
+<rect x="375.0" y="307.0" width="190" height="76" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="470.0" y="341.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">NORMAL</text>
+<text x="470.0" y="359.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(OK)</text>
+<rect x="845.0" y="307.0" width="190" height="76" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="940.0" y="341.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">WASPADA</text>
+<text x="940.0" y="359.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">3 bip pendek</text>
+<rect x="1265.0" y="307.0" width="190" height="76" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
+<text x="1360.0" y="341.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">BAHAYA</text>
+<text x="1360.0" y="359.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">1 bip panjang 3 detik</text>
+<ellipse cx="140" cy="130" rx="75.0" ry="20.0" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="140.0" y="135.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Alat menyala</text>
+<path d="M 140.0,150.0 L 140.0,307.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 235.0,345.0 L 375.0,345.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="305.0" y="323.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#444">180 detik berlalu</text>
+<path d="M 565.0,331.0 L 845.0,331.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="705.0" y="295.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">CO &gt;= 35 ppm selama 30 detik</text>
+<text x="705.0" y="311.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">atau CO2 &gt;= 2500 ppm, 3 bacaan</text>
+<path d="M 1035.0,331.0 L 1265.0,331.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="1150.0" y="279.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">CO &gt;= 87 ppm,</text>
+<text x="1150.0" y="295.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">uji arah = sumber luar,</text>
+<text x="1150.0" y="311.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">atau CO2 &gt;= 4000 (3 bacaan)</text>
+<path d="M 845.0,361.0 L 565.0,361.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="705.0" y="383.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">selesai: CO &lt; 30 ppm 60 detik</text>
+<text x="705.0" y="399.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">atau CO2 &lt; 2500 ppm 10 detik</text>
+<path d="M 420.0,307.0 L 420.0,150.0 L 1410.0,150.0 L 1410.0,307.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="915.0" y="140.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">langsung dari NORMAL: CO &gt;= 87 ppm, atau CO2 &gt;= 4000 ppm selama 3 bacaan</text>
+<path d="M 1310.0,307.0 L 1310.0,200.0 L 520.0,200.0 L 520.0,307.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="915.0" y="193.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">selesai: CO &lt; 30 ppm 60 detik, atau CO2 &lt; 2500 ppm 10 detik</text>
+<rect x="630.0" y="595.0" width="260" height="90" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="760.0" y="627.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">GANGGUAN</text>
+<text x="760.0" y="645.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">kedua sensor gagal</text>
+<text x="760.0" y="663.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tidak ada aksi otomatis</text>
+<path d="M 700.0,440.0 L 700.0,595.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="690.0" y="536.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">kedua sensor gagal</text>
+<text x="690.0" y="552.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">atau tidak valid</text>
+<path d="M 820.0,595.0 L 820.0,440.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<text x="830.0" y="500.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">salah satu sensor terbaca lagi:</text>
+<text x="830.0" y="516.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">kembali ke status sebelumnya</text>
+<text x="830.0" y="532.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">(level tidak dihapus)</text>
+<text x="1060.0" y="600.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Bila hanya SATU sensor gagal: status gas itu</text>
+<text x="1060.0" y="616.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">jadi ERR, gas lain tetap berjalan normal.</text>
+<text x="1060.0" y="632.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Status LUAR tampil bila CO</text>
+<text x="1060.0" y="648.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">berasal dari luar kabin.</text>
+<text x="30.0" y="690.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">Keluaran per status:</text>
+<text x="30.0" y="706.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">WARMUP/ERR = angka gas itu tampil ---- atau n/a</text>
+<text x="30.0" y="722.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#555">OK = bunyi mati</text></svg>

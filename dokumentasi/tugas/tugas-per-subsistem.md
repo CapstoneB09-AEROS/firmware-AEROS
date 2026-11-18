@@ -27,6 +27,8 @@ PCB belum datang, jadi demo dirancang **berjalan di breadboard**; PCB hanya bonu
 | T1 uji mandiri saat menyala, T2 watchdog dan alasan reset | usulan | [komunikasi.md](../keputusan/komunikasi.md) bagian 7 |
 | Ubah `VCC` di kode sekali setelah buck terpasang, lalu ukur R0 ulang | menunggu PCB | tulis VCC di tiap log |
 | Skrip tabel sensitivitas (konfirmasi dan pemulihan lawan alarm palsu) | opsional | |
+| Samakan batas uji arah: `CO_KRITERIA_TURUN` dari 0,05 menjadi **0,25** (sama dengan `CO_KRITERIA_NAIK`) di `firmware-v2/src/sensorOriginal.inl` baris 131. Perbarui teks serial baris 850 bila perlu, dan keputusan.md baris 18 dan FR-05 | kode selesai di v2.7 (18 Nov), belum diunggah | Keputusan 17 Nov 2026, dasar di [persiapan-sidang.md](persiapan-sidang.md) bagian 6. Laporan Bab 3 sudah memakai 25% |
+| Uji gas pengganti uji arah (parfum atau alkohol, mobil parkir): semprot di kabin, buka jendela, catat Rs setelah 30 detik, 5--10 kali. Putuskan apakah batas naik tetap 25% atau turun ke 10--15% | belum dikerjakan | Bukti untuk Bab 5. Catat jam buka jendela (log tidak merekamnya) |
 
 **Parkir:** buzzer terpisah untuk CO2 (selesai diputuskan, bunyi pendek); alarm berbasis kadar dikali waktu; penyaring lonjakan tunggal (median lalu EMA); baseline adaptif; kompensasi suhu dan kelembapan.
 
@@ -102,6 +104,8 @@ PCB belum datang, jadi demo dirancang **berjalan di breadboard**; PCB hanya bonu
 | Kerangka C-501 (bab, sumber data, temuan mana yang masuk badan atau lampiran) | [kerangka-c501.md](kerangka-c501.md) |
 | Bahan C-501: koreksi isi C-251 (T15, T17), cara uji CO (T16), lokasi sensor (T18), anggaran (T20); **C-251 tidak direvisi** | [analisis/perbandingan-c251.md](../analisis/perbandingan-c251.md) |
 | Pembagian penulisan C-501 dari artefak uji | |
+| **Bab 2.3.1 MQTT, tambahkan keamanan**: TLS, tanda tangan HMAC-SHA256 (dengan nonce), *keep alive*, *last will* | **sedang dikerjakan teman** (dicatat 17 Nov 2026). Alasan: kerangka-c501.md bagian 2.3.1 memintanya, dan Bab 1.2 (keselamatan dan keamanan) menyebut data harus terlindung dari pemalsuan dan penyadapan, jadi butuh dasar teori di Bab 2. Sumber dalam proyek: [komunikasi.md](../keputusan/komunikasi.md) (HMAC-SHA256 dan TLS dengan sertifikat CA diperiksa) |
+| Bab 2.8: cek ke teman backend apakah worker meneruskan data ke Supabase lewat REST (kalimat di 2.3.2 menyebut REST dipakai pada sistem *backend*); belum tercatat di komunikasi.md | menunggu jawaban teman backend |
 | Commit dan push dokumentasi dan log | menunggu izin |
 
 ## Pertemuan tim (skenario ringkas)

@@ -115,7 +115,7 @@ Versi 27 Oktober 2026. Status: **USULAN**, untuk dibahas dengan tim backend. Das
 | 7 | **Last will** `OFFLINE` dan pesan `ONLINE` (retained) | ya |
 | 8 | Perintah hanya diterima bila: tanda tangan benar, umur ≤ 120 detik, dan `alert_id` sama dengan alarm yang **sedang aktif** | ya |
 | 9 | Jam dari NTP. Bila belum ada: `timestamp = 0` dan `time_valid = false` | ya |
-| 10 | Portal Wi-Fi (hotspot AEROS-Setup), 5 kali percobaan sambung, tombol GPIO14 tahan 5 detik, tunggu 30 detik lalu ulangi | ya |
+| 10 | Portal Wi-Fi (hotspot AEROS-Setup), 5 kali percobaan sambung, tombol GPIO14 tahan 5 detik, tunggu 10 menit lalu ulangi (v2.7) | ya |
 | 11 | Kata sandi, kunci HMAC, dan sertifikat hanya di `secrets.h` dan `root_ca.h` yang tidak masuk git | ya |
 | 12 | Bendera data simulasi (`demo` di kode tim, `sim` di rancangan kita) dan worker menolaknya kecuali diizinkan | ya |
 
@@ -188,7 +188,7 @@ ULANGI TERUS:
 
     2. KELOLA SAMBUNGAN (state machine kode tim, tidak diubah):
            PORTAL, COBA_WIFI (5 kali, 10 detik), GAGAL (password diduga salah, buka portal),
-           TUNGGU_ULANG (SSID tidak ada, tunggu 30 detik), MENUNGGU_TOMBOL, NORMAL
+           TUNGGU_ULANG (SSID tidak ada, tunggu 10 menit sejak v2.7), MENUNGGU_TOMBOL, NORMAL
            kirim kode status ke TUGAS_SENSOR tiap berubah
 
     3. KALAU NORMAL dan Wi-Fi tersambung:

@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="1300" viewBox="0 0 1640 1300"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><ellipse cx="370" cy="75" rx="190.0" ry="22.0" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="370.0" y="80.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ATURAN CO2 (faseCO TIDAK_AKTIF, CO2 siap)</text>
+<rect x="140.0" y="130.0" width="460" height="70" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="370.0" y="161.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">atasTindakan + 1 bila CO2 &gt;= 4000, selain itu 0</text>
+<text x="370.0" y="179.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">atasPeringatan + 1 bila CO2 &gt;= 2500, selain itu 0</text>
+<polygon points="370,245.0 550.0,300 370,355.0 190.0,300" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="370.0" y="305.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">atasTindakan &gt;= 3 bacaan?</text>
+<polygon points="370,385.0 570.0,440 370,495.0 170.0,440" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="370.0" y="436.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">atasPeringatan &gt;= 3 bacaan</text>
+<text x="370.0" y="454.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">dan faseCO2 = NORMAL?</text>
+<rect x="685.0" y="260.0" width="290" height="80" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
+<text x="830.0" y="287.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">TINDAKAN (sekali)</text>
+<text x="830.0" y="305.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2 = TINDAKAN</text>
+<text x="830.0" y="323.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">bunyi 1 bip panjang 3 detik</text>
+<rect x="685.0" y="400.0" width="290" height="80" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="830.0" y="427.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">PERINGATAN (sekali)</text>
+<text x="830.0" y="445.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2 = PERINGATAN</text>
+<text x="830.0" y="463.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">bunyi 3 bip pendek</text>
+<path d="M 370.0,97.0 L 370.0,130.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 370.0,200.0 L 370.0,245.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 550.0,300.0 L 685.0,300.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="562.0" y="292.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 370.0,355.0 L 370.0,385.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="380.0" y="375.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 570.0,440.0 L 685.0,440.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="582.0" y="432.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 975.0,300.0 L 1010.0,300.0 L 1010.0,560.0 L 370.0,560.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<path d="M 975.0,440.0 L 1010.0,440.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<path d="M 370.0,495.0 L 370.0,560.0" fill="none" stroke="#333" stroke-width="1.6"/>
+<text x="380.0" y="515.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<polygon points="370,620.0 550.0,670 370,720.0 190.0,670" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="370.0" y="666.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2</text>
+<text x="370.0" y="684.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">tidak sama dengan NORMAL?</text>
+<path d="M 370.0,560.0 L 370.0,620.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<ellipse cx="830" cy="670" rx="75.0" ry="19.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="830.0" y="675.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai</text>
+<path d="M 550.0,670.0 L 755.0,670.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="562.0" y="662.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<polygon points="370,755.0 550.0,810 370,865.0 190.0,810" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="370.0" y="815.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">CO2 &lt; 2500 ppm?</text>
+<path d="M 370.0,720.0 L 370.0,755.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="380.0" y="740.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<rect x="220.0" y="902.0" width="300" height="46" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="370.0" y="930.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">pemulihanCO2 + 1 (detik)</text>
+<polygon points="370,985.0 550.0,1035 370,1085.0 190.0,1035" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="370.0" y="1040.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">pemulihanCO2 &gt;= 10?</text>
+<rect x="150.0" y="1120.0" width="440" height="100" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="370.0" y="1157.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">SELESAI</text>
+<text x="370.0" y="1175.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">faseCO2 = NORMAL,  level NORMAL,  bunyi OFF</text>
+<text x="370.0" y="1193.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">reset penghitung</text>
+<ellipse cx="370" cy="1260" rx="90.0" ry="19.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="370.0" y="1265.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai</text>
+<rect x="705.0" y="787.0" width="250" height="46" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="830.0" y="815.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">pemulihanCO2 = 0</text>
+<ellipse cx="830" cy="890" rx="75.0" ry="19.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="830.0" y="895.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai</text>
+<rect x="705.0" y="1012.0" width="250" height="46" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="830.0" y="1040.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">masih menunggu</text>
+<ellipse cx="830" cy="1110" rx="75.0" ry="19.0" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="830.0" y="1115.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Selesai</text>
+<path d="M 370.0,865.0 L 370.0,902.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="380.0" y="885.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 370.0,948.0 L 370.0,985.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 550.0,810.0 L 705.0,810.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="562.0" y="802.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 830.0,833.0 L 830.0,871.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 550.0,1035.0 L 705.0,1035.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="562.0" y="1027.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">TIDAK</text>
+<path d="M 830.0,1058.0 L 830.0,1091.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 370.0,1085.0 L 370.0,1120.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="380.0" y="1105.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">YA</text>
+<path d="M 370.0,1220.0 L 370.0,1241.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<rect x="1090" y="40" width="530" height="1010" rx="14" fill="none" stroke="#999" stroke-width="1.4" stroke-dasharray="8,5"/>
+<text x="1102.0" y="58.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#666">SIKLUS JENDELA (gBahayaCO2 = TINDAKAN, gAmanCO2 = NORMAL)</text>
+<rect x="1205.0" y="95.0" width="330" height="70" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="1370.0" y="117.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ATAS</text>
+<text x="1370.0" y="135.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">jendela dianggap tertutup</text>
+<text x="1370.0" y="153.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">GPIO26 dan GPIO18 LOW</text>
+<rect x="1205.0" y="295.0" width="330" height="70" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
+<text x="1370.0" y="317.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">TURUN</text>
+<text x="1370.0" y="335.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">GPIO26 HIGH 1,5 detik</text>
+<text x="1370.0" y="353.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(motor turun, jendela terbuka)</text>
+<rect x="1205.0" y="485.0" width="330" height="70" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="1370.0" y="507.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">BAWAH</text>
+<text x="1370.0" y="525.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">GPIO26 LOW, jendela terbuka</text>
+<text x="1370.0" y="543.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">menunggu CO2 aman</text>
+<rect x="1205.0" y="675.0" width="330" height="70" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="1370.0" y="697.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">PRA-TUTUP</text>
+<text x="1370.0" y="715.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">bip 0,5 detik,</text>
+<text x="1370.0" y="733.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">jeda 3 detik</text>
+<rect x="1205.0" y="865.0" width="330" height="70" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="1370.0" y="887.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">NAIK</text>
+<text x="1370.0" y="905.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">GPIO18 HIGH 5 detik</text>
+<text x="1370.0" y="923.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(motor naik, jendela tertutup)</text>
+<path d="M 1370.0,165.0 L 1370.0,295.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="1382.0" y="232.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">gBahayaCO2 dan LOW</text>
+<text x="1382.0" y="248.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">sudah &gt;= 1 detik</text>
+<path d="M 1370.0,365.0 L 1370.0,485.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="1382.0" y="428.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">timer 1,5 detik habis</text>
+<path d="M 1370.0,555.0 L 1370.0,675.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="1382.0" y="618.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">gAmanCO2 dan LOW &gt;= 1 detik</text>
+<path d="M 1370.0,745.0 L 1370.0,865.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="1382.0" y="808.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#333">bip dan jeda selesai</text>
+<path d="M 1535.0,900.0 L 1590.0,900.0 L 1590.0,130.0 L 1535.0,130.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text transform="translate(1578,520) rotate(-90)" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#333">timer 5 detik habis</text>
+<path d="M 1205.0,710.0 L 1130.0,710.0 L 1130.0,520.0 L 1205.0,520.0" fill="none" stroke="#333" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#panah)"/>
+<text x="1125.0" y="612.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">batal:</text>
+<text x="1125.0" y="628.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">CO2 tidak</text>
+<text x="1125.0" y="644.0" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">lagi aman</text></svg>

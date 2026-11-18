@@ -42,6 +42,8 @@ Tabel perbandingan lengkap (peredaman noise, respons 90%, lonjakan yang lolos un
 
 ## 2. Pseudocode
 
+> **Status bagian 2 (dicek 18 Nov 2026 terhadap firmware v2.7):** bagian 2 adalah **rancangan 27 Okt**, bukan gambaran v2.7. Bagian sensor, filter, ambang, uji arah, bunyi, dan status masih sesuai. Yang **tidak** sesuai dengan v2.7: (1) aturan jendela CO2 di 2.1, 2.2, 2.3 langkah 7, 2.5, dan 2.9 (bukaan setengah, buka minimal 20 detik, maksimal 180 detik, jeda 5 menit) tidak berjalan; v2.7 memakai siklus pulsa di bagian 7.5; (2) indikator Wi-Fi di LCD (2.3 langkah 8 dan 2.10) tidak ada di `sensorOriginal.inl`, baris LCD memakai indikator `S`/`J`/`M` dan pesan jendela. Untuk laporan, pakai bagian 7.
+
 ### 2.1 Parameter
 
 ```
@@ -336,6 +338,7 @@ Alarm selalu menang atas pesan jaringan di LCD. Aplikasi memakai pesan `ONLINE`/
 
 ## 3. Versi firmware
 
+- Firmware terbaru: **v2.7** di `firmware-v2/` (bagian 7). Baris di bawah ini mencatat v1 yang lama.
 - `src/main.cpp` sekarang **v1** (28 Okt 2026, bagian 6): sensor dan keluaran sesuai pseudocode ini, tanpa komunikasi.
 - v0 (23 Okt, checksum `fa7b8a91070bafe659d7babde142ea8e384bbf44`) di `arsip-firmware/main-v0-2026-10-23.cpp` dan tag `v0-2026-10-23`; v0.1 (pin buzzer GPIO27, TBout GPIO26) di `arsip-firmware/main-v0.1-2026-10-28.cpp`; salinan v1: `arsip-firmware/main-v1-2026-10-28.cpp`.
 - Pseudocode lama (rencana awal dan alur kode v0) tetap, di [algoritma-firmware-lama-v0.md](algoritma-firmware-lama-v0.md).
@@ -441,7 +444,7 @@ Sebelum tersambung ke motor: arus kumparan dan penguatan transistor cukup (arus 
 Bila hardware menambah relay naik: isi `PIN_JENDELA_TUTUP` (pin lain), atur `PULSA_TUTUP_MS`, dan pastikan kedua relay **tidak pernah menyala bersamaan**. **Uji dulu dengan LED atau multimeter di TBout sebelum menyambung ke motor.** Perintah `o` mengirim pulsa buka; `c` hanya mencatat bahwa penutup tidak ada.
 
 ### 6.3 Detail yang ditetapkan saat menulis v1
-- **Kriteria "CO turun" pada uji arah:** Rs naik lebih dari 5% dari awal uji = sumber dalam. Turun lebih dari 25% = sumber luar. Di antaranya = tidak jelas, dianggap luar (pseudocode 2.4 belum memberi angka untuk "CO turun"; 5% usulan).
+- **Kriteria "CO turun" pada uji arah:** **Diubah 17 Nov 2026:** Rs naik lebih dari 25% dari awal uji = sumber dalam. Turun lebih dari 25% = sumber luar. Di antaranya = tidak jelas, dianggap luar. Sebelumnya batas naik 5% (usulan), diganti karena 8,8% jendela 30 detik di log mobil melampaui 5% tanpa CO. Kode sudah disamakan di v2.7 (`CO_KRITERIA_TURUN = 0.25`).
 - **Perbaikan pseudocode 2.5:** syarat `lamaBuka >= JENDELA_BUKA_MIN` hanya berlaku bila jendela terbuka. Tanpa itu, status PERINGATAN (jendela tidak dibuka) tidak pernah kembali NORMAL.
 - **Jeda minimum** hanya membatasi pembukaan oleh CO2. Pembukaan karena CO tidak ditunda (keselamatan).
 - Setelah jendela ditutup karena lama buka maksimum ("CO2 tidak turun"), jendela tidak dibuka lagi sampai CO2 kembali NORMAL.
@@ -460,3 +463,135 @@ Bila hardware menambah relay naik: isi `PIN_JENDELA_TUTUP` (pin lain), atur `PUL
   - Baris data tiap detik (tanpa `#`): 8 kolom pertama seperti v0 (`Rs_kohm` = Rs mentah, `Rs_per_R0` dari Rs SMA 6), lalu `fase_co, fase_co2, jendela, buzzer, sim`, lalu penghitung: `rs_halus_kohm, gain_ads, konf_co, pulih_co, waktu_uji, atas_peringatan, atas_tindakan, pulih_co2, lama_buka, jeda_sisa, mode`.
   - Baris kejadian berawalan `# [detik] TAG: isi` untuk: perubahan status, pemanasan selesai, filter terisi atau dikosongkan, nilai placeholder 410/500, gangguan sensor, gain ADS1115, mulai dan selesai bunyi, tiap pulsa sinyal jendela (pin, level, lama), jendela buka atau tutup beserta alasan dan nilai CO dan CO2, buka yang ditunda (sisa jeda), tiap tahap aturan CO dan CO2 (konfirmasi, uji arah dengan Rs awal dan sekarang dan persen perubahan, selesai), semua perintah serial, dan kalibrasi R0.
 - Watchdog (T2) dan uji mandiri (T1) belum dimasukkan karena belum disetujui.
+
+---
+
+## 7. Firmware v2.7 (18 November 2026)
+
+Dasar: v2.6 di `firmware-v2/`. Hanya konstanta dan teks yang berubah. **Logika sensor, ambang, dan pin tidak berubah.**
+
+### 7.1 Pseudocode perubahan
+
+```
+# sensorOriginal.inl
+FW_VERSI                = "v2.7"
+MODE_PENGEMBANGAN       = false      # ambang CO2 kembali 2500 / 4000 (uji mobil)
+CO_AKTIF                = true       # MiCS dan ADS1115 dibaca lagi, status CO tidak OFF
+CO_KRITERIA_TURUN       = 0.25       # sebelumnya 0.05
+VCC                     = 4.64       # tetap: berpasangan dengan R0 di atas (nilai saat kalibrasi Ayla)
+R0_DEFAULT_OHM          = 1878000    # hasil perintah r di mobil Ayla, 4 Nov 2026 (dipakai tiga uji 4 Nov)
+
+# main.cpp
+WIFI_RETRY_PAUSE_MS     = 600000     # 10 menit, sebelumnya 30000 (30 detik)
+WIFI_MAX_TRIES          = 5          # tetap
+WIFI_TRY_TIMEOUT_MS     = 10000      # tetap
+teks "Retry 30s." (3 tempat, serial)    -> "Retry 10 menit."
+teks "Retry 30 detik" (3 tempat, LCD)   -> "Retry 10 menit"
+```
+
+### 7.2 Alur sambung Wi-Fi setelah perubahan
+
+```
+ulangi sampai tersambung:
+    untuk percobaan 1 sampai WIFI_MAX_TRIES (5):
+        sambung, tunggu paling lama WIFI_TRY_TIMEOUT_MS (10 detik)
+        bila berhasil: selesai
+    # lima percobaan gagal
+    scan SSID
+    bila SSID terlihat dan password diduga salah (AUTH_FAIL berulang):
+        LCD "CEK PASSWORD! / Buka portal..." -> portal Wi-Fi terbuka otomatis   # tidak ikut jeda 10 menit
+    selain itu:
+        tidak ditemukan  -> LCD "HOTSPOT TDK ADA / Retry 10 menit"
+        scan gagal       -> LCD "Scan WiFi gagal / Retry 10 menit"
+        ada tapi gagal   -> LCD "WiFi gagal konek / Retry 10 menit"
+        tunggu WIFI_RETRY_PAUSE_MS (10 menit), lalu ulangi lima percobaan
+        # sensor dan jendela tetap jalan (tugas sensor terpisah dari tugas jaringan);
+        # tombol GPIO32 ditahan 5 detik tetap bisa membuka portal
+```
+
+### 7.3 Aturan uji arah CO (kriteria turun 25%)
+
+```
+perubahan = (Rs_sekarang - Rs_awal_uji) / Rs_awal_uji
+bila perubahan > +0.25  : CO turun  -> sumber DALAM mobil
+bila perubahan < -0.25  : CO naik   -> sumber LUAR mobil   (CO_KRITERIA_NAIK, tidak berubah)
+selain itu              : tidak jelas -> dianggap LUAR
+```
+
+Alasan: jendela 30 detik di log mobil menaikkan Rs 8,8% tanpa CO, jadi batas 5% memberi alarm palsu (keputusan 17 Nov 2026).
+
+### 7.4 Yang belum selesai
+- `VCC` dan `R0_DEFAULT_OHM` (diputuskan 18 Nov): R0 = 1878 kOhm dari kalibrasi Ayla dan VCC tetap 4,64 V, karena keduanya harus berpasangan. Bila VCC diubah ke hasil ukur multimeter, R0 dikali (VCC baru - 0,023) / (4,64 - 0,023) atau diukur ulang dengan `r` di udara bersih.
+- Belum dikompilasi dan belum diunggah ke ESP32 (alat `pio` tidak ada di terminal ini).
+- Arsip dibuat 18 Nov: `arsip-firmware/sensorOriginal-v2.6-2026-11-06.inl` dan `sensorOriginal-v2.7-2026-11-18.inl`. Perubahan `main.cpp` v2.7 (jeda Wi-Fi 10 menit) belum diarsipkan.
+
+
+### 7.5 Diagram firmware v2.7
+
+Kelima diagram dibuat dari kode `firmware-v2/src/sensorOriginal.inl` (v2.7), bukan dari rancangan lama. Nama di tiap kotak (`aturanCO`, `servisUjiGpio26`, `faseCO2`, dan lainnya) bisa dicari langsung di kode. Gambar ini versi bersih untuk laporan: tanpa judul di dalam gambar (judul dipasang di bawah gambar lewat LaTeX) dan tanpa catatan perintah serial, simulasi, atau mode uji. Catatan itu dipindah ke bagian 7.6. Sumber gambar: [diagram/buat_diagram_v27.py](diagram/buat_diagram_v27.py). Jalankan `python3 buat_diagram_v27.py` di folder itu untuk membuat ulang PNG, SVG, dan PDF vektor (butuh Google Chrome). Untuk laporan LaTeX, pakai berkas `.pdf` (`\includegraphics{diagram-v27-1-alur-siklus.pdf}`) karena tetap tajam di ukuran berapa pun.
+
+**Diagram 1. Alur siklus 1 detik.** Baca sensor, validasi, hitung, cek pemanasan, cek gangguan, jalankan aturan CO dan CO2, tetapkan status, keluaran, lalu tunggu tepat 1 detik.
+![Diagram 1: alur siklus 1 detik](diagram/diagram-v27-1-alur-siklus.png)
+
+**Diagram 2. Alur pengolahan sinyal.** Jalur CO: ADS1115, validasi, Rs, SMA 6, Rs/R0, ppm. Jalur CO2: UART, validasi checksum, ppm tanpa filter.
+![Diagram 2: alur pengolahan sinyal](diagram/diagram-v27-2-pengolahan-sinyal.png)
+
+**Diagram 3. Mesin status.** PEMANASAN, NORMAL, WASPADA, BAHAYA, dan GANGGUAN beserta syarat perpindahannya.
+![Diagram 3: mesin status](diagram/diagram-v27-3-mesin-status.png)
+
+**Diagram 4. Aturan CO.** Konfirmasi 30 detik atau langsung bila >= 87 ppm, uji arah 30 detik dengan batas 25%, tutup atau tetap buka, selesai bila < 30 ppm selama 60 detik, dan pengulangan bunyi.
+![Diagram 4: aturan CO](diagram/diagram-v27-4-aturan-co.png)
+
+**Diagram 5. Aturan CO2 dan siklus jendela.** 2500 dan 4000 ppm dengan 3 bacaan, selesai bila < 2500 ppm selama 10 detik, serta siklus ATAS, TURUN, BAWAH, PRA-TUTUP, NAIK.
+![Diagram 5: aturan CO2 dan siklus jendela](diagram/diagram-v27-5-aturan-co2.png)
+
+**Beda diagram 5 dengan rancangan lama.** Rancangan lama menulis "jendela terbuka minimal 20 detik, maksimal 180 detik, jeda 5 menit". Di v2.7 aturan itu tidak berjalan, karena `UJI_GPIO26_IKUT_BAHAYA = true` melewati `bukaJendela` dan `lamaBuka` di `aturanCO2`. Yang berjalan adalah siklus pulsa: turun 1,5 detik, bip 0,5 detik dan jeda 3 detik, naik 5 detik. Bila tabel ringkasan diagram di laporan masih memuat angka 20, 180, dan 5 menit, ubah sesuai diagram 5.
+
+### 7.6 Catatan yang tidak dipasang di gambar
+
+Catatan di bawah ini benar menurut kode v2.7, tetapi tidak cocok untuk gambar laporan. Pakai di teks laporan atau lampiran bila perlu.
+
+**Nilai yang diganti simbol di diagram 2**
+
+| Di gambar | Nilai sekarang | Keterangan |
+|---|---|---|
+| `VCC` | 4,64 V | Belum diukur ulang (menunggu multimeter di pin 5 V sensor) |
+| `R₀` | 1730 kΩ (`R0_DEFAULT_OHM`) | Estimasi. Sebelum dikalibrasi di udara bersih, ppm CO belum bermakna |
+| `A`, `beta` | 3,46 dan 0,840 | Kurva datasheet MiCS: Rs/R₀ = A × ppm^(−beta) |
+| `RL` | 9970 Ω | Resistor beban |
+
+**Simulasi (diagram 1 dan 2)**
+- `p<ppm>` mengganti ppm CO, dan Rs untuk uji arah dihitung balik dari kurva. Contoh: `p40` lalu `p20` = sumber dalam, `p40` lalu `p60` = sumber luar.
+- `q<ppm>` mengganti nilai CO2 dan melewati pemanasan.
+- Keduanya hanya untuk uji meja, tidak dipakai saat uji mobil.
+
+**Tombol "Saya Tahu" (diagram 3 dan 4)**
+- Mematikan bunyi saja, status tidak berubah.
+- Pengulangan bunyi CO (tiap 60 detik, maksimum 5 menit) berhenti bila tombol ditekan.
+- Bip tutup jendela (v2.5) tidak ikut dimatikan, demi keselamatan.
+
+**Perintah serial dan mode uji (diagram 4 dan 5)**
+- `x` menghentikan relay. `n` menolkan batas total waktu turun setelah jendela dinaikkan manual. `r` mengkalibrasi R₀ (120 detik di udara bersih). Status `KALIBRASI` muncul selama `r` berjalan.
+- GPIO26 (turun) dan GPIO18 (naik) tidak pernah HIGH bersamaan.
+- Batas total waktu turun relay 10 detik: pulsa turun berikutnya ditolak sampai jendela dinaikkan manual dan `n` diketik. Akibatnya episode CO kedua bisa ditolak (temuan P2-g).
+- Siklus jendela di diagram 5 adalah fungsi `servisUjiGpio26` dan aktif karena `UJI_GPIO26_IKUT_BAHAYA = true`.
+
+**Dasar angka di diagram 4**
+- Batas 25% untuk uji arah: `CO_KRITERIA_NAIK` dan `CO_KRITERIA_TURUN` sama-sama 0,25. Alasannya ada di bagian 7.3.
+- ppm CO adalah estimasi, karena R₀ harus dikalibrasi di mobil.
+
+
+**Detail yang disederhanakan di diagram 1 dan 2 (18 Nov 2026)**
+
+Gambar dikurangi detail perangkat kerasnya agar selaras dengan teks 4.3.3 laporan. Isi yang dihapus tetap benar dan ada di kode:
+
+| Bagian | Detail yang tidak lagi di gambar |
+|---|---|
+| Baca sensor | Perintah serial dibaca tiap siklus. CO2 lewat UART (MH-Z19C), tegangan MiCS lewat ADS1115 (rata-rata 16 sampel, gain naik bila saturasi), hanya bila `CO_AKTIF` |
+| Validasi MiCS | Tidak saturasi dan 0,5 mV <= V <= VCC - 1 mV. Gain ADS1115 naik atau turun otomatis |
+| Validasi CO2 | Header 0xFF 0x86 dan checksum cocok. UART 9600 baud, perintah 0x86, balasan 9 byte, batas tunggu 500 ms. ABC dimatikan |
+| Hitung | Lebih dari 3 sampel tidak valid berturut-turut mengosongkan buffer SMA. ppm CO baru dihitung setelah 6 nilai terkumpul. Rs/R0 >= 0,5 dianggap 0 ppm |
+| Pemanasan | Angka tetap dicetak ke serial dengan status WARMUP. Nilai palsu 410/500 dari MH-Z19C dicatat tetapi tidak dipakai aturan |
+| Cabang aturan CO2 | Syarat sebenarnya `faseCO = TIDAK_AKTIF` |
+| Atur keluaran | `gBahayaCO2` = (`faseCO2` TINDAKAN dan tidak gangguan), `gAmanCO2` = (`faseCO2` NORMAL, CO2 siap, tidak gangguan); lalu `servisUjiGpio26` dan `servisBunyi` dipanggil |
+| Keluaran | Baris CSV ditangkap `sensorBridge` lalu dikirim `main.cpp` lewat MQTT. Bunyi dan pulsa jendela tetap dilayani selama menunggu 1 detik |

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="640" viewBox="0 0 1500 640"><defs><marker id="panah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#333"/></marker></defs><rect width="100%" height="100%" fill="#ffffff"/><text x="30.0" y="80.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#b46504" font-weight="bold">JALUR CO (MiCS, estimasi)</text>
+<text x="30.0" y="320.0" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#0e8088" font-weight="bold">JALUR CO<tspan baseline-shift="sub" font-size="75%">2</tspan> (MH-Z19C, nilai langsung)</text>
+<rect x="36.0" y="115.0" width="148" height="110" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="110.0" y="157.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Sensor MiCS</text>
+<text x="110.0" y="175.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(hambatan Rs</text>
+<text x="110.0" y="193.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">berubah oleh gas)</text>
+<rect x="214.0" y="115.0" width="148" height="110" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="288.0" y="166.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Baca tegangan</text>
+<text x="288.0" y="184.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">sensor</text>
+<rect x="392.0" y="115.0" width="148" height="110" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="466.0" y="166.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Periksa</text>
+<text x="466.0" y="184.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">nilai wajar</text>
+<rect x="570.0" y="115.0" width="148" height="110" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="644.0" y="148.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Rs</text>
+<text x="644.0" y="166.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">= RL (VCC - V) / V</text>
+<text x="644.0" y="184.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">RL = resistor beban</text>
+<text x="644.0" y="202.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">VCC = tegangan catu</text>
+<rect x="748.0" y="115.0" width="148" height="110" fill="#dae8fc" stroke="#5b7fb5" stroke-width="1.6"/>
+<text x="822.0" y="157.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Filter SMA 6</text>
+<text x="822.0" y="175.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">rata-rata 6 nilai</text>
+<text x="822.0" y="193.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Rs terakhir</text>
+<rect x="926.0" y="115.0" width="148" height="110" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="1000.0" y="148.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Rs / R0</text>
+<text x="1000.0" y="166.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">R0 = Rs di udara</text>
+<text x="1000.0" y="184.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">bersih (hasil</text>
+<text x="1000.0" y="202.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">kalibrasi)</text>
+<rect x="1104.0" y="115.0" width="148" height="110" fill="#fad7ac" stroke="#b46504" stroke-width="1.6"/>
+<text x="1178.0" y="148.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ppm CO estimasi</text>
+<text x="1178.0" y="166.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">kurva datasheet:</text>
+<text x="1178.0" y="184.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Rs/R0 = k x c^-β</text>
+<text x="1178.0" y="202.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">k dan β konstanta</text>
+<path d="M 184.0,170.0 L 214.0,170.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 362.0,170.0 L 392.0,170.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 540.0,170.0 L 570.0,170.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 718.0,170.0 L 748.0,170.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 896.0,170.0 L 926.0,170.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 1074.0,170.0 L 1104.0,170.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<rect x="36.0" y="375.0" width="148" height="110" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="110.0" y="435.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Sensor MH-Z19C</text>
+<rect x="214.0" y="375.0" width="148" height="110" fill="#ffffff" stroke="#333333" stroke-width="1.6"/>
+<text x="288.0" y="426.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Terima paket</text>
+<text x="288.0" y="444.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">data CO<tspan baseline-shift="sub" font-size="75%">2</tspan></text>
+<rect x="392.0" y="375.0" width="148" height="110" fill="#fff2cc" stroke="#b8922a" stroke-width="1.6"/>
+<text x="466.0" y="426.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Periksa header</text>
+<text x="466.0" y="444.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">dan checksum</text>
+<rect x="570.0" y="375.0" width="148" height="110" fill="#b0e3e6" stroke="#0e8088" stroke-width="1.6"/>
+<text x="644.0" y="426.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">Kadar CO<tspan baseline-shift="sub" font-size="75%">2</tspan></text>
+<text x="644.0" y="444.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">(tanpa filter)</text>
+<path d="M 184.0,430.0 L 214.0,430.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 362.0,430.0 L 392.0,430.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 540.0,430.0 L 570.0,430.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<text x="426.0" y="508.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">bacaan gagal: CO<tspan baseline-shift="sub" font-size="75%">2</tspan> tidak</text>
+<text x="426.0" y="524.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">terbaca (status ERR)</text>
+<text x="694.0" y="508.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">pemanasan 180 detik:</text>
+<text x="694.0" y="524.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#555">belum dipakai aturan</text>
+<rect x="1220.0" y="235.0" width="220" height="130" fill="#eeeeee" stroke="#666666" stroke-width="1.6"/>
+<text x="1330.0" y="287.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ATURAN CO</text>
+<text x="1330.0" y="305.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">ATURAN CO<tspan baseline-shift="sub" font-size="75%">2</tspan></text>
+<text x="1330.0" y="323.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#111">dan STATUS</text>
+<line x1="1232.0" y1="235.0" x2="1232.0" y2="365.0" stroke="#666666" stroke-width="1.6"/>
+<line x1="1428.0" y1="235.0" x2="1428.0" y2="365.0" stroke="#666666" stroke-width="1.6"/>
+<path d="M 1252.0,170.0 L 1330.0,170.0 L 1330.0,235.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/>
+<path d="M 718.0,430.0 L 1330.0,430.0 L 1330.0,365.0" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#panah)"/></svg>
