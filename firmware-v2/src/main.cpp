@@ -46,7 +46,7 @@ static constexpr uint32_t WIFI_BUTTON_HOLD_MS = 5000;
 static constexpr uint32_t PORTAL_TIMEOUT_MS = 300000;
 static constexpr uint32_t POST_RESPONSE_GRACE_MS = 2000;
 static constexpr uint32_t WIFI_TRY_TIMEOUT_MS = 10000;
-static constexpr uint32_t WIFI_RETRY_PAUSE_MS = 30000;
+static constexpr uint32_t WIFI_RETRY_PAUSE_MS = 600000;
 static constexpr uint8_t WIFI_MAX_TRIES = 5;
 static constexpr int8_t MIN_RSSI_FOR_AUTH_DIAG_DBM = -75;
 static constexpr time_t MIN_VALID_EPOCH = 1700000000;
@@ -700,14 +700,14 @@ void waitForHotspotWithLCD(ScanResult scan) {
   mode = Mode::WIFI_RETRY_WAIT;
   retryWaitStartedMs = millis();
   if (scan == ScanResult::MISSING) {
-    Serial.println("[WiFi] SSID TIDAK DITEMUKAN. Kredensial tetap disimpan. Retry 30s.");
-    showLCD("HOTSPOT TDK ADA", "Retry 30 detik");
+    Serial.println("[WiFi] SSID TIDAK DITEMUKAN. Kredensial tetap disimpan. Retry 10 menit.");
+    showLCD("HOTSPOT TDK ADA", "Retry 10 menit");
   } else if (scan == ScanResult::ERROR) {
-    Serial.println("[WiFi] Scan gagal; tidak bisa memastikan sebab. Retry 30s.");
-    showLCD("Scan WiFi gagal", "Retry 30 detik");
+    Serial.println("[WiFi] Scan gagal; tidak bisa memastikan sebab. Retry 10 menit.");
+    showLCD("Scan WiFi gagal", "Retry 10 menit");
   } else {
-    Serial.println("[WiFi] SSID ADA tapi koneksi gagal; periksa sinyal/keamanan. Retry 30s.");
-    showLCD("WiFi gagal konek", "Retry 30 detik");
+    Serial.println("[WiFi] SSID ADA tapi koneksi gagal; periksa sinyal/keamanan. Retry 10 menit.");
+    showLCD("WiFi gagal konek", "Retry 10 menit");
   }
 }
 
